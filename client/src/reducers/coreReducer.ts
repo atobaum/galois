@@ -18,7 +18,7 @@ type User = {
 type CoreAction = ReturnType<typeof setUser> | ReturnType<typeof unsetUser>;
 
 type CoreState = {
-  user: User;
+  user: User | null;
 };
 
 const initState = {
