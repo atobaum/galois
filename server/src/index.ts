@@ -1,9 +1,6 @@
 import "./env";
-import "./database";
-import apolloServer from "./graphql/apolloServer";
+// import "./database";
 import app from "./app";
-
-apolloServer.applyMiddleware({ app });
 
 const port = process.env.PORT || 4000;
 app.listen(port, () => {
