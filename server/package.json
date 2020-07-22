@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "NODE_ENV=development nodemon --exec ts-node ./src/index.ts",
     "start": "ts-node src/index.ts",
-    "test": "jest"
+    "test": "jest --watch"
   },
   "devDependencies": {
     "@types/bcrypt": "^3.0.0",
@@ -17,8 +17,10 @@
     "@types/koa-logger": "^3.1.1",
     "@types/koa-router": "^7.4.1",
     "@types/node": "^8.0.29",
+    "@types/supertest": "^2.0.10",
     "jest": "^26.1.0",
     "nodemon": "^2.0.4",
+    "supertest": "^4.0.2",
     "ts-jest": "^26.1.2",
     "ts-node": "8.10.2",
     "typescript": "3.9.5"
@@ -33,5 +35,20 @@
     "koa-router": "^9.0.1",
     "pg": "^8.2.1",
     "typeorm": "0.2.25"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.ts$": "ts-jest"
+    },
+    "testRegex": "\\.test\\.ts$",
+    "moduleFileExtensions": [
+      "ts",
+      "js"
+    ],
+    "globals": {
+      "ts-jest": {
+        "enableTsDiagnostics": true
+      }
+    }
   }
 }
