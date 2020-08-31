@@ -7,6 +7,7 @@ function App() {
   return (
     <div className="App">
       <Switch>
+        <Route path="/zettel/:id" component={ZettelViewPage} />
         <Route path="/" component={MainPage} />
       </Switch>
     </div>
