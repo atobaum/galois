@@ -17,7 +17,8 @@ const MainPageCss = css`
 function TopNav() {
   return (
     <div>
-      <Link to="/">Inbox</Link>
+      <Link to="/">Home</Link>
+      <Link to="/tags/inbox">Inbox</Link>
     </div>
   );
 }
