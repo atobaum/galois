@@ -1,22 +1,22 @@
 import React from "react";
-import { Zettel } from "../models/Zettel";
 import ZettelCard from "./ZettelCard";
 
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
+import { useSelector } from "react-redux";
+import { RootState } from "../reducers";
 
 const ZettelListCss = css`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, auto));
 `;
 
-type NoteListProps = {
-  notes: Zettel[];
-};
-function ZettelList({ notes }: NoteListProps) {
+type NoteListProps = {};
+function ZettelList(props: NoteListProps) {
+  const zettels = useSelector((state: RootState) => state.zettel.zettels);
   return (
     <div css={ZettelListCss}>
-      {notes.map((note) => (
+      {zettels.map((note) => (
         <ZettelCard {...note} />
       ))}
     </div>
