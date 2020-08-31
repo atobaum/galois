@@ -6,6 +6,7 @@ import ZettelViewPage from "./pages/ZettelViewPage";
 import { useDispatch } from "react-redux";
 import { addZetel } from "./reducers/zettelReducer";
 import { getZettels } from "./api/zettelApiMock";
+import ZettelTagFilterPage from "./pages/ZettelTagFilterPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -18,6 +19,7 @@ function App() {
     <div className="App">
       <Switch>
         <Route path="/zettel/:id" component={ZettelViewPage} />
+        <Route path="/tags/:tag" component={ZettelTagFilterPage} />
         <Route path="/" component={MainPage} />
       </Switch>
     </div>

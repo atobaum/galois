@@ -11,9 +11,15 @@ const ZettelListCss = css`
   grid-template-columns: repeat(auto-fit, minmax(300px, auto));
 `;
 
-type NoteListProps = {};
-function ZettelList(props: NoteListProps) {
-  const [filter, setFilter] = useState<{ tag?: string }>({});
+type ZettelListProps = {
+  filter?: {
+    tag?: string;
+  };
+};
+function ZettelList(props: ZettelListProps) {
+  const [filter, setFilter] = useState<{ tag?: string }>(
+    props.filter ? props.filter : {}
+  );
   const zettels = useSelector((state: RootState) => state.zettel.zettels);
   return (
     <div css={ZettelListCss}>
