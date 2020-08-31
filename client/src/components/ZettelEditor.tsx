@@ -3,6 +3,7 @@ import React, { useState, useRef } from "react";
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
 import Tag from "./Tag";
+import { Zettel } from "../models/Zettel";
 
 const ZettelEditorCss = css`
   display: flex;
@@ -20,7 +21,7 @@ const ZettelEditorCss = css`
 `;
 
 type NoteEditorProps = {
-  onSubmit: (args: any) => void;
+  onSubmit: (zettle: Omit<Zettel, "id">) => void;
 };
 
 function ZettelEditor({ onSubmit }: NoteEditorProps) {

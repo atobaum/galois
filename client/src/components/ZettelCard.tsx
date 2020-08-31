@@ -1,6 +1,7 @@
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
 import Tag from "./Tag";
+import { Zettel } from "../models/Zettel";
 
 const ZettelCardCss = css`
   width: 300px;
@@ -14,14 +15,11 @@ const ZettelCardCss = css`
   }
 `;
 
-type ZettelCardProps = {
-  content: string;
-  tags: string[];
-  title: string;
-};
-function ZettelCard({ content, title, tags }: ZettelCardProps) {
+type ZettelCardProps = Zettel & {};
+function ZettelCard({ id, content, title, tags }: ZettelCardProps) {
   return (
     <div css={ZettelCardCss}>
+      <div>{id}</div>
       <h3>{title}</h3>
       <div>{content}</div>
       <div>
