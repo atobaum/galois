@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import ZettelCard from "./ZettelCard";
 
 /** @jsx jsx */
@@ -13,12 +13,17 @@ const ZettelListCss = css`
 
 type NoteListProps = {};
 function ZettelList(props: NoteListProps) {
+  const [filter, setFilter] = useState<{ tag?: string }>({});
   const zettels = useSelector((state: RootState) => state.zettel.zettels);
   return (
     <div css={ZettelListCss}>
-      {zettels.map((note) => (
-        <ZettelCard {...note} />
-      ))}
+      {zettels
+        .filter((zettel) => {
+          return filter.tag ? zettel.tags.includes(filter.tag!) : true;
+        })
+        .map((note) => (
+          <ZettelCard key={note.id} {...note} />
+        ))}
     </div>
   );
 }
