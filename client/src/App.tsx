@@ -5,7 +5,7 @@ import MainPage from "./pages/MainPage";
 import ZettelViewPage from "./pages/ZettelViewPage";
 import { useDispatch } from "react-redux";
 import { addZetel } from "./reducers/zettelReducer";
-import { getZettels } from "./api/zettelApiMock";
+import { getZettels } from "./api/zettelApi";
 import ZettelTagFilterPage from "./pages/ZettelTagFilterPage";
 
 function App() {
