@@ -1,6 +1,6 @@
 export type Zettel = {
   id: number;
-  title: string;
+  title: string | null;
   content: string;
   tags: string[];
 };
