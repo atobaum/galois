@@ -2,7 +2,6 @@ import React from "react";
 import { Link } from "react-router-dom";
 import ZettelEditor from "../components/ZettelEditor";
 import ZettelList from "../components/ZettelList";
-import { v4 as uuid } from "uuid";
 
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
@@ -29,7 +28,9 @@ function MainPage() {
     <div css={MainPageCss}>
       <TopNav />
       <ZettelEditor
-        onSubmit={(args) => dispatch(addZetel({ ...args, uuid: uuid() }))}
+        onSubmit={(args) =>
+          dispatch(addZetel({ ...args, id: ~~(Math.random() * 1000) }))
+        }
       />
       <ZettelList />
     </div>
