@@ -28,7 +28,6 @@ function ZettelEditor({ onSubmit }: NoteEditorProps) {
   const [title, setTitle] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState("");
-  const [source, setSource] = useState("");
   const contentRef = useRef<HTMLTextAreaElement>(null);
 
   const handleTagOnKeypress: React.KeyboardEventHandler<HTMLInputElement> = (
@@ -52,11 +51,9 @@ function ZettelEditor({ onSubmit }: NoteEditorProps) {
           content: content.trim(),
           title: title.trim(),
           tags,
-          source: source.trim(),
         });
         setContent("");
         setTitle("");
-        setSource("");
         contentRef.current!.focus();
       }}
       css={ZettelEditorCss}
@@ -101,11 +98,6 @@ function ZettelEditor({ onSubmit }: NoteEditorProps) {
           placeholder="Type tag..."
         />
       </div>
-      <input
-        value={source}
-        onChange={(e) => setSource(e.target.value)}
-        placeholder="Type source..."
-      />
       <button>Submit</button>
     </form>
   );

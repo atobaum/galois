@@ -20,9 +20,8 @@ type ZettelCardProps = {
   content: string;
   tags: string[];
   title: string;
-  source: string;
 };
-function ZettelCard({ content, title, tags, source }: ZettelCardProps) {
+function ZettelCard({ content, title, tags }: ZettelCardProps) {
   return (
     <div css={ZettelCardCss}>
       <h3>{title}</h3>
@@ -32,7 +31,6 @@ function ZettelCard({ content, title, tags, source }: ZettelCardProps) {
           <Tag key={tag}>{tag}</Tag>
         ))}
       </div>
-      <div>{source}</div>
       <button>Archive</button>
       <button>Edit</button>
       <button>More</button>
