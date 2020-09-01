@@ -2,6 +2,8 @@
 import { jsx, css } from "@emotion/core";
 import Tag from "./Tag";
 import { Zettel } from "../models/Zettel";
+import { useMemo } from "react";
+import parseMarkdown from "../lib/markdownParser";
 
 const ZettelCardCss = css`
   width: 300px;
@@ -17,11 +19,17 @@ const ZettelCardCss = css`
 
 type ZettelCardProps = Zettel & {};
 function ZettelCard({ id, content, title, tags }: ZettelCardProps) {
+  const parsedContent = useMemo(() => {
+    return parseMarkdown(content);
+  }, [content]);
+
   return (
     <div css={ZettelCardCss}>
       <div>{id}</div>
       <h3>{title}</h3>
-      <div>{content}</div>
+      <div
+        dangerouslySetInnerHTML={{ __html: parsedContent.contents as string }}
+      ></div>
       <div>
         {tags.map((tag) => (
           <Tag key={tag}>{tag}</Tag>
