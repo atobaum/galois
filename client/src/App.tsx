@@ -14,6 +14,7 @@ function App() {
     getZettels().then((data) => {
       data.forEach((z) => dispatch(addZetel(z)));
     });
+    // eslint-disable-next-line
   }, []);
   return (
     <div className="App">
