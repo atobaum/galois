@@ -1,8 +1,7 @@
 import Router from "koa-router";
 import Joi from "joi";
-import { ZettelRepository } from "../../models/Zettel";
-
 import auth from "./auth";
+import ZettelRepository from "../../repository/zettelRepository";
 
 const api = new Router();
 api.use("/auth", auth.routes());

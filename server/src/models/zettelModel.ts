@@ -11,6 +11,13 @@ const revisionSchema = new Schema(
 revisionSchema.virtual("uuid").get(function (this: any) {
   return this._id;
 });
+export interface IRevisionModel extends Document {
+  version: number;
+  content: string;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt: Date;
+}
 
 const zettelSchema = new Schema(
   {
@@ -25,6 +32,8 @@ const zettelSchema = new Schema(
   },
   { id: false, timestamps: true }
 );
+zettelSchema.index("id");
+zettelSchema.index("tags");
 zettelSchema.methods.dto = function (this: any): Zettel {
   const recentRevision = this.revisions[this.revisions.length - 1];
   return {
@@ -40,21 +49,22 @@ zettelSchema.methods.dto = function (this: any): Zettel {
     title: this.title,
   };
 };
-
-const zettelModel = model<IZettelModel>("Zettel", zettelSchema);
-
 export interface IZettelModel extends Document {
   id: number;
   title?: string;
-  revisions: any[];
+  revisions: IRevisionModel[];
   tags: string[];
-  user: any;
+  // user: any;
   createdAt?: Date;
+  updatedAt: Date;
+  deletedAt: Date;
   prevZettel?: Zettel;
   nextZettel?: Zettel;
 
   dto(): Zettel;
 }
+
+export default model<IZettelModel>("Zettel", zettelSchema);
 
 export class Zettel {
   uuid: string;
@@ -76,52 +86,5 @@ export class Zettel {
     this.content = content;
     this.tags = tags;
     this.user = user;
-  }
-}
-
-export class ZettelRepository {
-  static async save(zettel: Zettel): Promise<boolean> {
-    return true;
-  }
-  static async create(
-    zettelDTO: Pick<Zettel, "title" | "content" | "tags">
-  ): Promise<Zettel> {
-    const zettel = new zettelModel({
-      // TODO
-      id: ~~(Math.random() * 1000),
-      title: zettelDTO.title,
-      revisions: [
-        {
-          version: 1,
-          content: zettelDTO.content,
-        },
-      ],
-      tags: zettelDTO.tags,
-      // user:any
-      // prevZettel: zettelDTO.prevZettel,
-      // nextZettel: zettelDTO.nextZettel,
-    });
-    return (await zettel.save()).dto();
-  }
-
-  static async findAll(): Promise<Zettel[]> {
-    const result = await zettelModel.find();
-    return result.map((i) => i.dto());
-  }
-
-  static async findById(id: number): Promise<Zettel | null> {
-    const result = await zettelModel.findOne({ id });
-    console.log(result);
-    if (!result) return result;
-    else return result.dto();
-  }
-
-  static async findByUUID(uuid: string): Promise<Zettel | null> {
-    const result = await zettelModel.findOne({ "revisions._id": uuid });
-    if (!result) return result;
-    result.revisions = result.revisions.filter((i) => {
-      return i["_id"] == uuid;
-    });
-    return result.dto();
   }
 }
