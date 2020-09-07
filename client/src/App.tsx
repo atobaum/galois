@@ -20,7 +20,7 @@ function App() {
     <div className="App">
       <Switch>
         <Route path="/zettel/:id" component={ZettelViewPage} />
-        <Route path="/tags/:tag" component={ZettelTagFilterPage} />
+        <Route path="/tag/:tag" component={ZettelTagFilterPage} />
         <Route path="/" component={MainPage} />
       </Switch>
     </div>
