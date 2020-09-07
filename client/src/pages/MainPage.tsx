@@ -7,6 +7,8 @@ import ZettelList from "../components/ZettelList";
 import { jsx, css } from "@emotion/core";
 import { useDispatch } from "react-redux";
 import { addZetel } from "../reducers/zettelReducer";
+import { createZettel } from "../api/zettelApi";
+import { Zettel } from "../models/Zettel";
 
 const MainPageCss = css`
   max-width: 1280px;
@@ -29,9 +31,10 @@ function MainPage() {
     <div css={MainPageCss}>
       <TopNav />
       <ZettelEditor
-        onSubmit={(args) =>
-          dispatch(addZetel({ ...args, id: ~~(Math.random() * 1000) }))
-        }
+        onSubmit={async (args: Pick<Zettel, "title" | "content" | "tags">) => {
+          const createdZettel = await createZettel(args);
+          dispatch(addZetel(createdZettel));
+        }}
       />
       <ZettelList />
     </div>
