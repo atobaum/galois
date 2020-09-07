@@ -84,10 +84,11 @@ export class ZettelRepository {
     return true;
   }
   static async create(
-    zettelDTO: Omit<Zettel, "uuid" | "id" | "version">
+    zettelDTO: Pick<Zettel, "title" | "content" | "tags">
   ): Promise<Zettel> {
     const zettel = new zettelModel({
-      id: 1,
+      // TODO
+      id: ~~(Math.random() * 1000),
       title: zettelDTO.title,
       revisions: [
         {
@@ -97,8 +98,8 @@ export class ZettelRepository {
       ],
       tags: zettelDTO.tags,
       // user:any
-      prevZettel: zettelDTO.prevZettel,
-      nextZettel: zettelDTO.nextZettel,
+      // prevZettel: zettelDTO.prevZettel,
+      // nextZettel: zettelDTO.nextZettel,
     });
     return (await zettel.save()).dto();
   }

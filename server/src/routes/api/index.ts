@@ -24,8 +24,6 @@ api.get("/zettel/:id", async (ctx) => {
 });
 api.post("/zettel", async (ctx) => {
   const validateSchema = Joi.object({
-    id: Joi.number(),
-    version: Joi.number().min(1).required(),
     title: Joi.string(),
     content: Joi.string(),
     tags: Joi.array().items(Joi.string()),
