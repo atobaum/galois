@@ -23,7 +23,7 @@ api.get("/zettel/:id", async (ctx) => {
 });
 api.post("/zettel", async (ctx) => {
   const validateSchema = Joi.object({
-    title: Joi.string(),
+    title: Joi.string().allow(""),
     content: Joi.string(),
     tags: Joi.array().items(Joi.string()),
   });
@@ -31,7 +31,7 @@ api.post("/zettel", async (ctx) => {
   const validateResult = validateSchema.validate(ctx.request.body);
   if (validateResult.error) {
     ctx.status = 400;
-    ctx.body = { error: "BAD_REQUEST" };
+    ctx.body = { error: "BAD_REQUEST", detail: validateResult.error.details };
   } else {
     const zettel = await ZettelRepository.create(ctx.request.body);
     if (!zettel) {
