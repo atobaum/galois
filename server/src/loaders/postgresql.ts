@@ -1,6 +1,6 @@
 import { ConnectionOptions, createConnection, getConnection } from "typeorm";
-import entities from "./entity";
-import config from "./config";
+import entities from "../entity";
+import config from "../config";
 
 const password = process.env.TYPEORM_PASSWORD;
 if (!password)

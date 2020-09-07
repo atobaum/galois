@@ -1,8 +1,14 @@
-// import "./database";
-import app from "./app";
-import "./lib/mongoose";
+import Koa from "koa";
+import "./loaders/mongooseLoader";
 import config from "./config";
+import loaders from "./loaders";
 
-app.listen(config.port, () => {
-  console.log("Koa server is listening to port " + config.port);
-});
+async function startServer() {
+  const app = new Koa();
+  await loaders({ koaApp: app });
+  app.listen(config.port, () => {
+    console.log("Koa server is listening to port " + config.port);
+  });
+}
+
+startServer();
