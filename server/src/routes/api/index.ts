@@ -1,46 +1,59 @@
 import Router from "koa-router";
+import Joi from "joi";
 import auth from "./auth";
+import ZettelRepository from "../../repository/zettelRepository";
 
 const api = new Router();
 api.use("/auth", auth.routes());
-api.get("/zettel", async (ctx) => {
+
+api.get("/zettel/:id", async (ctx) => {
+  let zettel;
+  if (/^\d+$/.test(ctx.params.id)) {
+    const id = parseInt(ctx.params.id);
+    zettel = await ZettelRepository.findById(id);
+  } else {
+    zettel = await ZettelRepository.findByUUID(ctx.params.id);
+  }
+  if (zettel) {
+    ctx.body = { zettel };
+  } else {
+    ctx.status = 404;
+    ctx.body = { error: "NOT_FOUND" };
+  }
+});
+api.post("/zettel", async (ctx) => {
+  const validateSchema = Joi.object({
+    title: Joi.string().allow(""),
+    content: Joi.string(),
+    tags: Joi.array().items(Joi.string()),
+  });
+
+  const validateResult = validateSchema.validate(ctx.request.body);
+  if (validateResult.error) {
+    ctx.status = 400;
+    ctx.body = { error: "BAD_REQUEST", detail: validateResult.error.details };
+  } else {
+    const zettel = await ZettelRepository.create(ctx.request.body);
+    if (!zettel) {
+      ctx.status = 500;
+      ctx.body = {
+        error: "FAIL_TO_CRETAE_ZETTEL",
+      };
+    } else {
+      ctx.body = zettel;
+    }
+  }
+});
+
+api.delete("/zettel/:id", async (ctx) => {
   ctx.body = "send";
 });
-api.delete("/zettel", async (ctx) => {
-  ctx.body = "send";
-});
-api.put("/zettel", async (ctx) => {
+api.put("/zettel/:id", async (ctx) => {
   ctx.body = "send";
 });
 api.get("/zettels", async (ctx) => {
-  ctx.body = {
-    zettels: [
-      {
-        id: 1,
-        content: "test11",
-        tags: ["inbox", "tag1"],
-        title: null,
-      },
-      {
-        id: 2,
-        content: "test2",
-        tags: ["tag2"],
-        title: null,
-      },
-      {
-        id: 3,
-        content: "test3",
-        tags: ["tag3"],
-        title: null,
-      },
-      {
-        id: 4,
-        content: "test4",
-        tags: ["tag4", "inbox"],
-        title: "title",
-      },
-    ],
-  };
+  const zettels = await ZettelRepository.findAll();
+  ctx.body = { zettels };
 });
 
 export default api;

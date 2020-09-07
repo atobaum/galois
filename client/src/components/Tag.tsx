@@ -5,6 +5,11 @@ const TagCss = css`
   color: gray;
 `;
 
+const Pointer = css`
+  ${TagCss}
+  cursor: pointer;
+`;
+
 type TagProps = {
   onClick?: () => void;
   children: string;
@@ -12,7 +17,10 @@ type TagProps = {
 
 function Tag({ onClick, children }: TagProps) {
   return (
-    <span css={TagCss} onClick={onClick ? onClick : () => {}}>
+    <span
+      css={onClick ? Pointer : TagCss}
+      onClick={onClick ? onClick : undefined}
+    >
       #{children}
     </span>
   );

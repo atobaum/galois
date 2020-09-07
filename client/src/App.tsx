@@ -14,12 +14,13 @@ function App() {
     getZettels().then((data) => {
       data.forEach((z) => dispatch(addZetel(z)));
     });
+    // eslint-disable-next-line
   }, []);
   return (
     <div className="App">
       <Switch>
         <Route path="/zettel/:id" component={ZettelViewPage} />
-        <Route path="/tags/:tag" component={ZettelTagFilterPage} />
+        <Route path="/tag/:tag" component={ZettelTagFilterPage} />
         <Route path="/" component={MainPage} />
       </Switch>
     </div>

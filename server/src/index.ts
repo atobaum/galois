@@ -1,8 +1,14 @@
-import "./env";
-// import "./database";
-import app from "./app";
+import Koa from "koa";
+import "./loaders/mongooseLoader";
+import config from "./config";
+import loaders from "./loaders";
 
-const port = process.env.PORT || 4000;
-app.listen(port, () => {
-  console.log("Koa server is listening to port " + port);
-});
+async function startServer() {
+  const app = new Koa();
+  await loaders({ koaApp: app });
+  app.listen(config.port, () => {
+    console.log("Koa server is listening to port " + config.port);
+  });
+}
+
+startServer();

@@ -1,9 +1,9 @@
 import { Zettel } from "../models/Zettel";
 
-const ADD_ZETTEL = "zettel/ADD_ZETTEL" as const;
+const CREATE_ZETTEL = "zettel/CREATE_ZETTEL" as const;
 
 export const addZetel = (zettel: Zettel) => ({
-  type: ADD_ZETTEL,
+  type: CREATE_ZETTEL,
   payload: zettel,
 });
 
@@ -22,7 +22,7 @@ export default function inboxReducer(
   action: InboxAction
 ): InboxState {
   switch (action.type) {
-    case ADD_ZETTEL:
+    case CREATE_ZETTEL:
       return { zettels: [...state.zettels, action.payload] };
     default:
       return state;

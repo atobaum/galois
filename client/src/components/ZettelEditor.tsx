@@ -21,7 +21,7 @@ const ZettelEditorCss = css`
 `;
 
 type NoteEditorProps = {
-  onSubmit: (zettle: Omit<Zettel, "id">) => void;
+  onSubmit: (zettle: Pick<Zettel, "title" | "content" | "tags">) => void;
 };
 
 function ZettelEditor({ onSubmit }: NoteEditorProps) {

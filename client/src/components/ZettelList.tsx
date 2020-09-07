@@ -17,9 +17,7 @@ type ZettelListProps = {
   };
 };
 function ZettelList(props: ZettelListProps) {
-  const [filter, setFilter] = useState<{ tag?: string }>(
-    props.filter ? props.filter : {}
-  );
+  const filter = props.filter || {};
   const zettels = useSelector((state: RootState) => state.zettel.zettels);
   return (
     <div css={ZettelListCss}>

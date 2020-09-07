@@ -26,13 +26,17 @@
     "typescript": "3.9.5"
   },
   "dependencies": {
+    "@types/joi": "^14.3.4",
+    "@types/mongoose": "^5.7.36",
     "bcrypt": "^5.0.0",
     "dotenv": "^8.2.0",
+    "joi": "^17.2.1",
     "jsonwebtoken": "^8.5.1",
     "koa": "^2.12.1",
     "koa-bodyparser": "^4.3.0",
     "koa-logger": "^3.2.1",
     "koa-router": "^9.0.1",
+    "mongoose": "^5.10.3",
     "pg": "^8.2.1",
     "typeorm": "0.2.25"
   },

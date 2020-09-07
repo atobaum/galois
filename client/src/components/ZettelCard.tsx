@@ -4,6 +4,7 @@ import Tag from "./Tag";
 import { Zettel } from "../models/Zettel";
 import { useMemo } from "react";
 import parseMarkdown from "../lib/markdownParser";
+import { Link, useHistory } from "react-router-dom";
 
 const ZettelCardCss = css`
   width: 300px;
@@ -22,6 +23,7 @@ function ZettelCard({ id, content, title, tags }: ZettelCardProps) {
   const parsedContent = useMemo(() => {
     return parseMarkdown(content);
   }, [content]);
+  const history = useHistory();
 
   return (
     <div css={ZettelCardCss}>
@@ -32,12 +34,14 @@ function ZettelCard({ id, content, title, tags }: ZettelCardProps) {
       ></div>
       <div>
         {tags.map((tag) => (
-          <Tag key={tag}>{tag}</Tag>
+          <Tag key={tag} onClick={() => history.push(`/tag/${tag}`)}>
+            {tag}
+          </Tag>
         ))}
       </div>
       <button>Archive</button>
       <button>Edit</button>
-      <button>More</button>
+      <Link to={`/zettel/${id}`}>More</Link>
     </div>
   );
 }
