@@ -1,6 +1,12 @@
 import axios from "axios";
 import { Zettel } from "../models/Zettel";
 
+export const getZettel = async (id: number | string): Promise<Zettel> => {
+  const data = await axios.get("/api/zettel/" + id);
+  if (data.status === 200) return data.data.zettel;
+  else throw new Error("/api/zettels error");
+};
+
 export const getZettels = async (): Promise<Zettel[]> => {
   const data = await axios.get("/api/zettels");
   if (data.status === 200) return data.data.zettels;
