@@ -18,7 +18,7 @@ function ZettelViewPage({ match }: any): ReturnType<React.FunctionComponent> {
     getZettel(match.params.id).then((zettel) => {
       setZettel(zettel);
     });
-  }, []);
+  }, [match.params.id]);
   return (
     <div css={ZettelViewPageCss}>
       {zettel ? <ZettelCard {...zettel} /> : "Loading"}
