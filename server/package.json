@@ -18,6 +18,8 @@
     "@types/koa-logger": "^3.1.1",
     "@types/koa-router": "^7.4.1",
     "@types/node": "^8.0.29",
+    "@types/joi": "^14.3.4",
+    "@types/mongoose": "^5.7.36",
     "@types/supertest": "^2.0.10",
     "jest": "^26.1.0",
     "nodemon": "^2.0.4",
@@ -27,8 +29,6 @@
     "typescript": "3.9.5"
   },
   "dependencies": {
-    "@types/joi": "^14.3.4",
-    "@types/mongoose": "^5.7.36",
     "bcrypt": "^5.0.0",
     "dotenv": "^8.2.0",
     "joi": "^17.2.1",
