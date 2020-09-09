@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "NODE_ENV=development nodemon --exec ts-node ./src/index.ts",
     "start": "ts-node src/index.ts",
-    "test": "jest --watch"
+    "test": "jest --watch",
+    "test:ci": "jest"
   },
   "devDependencies": {
     "@types/bcrypt": "^3.0.0",
