@@ -24,3 +24,8 @@ export const createZettel = async (
     throw new Error("createZettel error");
   }
 };
+
+export const deleteZettel = async (id: number | string): Promise<boolean> => {
+  const data = await axios.delete("/api/zettel/" + id);
+  return true;
+};

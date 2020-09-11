@@ -25,7 +25,7 @@ const zettelSchema = new Schema(
     title: String,
     revisions: [revisionSchema],
     tags: [String],
-    // user:any
+    user: { id: Number },
     prevZettel: { type: Types.ObjectId, ref: "Zettel" },
     nextZettel: { type: Types.ObjectId, ref: "Zettel" },
     deletedAd: Date,
@@ -54,7 +54,7 @@ export interface IZettelModel extends Document {
   title?: string;
   revisions: IRevisionModel[];
   tags: string[];
-  // user: any;
+  user: { id: number };
   createdAt?: Date;
   updatedAt: Date;
   deletedAt: Date;

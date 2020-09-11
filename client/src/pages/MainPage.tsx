@@ -21,6 +21,7 @@ function TopNav() {
     <div>
       <Link to="/">Home</Link>
       <Link to="/tags/inbox">Inbox</Link>
+      <a href="/api/auth/google/redirect">Login</a>
     </div>
   );
 }

@@ -1,7 +1,8 @@
 import jwt, { SignOptions } from "jsonwebtoken";
 import { Context } from "koa";
+import config from "../config";
 
-const { JWT_SECRET } = process.env;
+const JWT_SECRET = config.jwt.secret;
 
 export function generateToken<T>(
   payload: T,

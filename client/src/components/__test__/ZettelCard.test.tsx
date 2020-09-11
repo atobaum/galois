@@ -22,7 +22,7 @@ describe("<ZettelCard />", () => {
   it("renders props properly", () => {
     const { getByText } = render(
       <MemoryRouter>
-        <ZettelCard {...zettel} />
+        <ZettelCard {...zettel} onDelete={() => {}} />
       </MemoryRouter>
     );
     // getByText("ad8f2j");
@@ -39,7 +39,7 @@ describe("<ZettelCard />", () => {
     const history = createMemoryHistory();
     const { getByText } = render(
       <Router history={history}>
-        <ZettelCard {...zettel} />
+        <ZettelCard {...zettel} onDelete={() => {}} />
       </Router>
     );
 
@@ -50,5 +50,19 @@ describe("<ZettelCard />", () => {
     const tag = getByText("#태그1");
     fireEvent.click(tag);
     expect(history.location.pathname).toBe(`/tag/태그1`);
+  });
+
+  it("can be deleted", () => {
+    window.confirm = () => true;
+    const onDelete = jest.fn();
+    const { getByText } = render(
+      <MemoryRouter>
+        <ZettelCard {...zettel} onDelete={onDelete} />
+      </MemoryRouter>
+    );
+
+    const deleteButton = getByText("Delete");
+    fireEvent.click(deleteButton);
+    expect(onDelete).toBeCalledWith(zettel.id);
   });
 });

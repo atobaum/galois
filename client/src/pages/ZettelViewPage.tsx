@@ -21,7 +21,7 @@ function ZettelViewPage({ match }: any): ReturnType<React.FunctionComponent> {
   }, [match.params.id]);
   return (
     <div css={ZettelViewPageCss}>
-      {zettel ? <ZettelCard {...zettel} /> : "Loading"}
+      {zettel ? <ZettelCard {...zettel} onDelete={() => {}} /> : "Loading"}
     </div>
   );
 }

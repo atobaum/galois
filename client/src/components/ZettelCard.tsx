@@ -5,6 +5,9 @@ import { Zettel } from "../models/Zettel";
 import { useMemo } from "react";
 import parseMarkdown from "../lib/markdownParser";
 import { Link, useHistory } from "react-router-dom";
+import { deleteZettel } from "../api/zettelApi";
+import { useDispatch } from "react-redux";
+import { deleteZettelAction } from "../reducers/zettelReducer";
 
 const ZettelCardCss = css`
   width: 300px;
@@ -18,8 +21,10 @@ const ZettelCardCss = css`
   }
 `;
 
-type ZettelCardProps = Zettel & {};
-function ZettelCard({ id, content, title, tags }: ZettelCardProps) {
+type ZettelCardProps = Zettel & {
+  onDelete: (id: number) => void;
+};
+function ZettelCard({ id, content, title, tags, onDelete }: ZettelCardProps) {
   const parsedContent = useMemo(() => {
     return parseMarkdown(content);
   }, [content]);
@@ -41,6 +46,15 @@ function ZettelCard({ id, content, title, tags }: ZettelCardProps) {
       </div>
       <button>Archive</button>
       <button>Edit</button>
+      <button
+        onClick={async () => {
+          if (window.confirm("삭제 ㄱ?")) {
+            onDelete(id);
+          }
+        }}
+      >
+        Delete
+      </button>
       <Link to={`/zettel/${id}`}>More</Link>
     </div>
   );

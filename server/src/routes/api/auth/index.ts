@@ -2,8 +2,11 @@ import Router from "koa-router";
 import { getRepository } from "typeorm";
 import User from "../../../entity/User";
 import { setTokens, clearTokens } from "../../../lib/token";
+import googleRouter from "./google";
 
 const auth = new Router();
+
+auth.use("/google", googleRouter.routes());
 
 auth.post("/login", async (ctx) => {
   const { email, password } = ctx.request.body;
