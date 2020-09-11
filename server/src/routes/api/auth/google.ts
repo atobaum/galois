@@ -2,6 +2,7 @@ import Router from "koa-router";
 import config from "../../../config";
 import axios from "axios";
 import jwt from "jsonwebtoken";
+import userRepository from "../../../repository/userRepository";
 
 const authConfig = config.oauth.google;
 
@@ -51,8 +52,24 @@ router.get("/callback", async (ctx) => {
     const openId = jwt.decode(id_token) as any;
     const { email, sub, name, picture } = openId;
 
+    let user = await userRepository.findBySocial("google", sub);
+    if (!user) {
+      user = await userRepository.create({
+        username: name,
+        social: [{ provider: "google", id: sub + "" }],
+        picture,
+        email,
+      });
+    }
+
     const access_token = jwt.sign(
-      { id: 1, name, picture, email, sub: "access_token" },
+      {
+        id: user.id,
+        username: user.username,
+        picture: user.picture,
+        email: user.email,
+        sub: "access_token",
+      },
       config.jwt.secret!
     );
 
