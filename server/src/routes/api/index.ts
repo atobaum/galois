@@ -48,14 +48,19 @@ api.post("/zettel", checkLoggedIn, async (ctx) => {
     ctx.body = { error: "BAD_REQUEST", detail: validateResult.error.details };
     return;
   } else {
-    const zettel = await ZettelRepository.create(ctx.request.body);
+    const zettel = await ZettelRepository.create({
+      ...ctx.request.body,
+      user: { id: ctx.state.user.id },
+    });
     if (!zettel) {
       ctx.status = 500;
       ctx.body = {
         error: "FAIL_TO_CRETAE_ZETTEL",
       };
+      return;
     } else {
       ctx.body = zettel;
+      return;
     }
   }
 });

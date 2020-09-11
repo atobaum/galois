@@ -10,7 +10,9 @@ export default class ZettelRepository {
   }
 
   static async create(
-    zettelDTO: Pick<Zettel, "title" | "content" | "tags">
+    zettelDTO: Pick<Zettel, "title" | "content" | "tags"> & {
+      user: { id: number };
+    }
   ): Promise<Zettel> {
     const lastZettels = await zettelModel.find({}, ["id"], {
       limit: 1,
@@ -28,8 +30,8 @@ export default class ZettelRepository {
           content: zettelDTO.content,
         },
       ],
+      user: zettelDTO.user,
       tags: zettelDTO.tags,
-      // user:any
       // prevZettel: zettelDTO.prevZettel,
       // nextZettel: zettelDTO.nextZettel,
     });
