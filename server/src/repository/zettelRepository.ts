@@ -38,6 +38,19 @@ export default class ZettelRepository {
     return (await zettel.save()).dto();
   }
 
+  static async delete({
+    id,
+    userId,
+  }: {
+    id: number;
+    userId: number;
+  }): Promise<boolean> {
+    const result = await zettelModel.findOneAndDelete({
+      id,
+      user: { id: userId },
+    });
+    return !!result;
+  }
 
   static async findAll({ userId }: FindOption): Promise<Zettel[]> {
     if (!userId) return [];

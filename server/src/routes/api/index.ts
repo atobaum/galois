@@ -65,6 +65,26 @@ api.post("/zettel", checkLoggedIn, async (ctx) => {
   }
 });
 
+api.delete("/zettel/:id", checkLoggedIn, async (ctx) => {
+  // TODO uuid support
+  const id = parseInt(ctx.params.id);
+  if (isNaN(id)) {
+    ctx.status = 400;
+    ctx.body = {
+      error: "Invalid id",
+    };
+    return;
+  }
+
+  const deleted = await ZettelRepository.delete({
+    id,
+    userId: ctx.state.user.id,
+  });
+  //TODO error handling
+  if (deleted) ctx.status = 204;
+  else ctx.status = 404;
+});
+
 api.put("/zettel/:id", checkLoggedIn, async (ctx) => {
   ctx.body = "send";
 });
@@ -72,7 +92,7 @@ api.put("/zettel/:id", checkLoggedIn, async (ctx) => {
 api.get("/zettels", checkLoggedIn, async (ctx) => {
   const zettels = await ZettelRepository.findAll({
     userId: ctx.state.user.id,
-});
+  });
   ctx.body = { zettels };
 });
 
