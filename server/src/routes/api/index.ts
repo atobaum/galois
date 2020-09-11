@@ -10,9 +10,12 @@ api.get("/zettel/:id", async (ctx) => {
   let zettel;
   if (/^\d+$/.test(ctx.params.id)) {
     const id = parseInt(ctx.params.id);
-    zettel = await ZettelRepository.findById(id);
+    zettel = await ZettelRepository.findById({ id, userId: ctx.state.user.id });
   } else {
-    zettel = await ZettelRepository.findByUUID(ctx.params.id);
+    zettel = await ZettelRepository.findByUUID({
+      uuid: ctx.params.id,
+      userId: ctx.state.user.id,
+    });
   }
   if (zettel) {
     ctx.body = { zettel };
@@ -48,11 +51,9 @@ api.post("/zettel", async (ctx) => {
 api.delete("/zettel/:id", async (ctx) => {
   ctx.body = "send";
 });
-api.put("/zettel/:id", async (ctx) => {
-  ctx.body = "send";
+  const zettels = await ZettelRepository.findAll({
+    userId: ctx.state.user.id,
 });
-api.get("/zettels", async (ctx) => {
-  const zettels = await ZettelRepository.findAll();
   ctx.body = { zettels };
 });
 

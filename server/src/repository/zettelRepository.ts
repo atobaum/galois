@@ -1,5 +1,9 @@
 import zettelModel, { Zettel } from "../models/zettelModel";
 
+type FindOption = {
+  userId?: number;
+};
+
 export default class ZettelRepository {
   static async save(zettel: Zettel): Promise<boolean> {
     return true;
@@ -32,20 +36,33 @@ export default class ZettelRepository {
     return (await zettel.save()).dto();
   }
 
-  static async findAll(): Promise<Zettel[]> {
-    const result = await zettelModel.find();
+
+  static async findAll({ userId }: FindOption): Promise<Zettel[]> {
+    if (!userId) return [];
+    const result = await zettelModel.find({ user: { id: userId } });
     return result.map((i) => i.dto());
   }
 
-  static async findById(id: number): Promise<Zettel | null> {
-    const result = await zettelModel.findOne({ id });
+  static async findById(args: {
+    id: number;
+    userId: number;
+  }): Promise<Zettel | null> {
+    const { id, userId } = args;
+    const result = await zettelModel.findOne({ id, user: { id: userId } });
     console.log(result);
     if (!result) return result;
     else return result.dto();
   }
 
-  static async findByUUID(uuid: string): Promise<Zettel | null> {
-    const result = await zettelModel.findOne({ "revisions._id": uuid });
+  static async findByUUID(args: {
+    uuid: string;
+    userId: number;
+  }): Promise<Zettel | null> {
+    const { uuid, userId } = args;
+    const result = await zettelModel.findOne({
+      "revisions._id": uuid,
+      user: { id: userId },
+    });
     if (!result) return result;
     result.revisions = result.revisions.filter((i) => {
       return i["_id"] == uuid;
