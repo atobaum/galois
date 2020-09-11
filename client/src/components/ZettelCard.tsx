@@ -21,13 +21,14 @@ const ZettelCardCss = css`
   }
 `;
 
-type ZettelCardProps = Zettel & {};
-function ZettelCard({ id, content, title, tags }: ZettelCardProps) {
+type ZettelCardProps = Zettel & {
+  onDelete: (id: number) => void;
+};
+function ZettelCard({ id, content, title, tags, onDelete }: ZettelCardProps) {
   const parsedContent = useMemo(() => {
     return parseMarkdown(content);
   }, [content]);
   const history = useHistory();
-  const dispatch = useDispatch();
 
   return (
     <div css={ZettelCardCss}>
@@ -48,8 +49,7 @@ function ZettelCard({ id, content, title, tags }: ZettelCardProps) {
       <button
         onClick={async () => {
           if (window.confirm("삭제 ㄱ?")) {
-            const deleted = await deleteZettel(id);
-            if (deleted) dispatch(deleteZettelAction(id));
+            onDelete(id);
           }
         }}
       >
