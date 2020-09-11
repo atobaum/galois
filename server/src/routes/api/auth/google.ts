@@ -14,7 +14,7 @@ const buildQuery = (obj: any) => {
 };
 
 const router = new Router();
-router.get("/login", async (ctx) => {
+router.get("/redirect", async (ctx) => {
   const query = {
     client_id: authConfig.clientId,
     redirect_uri: config.host + "/api/auth/google/callback",
