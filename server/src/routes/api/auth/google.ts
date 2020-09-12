@@ -1,9 +1,9 @@
 import Router from "koa-router";
-import config from "../../../config";
 import axios from "axios";
 import jwt from "jsonwebtoken";
+import config from "../../../config";
 import userRepository from "../../../repository/userRepository";
-import { generateToken } from "../../../lib/token";
+import { generateToken, setTokens } from "../../../lib/token";
 
 const authConfig = config.oauth.google;
 
@@ -63,17 +63,14 @@ router.get("/callback", async (ctx) => {
       });
     }
 
-    const access_token = await generateToken<{ id: number }>(
+    const accessToken = await generateToken<{ id: number }>(
       {
         id: user.id,
       },
       { subject: "access_token", expiresIn: "1h" }
     );
 
-    ctx.cookies.set("access_token", access_token, {
-      httpOnly: true,
-      maxAge: 60 * 60 * 1000, //1h
-    });
+    setTokens(ctx, { accessToken });
     ctx.redirect("/");
   }
 });
