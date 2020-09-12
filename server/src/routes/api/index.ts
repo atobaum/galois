@@ -2,17 +2,9 @@ import Router from "koa-router";
 import Joi from "joi";
 import auth from "./auth";
 import ZettelRepository from "../../repository/zettelRepository";
+import checkLoggedIn from "../../middleware/checkLoggedIn";
 
 // TODO 다른 파일로 빼기
-const checkLoggedIn = async (ctx: any, next: any) => {
-  if (!ctx.state.user) {
-    ctx.status = 401;
-    ctx.body = {
-      error: "NOT_AUTHENTICATED",
-      message: "Login first.",
-    };
-  } else await next();
-};
 const api = new Router();
 api.use("/auth", auth.routes());
 
