@@ -5,9 +5,6 @@ import { Zettel } from "../models/Zettel";
 import { useMemo } from "react";
 import parseMarkdown from "../lib/markdownParser";
 import { Link, useHistory } from "react-router-dom";
-import { deleteZettel } from "../api/zettelApi";
-import { useDispatch } from "react-redux";
-import { deleteZettelAction } from "../reducers/zettelReducer";
 
 const ZettelCardCss = css`
   width: 300px;
@@ -16,8 +13,19 @@ const ZettelCardCss = css`
   h3 {
     font-size: 1.25rem;
   }
-  div {
-    white-space: pre-line;
+
+  .zettel-content {
+    ol,
+    ul {
+      margin: 0 1rem;
+    }
+    ol {
+      list-style: decimal;
+    }
+
+    ul {
+      list-style: disc;
+    }
   }
 `;
 
@@ -35,6 +43,7 @@ function ZettelCard({ id, content, title, tags, onDelete }: ZettelCardProps) {
       <div>{id}</div>
       <h3>{title}</h3>
       <div
+        className="zettel-content"
         dangerouslySetInnerHTML={{ __html: parsedContent.contents as string }}
       ></div>
       <div>

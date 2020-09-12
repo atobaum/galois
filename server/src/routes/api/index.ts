@@ -1,18 +1,11 @@
 import Router from "koa-router";
 import Joi from "joi";
 import auth from "./auth";
-import ZettelRepository from "../../repository/zettelRepository";
+import ZettelRepository from "@src/repository/zettelRepository";
+import checkLoggedIn from "@src/middleware/checkLoggedIn";
+import userRepository from "@src/repository/userRepository";
 
 // TODO 다른 파일로 빼기
-const checkLoggedIn = async (ctx: any, next: any) => {
-  if (!ctx.state.user) {
-    ctx.status = 401;
-    ctx.body = {
-      error: "NOT_AUTHENTICATED",
-      message: "Login first.",
-    };
-  } else await next();
-};
 const api = new Router();
 api.use("/auth", auth.routes());
 
@@ -94,6 +87,25 @@ api.get("/zettels", checkLoggedIn, async (ctx) => {
     userId: ctx.state.user.id,
   });
   ctx.body = { zettels };
+});
+
+api.get("/user/mine", async (ctx) => {
+  if (!ctx.state.user) {
+    ctx.status = 204;
+    return;
+  }
+
+  const user = await userRepository.findById(ctx.state.user.id);
+  if (user) {
+    ctx.body = {
+      id: user.id,
+      username: user.username,
+      picture: user.picture,
+    };
+  } else {
+    ctx.status = 500;
+    // TODO Loggin Inconsistent
+  }
 });
 
 export default api;

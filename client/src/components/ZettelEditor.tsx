@@ -12,8 +12,13 @@ const ZettelEditorCss = css`
   border: 1px solid gray;
   border-radius: 15px;
   padding: 1rem;
-  textarea {
-    resize: vertical;
+
+  form {
+    display: flex;
+    flex-direction: column;
+    textarea {
+      resize: vertical;
+    }
   }
   * {
     font-size: 1.5rem;
@@ -25,6 +30,7 @@ type NoteEditorProps = {
 };
 
 function ZettelEditor({ onSubmit }: NoteEditorProps) {
+  const [show, setShow] = useState(false);
   const [content, setContent] = useState("");
   const [title, setTitle] = useState("");
   const [tags, setTags] = useState<string[]>([]);
@@ -44,63 +50,69 @@ function ZettelEditor({ onSubmit }: NoteEditorProps) {
   };
 
   return (
-    <form
-      onSubmit={(evt) => {
-        evt.preventDefault();
-        if (content.trim().length === 0) return;
-        onSubmit({
-          content: content.trim(),
-          title: title.trim(),
-          tags,
-        });
-        setContent("");
-        setTitle("");
-        contentRef.current!.focus();
-      }}
-      css={ZettelEditorCss}
-    >
-      <textarea
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-        placeholder="Type content..."
-        ref={contentRef as any}
-        rows={4}
-      />
-      <input
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        placeholder="Type title..."
-      />
-      <div
-        css={css`
-          display: flex;
-          span {
-            padding: 0 15px;
-          }
-          input {
-            flex-grow: 1;
-          }
-        `}
-      >
-        {tags.map((tag) => (
-          <Tag
-            key={tag}
-            onClick={() => {
-              setTags(tags.filter((t) => t !== tag));
-            }}
+    <div css={ZettelEditorCss}>
+      {show ? (
+        <form
+          onSubmit={(evt) => {
+            evt.preventDefault();
+            if (content.trim().length === 0) return;
+            onSubmit({
+              content: content.trim(),
+              title: title.trim(),
+              tags,
+            });
+            setContent("");
+            setTitle("");
+            contentRef.current!.focus();
+          }}
+        >
+          <textarea
+            autoFocus
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            placeholder="Type content..."
+            ref={contentRef as any}
+            rows={4}
+          />
+          <input
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Type title..."
+          />
+          <div
+            css={css`
+              display: flex;
+              span {
+                padding: 0 15px;
+              }
+              input {
+                flex-grow: 1;
+              }
+            `}
           >
-            {tag}
-          </Tag>
-        ))}
-        <input
-          value={tagInput}
-          onChange={(e) => setTagInput(e.target.value)}
-          onKeyPress={handleTagOnKeypress}
-          placeholder="Type tag..."
-        />
-      </div>
-      <button>Submit</button>
-    </form>
+            {tags.map((tag) => (
+              <Tag
+                key={tag}
+                onClick={() => {
+                  setTags(tags.filter((t) => t !== tag));
+                }}
+              >
+                {tag}
+              </Tag>
+            ))}
+            <input
+              value={tagInput}
+              onChange={(e) => setTagInput(e.target.value)}
+              onKeyPress={handleTagOnKeypress}
+              placeholder="Type tag..."
+            />
+          </div>
+          <button>Submit</button>
+        </form>
+      ) : (
+        <input placeholder="Type content..." onClick={() => setShow(true)} />
+      )}
+    </div>
   );
 }
 
