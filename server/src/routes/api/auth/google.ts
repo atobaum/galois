@@ -3,6 +3,7 @@ import config from "../../../config";
 import axios from "axios";
 import jwt from "jsonwebtoken";
 import userRepository from "../../../repository/userRepository";
+import { generateToken } from "../../../lib/token";
 
 const authConfig = config.oauth.google;
 
@@ -62,15 +63,11 @@ router.get("/callback", async (ctx) => {
       });
     }
 
-    const access_token = jwt.sign(
+    const access_token = await generateToken<{ id: number }>(
       {
         id: user.id,
-        username: user.username,
-        picture: user.picture,
-        email: user.email,
-        sub: "access_token",
       },
-      config.jwt.secret!
+      { subject: "access_token", expiresIn: "1h" }
     );
 
     ctx.cookies.set("access_token", access_token, {
