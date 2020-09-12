@@ -33,7 +33,7 @@ function TopNav() {
       )}
       <div>
         <Link to="/">Home</Link>
-        <Link to="/tags/inbox">Inbox</Link>
+        <Link to="/tag/inbox">Inbox</Link>
         {user ? (
           <a href="/api/auth/logout">Logout</a>
         ) : (
