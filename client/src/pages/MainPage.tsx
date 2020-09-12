@@ -5,7 +5,7 @@ import ZettelList from "../components/ZettelList";
 
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addZetel } from "../reducers/zettelReducer";
 import { createZettel } from "../api/zettelApi";
 import { Zettel } from "../models/Zettel";
@@ -17,12 +17,29 @@ const MainPageCss = css`
 `;
 
 function TopNav() {
+  const user = useSelector((state: any) => state.core.user);
   return (
     <div>
-      <Link to="/">Home</Link>
-      <Link to="/tags/inbox">Inbox</Link>
-      <a href="/api/auth/google/redirect">Login</a>
-      <a href="/api/auth/logout">Login</a>
+      {user && (
+        <span>
+          {user.picture && (
+            <img
+              style={{ width: "2rem", height: "2rem", borderRadius: "50%" }}
+              src={user.picture}
+            />
+          )}
+          Hi {user.username}
+        </span>
+      )}
+      <div>
+        <Link to="/">Home</Link>
+        <Link to="/tags/inbox">Inbox</Link>
+        {user ? (
+          <a href="/api/auth/logout">Logout</a>
+        ) : (
+          <a href="/api/auth/google/redirect">Login</a>
+        )}
+      </div>
     </div>
   );
 }
