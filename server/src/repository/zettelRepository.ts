@@ -64,7 +64,6 @@ export default class ZettelRepository {
   }): Promise<Zettel | null> {
     const { id, userId } = args;
     const result = await zettelModel.findOne({ id, user: { id: userId } });
-    console.log(result);
     if (!result) return result;
     else return result.dto();
   }
