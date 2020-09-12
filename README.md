@@ -1,3 +1,5 @@
+Atomic interconnected note taking service inspired by [Wiki](https://en.wikipedia.org/wiki/Wiki) and [Zettelkasten](https://en.wikipedia.org/wiki/Zettelkasten)
+
 # 개요
 
 수많은 정보의 홍수속에서 우리는 매일 많은 정보들을 처리한다. 인터넷, 책, 유튜브... '잘 기억해 둬야지'라는 다짐과 함께 기억하지만 나중에 필요할 때가 되면 내용도 생각이 안나고 어떻게 찾을지도 생각이 안나고 심지어 그런 정보가 있었는지도 생각이 안난다.
@@ -15,12 +17,15 @@
 - node
 - typescript
 - koa
+- JWT
+- OAuth
 - typeorm
 - postgresql
 
 ## Frontend
 
 - react w/ typescript
+- redux
 
 # 참고
 
