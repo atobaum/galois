@@ -89,7 +89,12 @@ api.get("/zettels", checkLoggedIn, async (ctx) => {
   ctx.body = { zettels };
 });
 
-api.get("/user/mine", checkLoggedIn, async (ctx) => {
+api.get("/user/mine", async (ctx) => {
+  if (!ctx.state.user) {
+    ctx.status = 204;
+    return;
+  }
+
   const user = await userRepository.findById(ctx.state.user.id);
   if (user) {
     ctx.body = {
