@@ -1,6 +1,11 @@
 import userModel, { User } from "../models/userModel";
 
 export default {
+  async findById(id: number): Promise<User | null> {
+    const user = await userModel.findOne({ id });
+    return user;
+  },
+
   async findBySocial(provider: string, id: number): Promise<User | null> {
     const user = await userModel.findOne({
       social: {
