@@ -6,7 +6,7 @@ const auth = new Router();
 
 auth.use("/google", googleRouter.routes());
 
-auth.post("/logout", async (ctx) => {
+auth.get("/logout", async (ctx) => {
   clearTokens(ctx);
   ctx.redirect("/");
 });
