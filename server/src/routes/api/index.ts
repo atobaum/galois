@@ -3,6 +3,7 @@ import Joi from "joi";
 import auth from "./auth";
 import ZettelRepository from "../../repository/zettelRepository";
 import checkLoggedIn from "../../middleware/checkLoggedIn";
+import userRepository from "../../repository/userRepository";
 
 // TODO 다른 파일로 빼기
 const api = new Router();
@@ -86,6 +87,20 @@ api.get("/zettels", checkLoggedIn, async (ctx) => {
     userId: ctx.state.user.id,
   });
   ctx.body = { zettels };
+});
+
+api.get("/user/mine", checkLoggedIn, async (ctx) => {
+  const user = await userRepository.findById(ctx.state.user.id);
+  if (user) {
+    ctx.body = {
+      id: user.id,
+      username: user.username,
+      picture: user.picture,
+    };
+  } else {
+    ctx.status = 500;
+    // TODO Loggin Inconsistent
+  }
 });
 
 export default api;
