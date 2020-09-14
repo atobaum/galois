@@ -9,14 +9,26 @@ import { getZettels } from "./api/zettelApi";
 import ZettelTagFilterPage from "./pages/ZettelTagFilterPage";
 import { getCurrentUser } from "./api/userApi";
 import { setUser } from "./reducers/coreReducer";
+import LoginCallbackPage from "./pages/LoginCallbackPage";
+import useLocalStorage from "./hooks/useLocalStorage";
 
 function App() {
   const dispatch = useDispatch();
+  const [localUser, setLocalUser] = useLocalStorage("user");
+
   useEffect(() => {
-    getZettels().then((data) => {
-      data.forEach((z) => dispatch(addZetel(z)));
-    });
-    getCurrentUser().then((data) => dispatch(setUser(data)));
+    if (window.localStorage["access_token"]) {
+      if (localUser) dispatch(setUser(JSON.parse(localUser)));
+      else
+        getCurrentUser().then((data) => {
+          if (!data) return;
+          setLocalUser(JSON.stringify(data));
+          dispatch(setUser(data));
+        });
+      getZettels().then((data) => {
+        data.forEach((z) => dispatch(addZetel(z)));
+      });
+    }
     // eslint-disable-next-line
   }, []);
   return (
@@ -24,6 +36,7 @@ function App() {
       <Switch>
         <Route path="/zettel/:id" component={ZettelViewPage} />
         <Route path="/tag/:tag" component={ZettelTagFilterPage} />
+        <Route path="/login_callback" component={LoginCallbackPage} />
         <Route path="/" component={MainPage} />
       </Switch>
     </div>

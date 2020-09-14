@@ -73,8 +73,9 @@ router.get("/callback", async (ctx) => {
       { subject: "access_token", expiresIn: "1h" }
     );
 
-    setTokens(ctx, { accessToken });
-    ctx.redirect("/");
+    ctx.redirect(
+      `/login_callback#access_token=${encodeURIComponent(accessToken)}`
+    );
   }
 });
 
