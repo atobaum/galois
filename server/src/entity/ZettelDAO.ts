@@ -10,8 +10,10 @@ import {
   ManyToOne,
   DeleteDateColumn,
   JoinColumn,
+  OneToMany,
 } from "typeorm";
 import Tag from "./TagDAO";
+import RevisionDAO from "./RevisionDAO";
 
 @Entity({ name: "zettel" })
 export default class ZettelDAO {
@@ -21,19 +23,19 @@ export default class ZettelDAO {
   @Column({ length: 255, nullable: true })
   title!: string;
 
-  @Column({ length: 255, nullable: true })
-  slug?: string;
-
-  @Column()
-  fk_author_id!: number;
-
-  @ManyToOne((type) => User)
-  @JoinColumn({ name: "fk_author_id" })
-  user!: User;
+  @OneToMany((type) => RevisionDAO, (revision) => revision.zettel)
+  revisions!: RevisionDAO[];
 
   @ManyToMany((type) => Tag)
   @JoinTable({ name: "note_tags_tag" })
   tags!: Tag[];
+
+  @Column()
+  fk_user_id!: number;
+
+  @ManyToOne((type) => User)
+  @JoinColumn({ name: "fk_user_id" })
+  user!: User;
 
   @Column({ name: "is_public", default: false })
   isPublic!: boolean;
