@@ -9,19 +9,15 @@ const api = new Router();
 api.use("/auth", auth.routes());
 
 api.get("/zettel/:id", checkLoggedIn, async (ctx) => {
-  let zettel;
+  const args: any = { userId: ctx.params.id };
   if (/^\d+$/.test(ctx.params.id)) {
     const id = parseInt(ctx.params.id);
-    zettel = await repository.zettelRepository.findByID({
-      id: id,
-      userId: ctx.state.user.id,
-    });
+    args.id = id;
   } else {
-    zettel = await repository.zettelRepository.findByUUID({
-      uuid: ctx.params.id,
-      userId: ctx.state.user.id,
-    });
+    args.uuid = ctx.params.id;
   }
+  const zettel = (await repository.zettelRepository.findAll(args))[0];
+
   if (zettel) {
     ctx.body = { zettel };
   } else {

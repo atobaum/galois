@@ -5,7 +5,10 @@ import RevisionDAO from "../entity/RevisionDAO";
 import TagDAO from "../entity/TagDAO";
 
 type FindOption = {
-  userId?: number;
+  userId: number;
+  id?: number;
+  version?: number;
+  uuid?: string;
 };
 
 export interface Zettel {
@@ -35,12 +38,6 @@ type EditZettelDTO = {
 
 export interface ZettelRepository {
   findAll(args: FindOption): Promise<Zettel[]>;
-  findByID(args: {
-    id: number;
-    version?: number;
-    userId: number;
-  }): Promise<Zettel | null>;
-  findByUUID(args: { uuid: string; userId: number }): Promise<Zettel | null>;
   findByTag(tag: string): Promise<Zettel[]>;
   create(args: CreateZettelDTO): Promise<Zettel>;
   createRevision(args: EditZettelDTO): Promise<Zettel>;
@@ -105,14 +102,25 @@ export default class ZettelRepositoryPostgresql implements ZettelRepository {
 
   async findAll({
     userId,
+    id,
+    version,
+    uuid,
   }: FindOption): Promise<(Readonly<Zettel> & { tags: string[] })[]> {
     if (!userId) return [];
-    const result = await getRepository(ZettelDAO)
+    const query = getRepository(ZettelDAO)
       .createQueryBuilder("zettel")
       .leftJoinAndSelect("zettel.tags", "tags")
-      .leftJoinAndSelect("zettel.revisions", "revisions")
-      .andWhere("zettel.fk_user_id=:user_id", { user_id: userId })
-      .getMany();
+      .leftJoinAndSelect("zettel.revisions", "revision")
+      .andWhere("zettel.fk_user_id=:user_id", { user_id: userId });
+
+    if (uuid) {
+      query.andWhere("revision.uuid=:uuid", { uuid });
+    } else if (id) {
+      query.andWhere("zettel.id=:id", { id });
+      if (version) query.andWhere("revision.version=:version", { version });
+    }
+
+    const result = await query.getMany();
 
     //TODO reivsion
     return result.map((i) => ({
@@ -125,27 +133,5 @@ export default class ZettelRepositoryPostgresql implements ZettelRepository {
       title: i.title,
       tags: i.tags.map((t) => t.name),
     }));
-  }
-
-  async findByID({ id, version }: any): Promise<Zettel | null> {
-    return null;
-    // const { id, userId } = args;
-    // const result = await zettelModel.findOne({ id, user: { id: userId } });
-    // if (!result) return result;
-    // else return result.dto();
-  }
-
-  async findByUUID({ uuid }: any): Promise<Zettel | null> {
-    return null;
-    // const { uuid, userId } = args;
-    // const result = await zettelModel.findOne({
-    //   "revisions._id": uuid,
-    //   user: { id: userId },
-    // });
-    // if (!result) return result;
-    // result.revisions = result.revisions.filter((i) => {
-    //   return i["_id"] == uuid;
-    // });
-    // return result.dto();
   }
 }
