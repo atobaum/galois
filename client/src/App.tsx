@@ -9,6 +9,7 @@ import { getZettels } from "./api/zettelApi";
 import ZettelTagFilterPage from "./pages/ZettelTagFilterPage";
 import { getCurrentUser } from "./api/userApi";
 import { setUser } from "./reducers/coreReducer";
+import LoginCallbackPage from "./pages/LoginCallbackPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -24,6 +25,7 @@ function App() {
       <Switch>
         <Route path="/zettel/:id" component={ZettelViewPage} />
         <Route path="/tag/:tag" component={ZettelTagFilterPage} />
+        <Route path="/login_callback" component={LoginCallbackPage} />
         <Route path="/" component={MainPage} />
       </Switch>
     </div>

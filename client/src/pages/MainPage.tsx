@@ -35,7 +35,16 @@ function TopNav() {
         <Link to="/">Home</Link>
         <Link to="/tag/inbox">Inbox</Link>
         {user ? (
-          <a href="/api/auth/logout">Logout</a>
+          <a
+            href="#"
+            onClick={() => {
+              window.localStorage.removeItem("access_token");
+              window.localStorage.removeItem("refresh_token");
+              window.location.reload();
+            }}
+          >
+            Logout
+          </a>
         ) : (
           <a href="/api/auth/google/redirect">Login</a>
         )}
