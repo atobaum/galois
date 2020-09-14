@@ -3,7 +3,7 @@ import Joi from "joi";
 import auth from "./auth";
 import ZettelRepository from "../../repository/zettelRepository";
 import checkLoggedIn from "../../middleware/checkLoggedIn";
-import userRepository from "../../repository/userRepository";
+import repository from "../../repository";
 
 // TODO 다른 파일로 빼기
 const api = new Router();
@@ -95,12 +95,12 @@ api.get("/user/mine", async (ctx) => {
     return;
   }
 
-  const user = await userRepository.findById(ctx.state.user.id);
+  const user = await repository.userRepository.findById(ctx.state.user.id);
   if (user) {
     ctx.body = {
       id: user.id,
       username: user.username,
-      picture: user.picture,
+      thumbnail: user.thumbnail,
     };
   } else {
     ctx.status = 500;
