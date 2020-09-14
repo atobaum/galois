@@ -1,7 +1,6 @@
 import Router from "koa-router";
 import Joi from "joi";
 import auth from "./auth";
-import ZettelRepository from "../../repository/zettelRepository";
 import checkLoggedIn from "../../middleware/checkLoggedIn";
 import repository from "../../repository";
 
@@ -13,9 +12,12 @@ api.get("/zettel/:id", checkLoggedIn, async (ctx) => {
   let zettel;
   if (/^\d+$/.test(ctx.params.id)) {
     const id = parseInt(ctx.params.id);
-    zettel = await ZettelRepository.findById({ id, userId: ctx.state.user.id });
+    zettel = await repository.zettelRepository.findByID({
+      id: id,
+      userId: ctx.state.user.id,
+    });
   } else {
-    zettel = await ZettelRepository.findByUUID({
+    zettel = await repository.zettelRepository.findByUUID({
       uuid: ctx.params.id,
       userId: ctx.state.user.id,
     });
@@ -41,9 +43,9 @@ api.post("/zettel", checkLoggedIn, async (ctx) => {
     ctx.body = { error: "BAD_REQUEST", detail: validateResult.error.details };
     return;
   } else {
-    const zettel = await ZettelRepository.create({
+    const zettel = await repository.zettelRepository.create({
       ...ctx.request.body,
-      user: { id: ctx.state.user.id },
+      userId: ctx.state.user.id,
     });
     if (!zettel) {
       ctx.status = 500;
@@ -69,10 +71,10 @@ api.delete("/zettel/:id", checkLoggedIn, async (ctx) => {
     return;
   }
 
-  const deleted = await ZettelRepository.delete({
+  const deleted = await repository.zettelRepository.delete(
     id,
-    userId: ctx.state.user.id,
-  });
+    ctx.state.user.id
+  );
   //TODO error handling
   if (deleted) ctx.status = 204;
   else ctx.status = 404;
@@ -83,7 +85,7 @@ api.put("/zettel/:id", checkLoggedIn, async (ctx) => {
 });
 
 api.get("/zettels", checkLoggedIn, async (ctx) => {
-  const zettels = await ZettelRepository.findAll({
+  const zettels = await repository.zettelRepository.findAll({
     userId: ctx.state.user.id,
   });
   ctx.body = { zettels };
