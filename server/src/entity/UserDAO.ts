@@ -4,18 +4,15 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  OneToOne,
-  getManager,
   getRepository,
+  OneToMany,
 } from "typeorm";
-import bcrypt from "bcrypt";
 import { generateToken } from "../lib/token";
-import UserMeta from "./UserMeta";
-import Note, { NoteType } from "./Note";
-import RefreshToken from "./RefreshToken";
+import RefreshToken from "./RefreshTokenDAO";
+import SocialAccountDAO from "./SocialAccountDAO";
 
-@Entity()
-export default class User {
+@Entity({ name: "user" })
+export default class UserDAO {
   @PrimaryGeneratedColumn()
   readonly id!: number;
 
@@ -25,11 +22,11 @@ export default class User {
   @Column({ unique: true, length: 255 })
   email!: string;
 
-  @Column()
-  private password!: string;
+  @Column({ type: "varchar", length: 512, nullable: true })
+  thumbnail?: string;
 
-  @OneToOne((type) => UserMeta, (userMeta) => userMeta.user)
-  userMeta!: UserMeta;
+  @OneToMany((type) => SocialAccountDAO, (social) => social.user)
+  socialAccounts!: SocialAccountDAO[];
 
   @CreateDateColumn({ type: "timestamptz", name: "created_at" })
   readonly createdAt!: Date;
@@ -72,36 +69,5 @@ export default class User {
         subject: "refresh_token",
       }
     );
-  }
-
-  async refreshToken() {}
-  async setPassword(password: string): Promise<void> {
-    return bcrypt.hash(password, 10).then((hash) => {
-      this.password = hash;
-    });
-  }
-
-  checkPassword(password: string): Promise<boolean> {
-    return bcrypt.compare(password, this.password);
-  }
-
-  async initUser(): Promise<void> {
-    const manager = getManager();
-
-    let userMeta = await manager.findOne(UserMeta, {
-      where: { fk_user_id: this.id },
-    });
-    if (userMeta) return;
-
-    const inboxNote = new Note();
-    inboxNote.author = this;
-    inboxNote.type = NoteType.list;
-    inboxNote.content = "";
-    await manager.save(Note, inboxNote);
-
-    userMeta = new UserMeta();
-    userMeta.fk_user_id = this.id;
-    userMeta.fk_inbox_id = inboxNote.id;
-    await manager.save(UserMeta, userMeta);
   }
 }

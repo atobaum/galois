@@ -47,11 +47,12 @@ function ZettelCard({ id, content, title, tags, onDelete }: ZettelCardProps) {
         dangerouslySetInnerHTML={{ __html: parsedContent.contents as string }}
       ></div>
       <div>
-        {tags.map((tag) => (
-          <Tag key={tag} onClick={() => history.push(`/tag/${tag}`)}>
-            {tag}
-          </Tag>
-        ))}
+        {tags &&
+          tags.map((tag) => (
+            <Tag key={tag} onClick={() => history.push(`/tag/${tag}`)}>
+              {tag}
+            </Tag>
+          ))}
       </div>
       <button>Archive</button>
       <button>Edit</button>

@@ -4,13 +4,13 @@ import {
   ManyToOne,
   CreateDateColumn,
   Column,
-  UpdateDateColumn,
   JoinColumn,
+  DeleteDateColumn,
 } from "typeorm";
-import User from "./User";
+import UserDAO from "./UserDAO";
 
-@Entity()
-export default class RefreshToken {
+@Entity({ name: "refresh_token" })
+export default class RefreshTokenDAO {
   @PrimaryGeneratedColumn()
   id!: number;
 
@@ -27,10 +27,10 @@ export default class RefreshToken {
   @CreateDateColumn({ type: "timestamptz", name: "created_at" })
   readonly createdAt!: Date;
 
-  @UpdateDateColumn({ type: "timestamptz", name: "updated_at" })
-  readonly updatedAt!: Date;
+  @DeleteDateColumn({ type: "timestamptz", name: "revoked_at" })
+  readonly revokedAt!: Date;
 
-  @ManyToOne((type) => User, { onDelete: "CASCADE" })
+  @ManyToOne((type) => UserDAO, { onDelete: "CASCADE" })
   @JoinColumn({ name: "fk_user_id" })
-  user!: User;
+  user!: UserDAO;
 }

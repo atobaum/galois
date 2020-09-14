@@ -4,10 +4,13 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "NODE_ENV=development nodemon --exec ts-node -r tsconfig-paths/register ./src/index.ts",
-    "start": "ts-node -r tsconfig-paths/register src/index.ts",
+    "dev": "NODE_ENV=development nodemon --exec ts-node ./src/index.ts",
+    "start": "ts-node src/index.ts",
+    "start:prod": "node build/index.js",
     "test": "jest --watch",
-    "test:ci": "jest"
+    "test:ci": "jest",
+    "build": "tsc",
+    "typeorm:cli": "ts-node ./node_modules/typeorm/cli.js"
   },
   "devDependencies": {
     "@types/bcrypt": "^3.0.0",
@@ -26,7 +29,6 @@
     "supertest": "^4.0.2",
     "ts-jest": "^26.1.2",
     "ts-node": "8.10.2",
-    "tsconfig-paths": "^3.9.0",
     "typescript": "3.9.5"
   },
   "dependencies": {

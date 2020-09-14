@@ -1,13 +1,5 @@
 import koa from "koa";
-import {
-  decodeToken,
-  AccessTokenData,
-  RefreshTokenData,
-  clearTokens,
-  setTokens,
-} from "../lib/token";
-import { getRepository } from "typeorm";
-import RefreshToken from "../entity/RefreshToken";
+import { decodeToken, AccessTokenData } from "../lib/token";
 export default async function jwtMiddleware(
   ctx: koa.Context,
   next: () => Promise<any>
