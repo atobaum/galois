@@ -2,19 +2,22 @@ import dotenv from "dotenv";
 import path from "path";
 
 const env = process.env;
-const { NODE_ENV } = env;
 
 dotenv.config({
-  path: path.resolve(
-    process.cwd(),
-    NODE_ENV === "development" ? ".dev.env" : ".env"
-  ),
+  path: path.resolve(process.cwd(), ".env"),
 });
 
 export default {
   host: env.HOST,
   port: parseInt(env.PORT!) || 4000,
-  mongodbURI: env.MONGODB_URI || "",
+  mongodbURI: env.MONGODB_URI,
+  postgresql: {
+    host: env.TYPEORM_HOST,
+    port: parseInt(env.TYPEORM_PORT || "5432", 10),
+    username: env.TYPEORM_USERNAME,
+    password: env.TYPEORM_PASSWORD,
+    database: env.TYPEORM_DATABASE,
+  },
   jwt: {
     secret: env.JWT_SECRET,
   },
