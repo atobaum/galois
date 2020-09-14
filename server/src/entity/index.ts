@@ -1,9 +1,18 @@
-import Note from "./Note";
-import Link from "./Link";
-import Tag from "./Tag";
-import User from "./User";
-import UserMeta from "./UserMeta";
-import RefreshToken from "./RefreshToken";
+import ZettelDAO from "./ZettelDAO";
+import LinkDAO from "./LinkDAO";
+import TagDAO from "./TagDAO";
+import UserDAO from "./UserDAO";
+import RefreshToken from "./RefreshTokenDAO";
+import Revision from "./RevisionDAO";
+import SocialAccount from "./SocialAccountDAO";
 
-const entities = [User, Note, Link, Tag, UserMeta, RefreshToken];
+const entities = [
+  UserDAO,
+  SocialAccount,
+  RefreshToken,
+  LinkDAO,
+  ZettelDAO,
+  Revision,
+  TagDAO,
+];
 export default entities;

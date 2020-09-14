@@ -2,28 +2,27 @@ import {
   PrimaryGeneratedColumn,
   Entity,
   Column,
-  ManyToMany,
   getRepository,
+  CreateDateColumn,
 } from "typeorm";
-import Note from "./Note";
 
-@Entity()
-export default class Tag {
+@Entity({ name: "tag" })
+export default class TagDAO {
   @PrimaryGeneratedColumn()
   readonly id!: number;
 
   @Column("varchar", { length: 64 })
   name!: string;
 
-  @ManyToMany((type) => Note, (note) => note.tags)
-  notes!: Note[];
+  @CreateDateColumn({ type: "timestamptz", name: "created_at" })
+  readonly createdAt!: Date;
 
-  static async findOrCreate(name: string): Promise<Tag> {
-    const tagRepo = getRepository(Tag);
+  static async findOrCreate(name: string): Promise<TagDAO> {
+    const tagRepo = getRepository(TagDAO);
     const tag = await tagRepo.findOne({ name });
     if (tag) return tag;
 
-    const newTag = new Tag();
+    const newTag = new TagDAO();
     newTag.name = name;
     await tagRepo.save(newTag);
     return newTag;
