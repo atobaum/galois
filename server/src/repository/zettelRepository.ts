@@ -1,4 +1,4 @@
-import zettelModel, { Zettel } from "@src/models/zettelModel";
+import zettelModel, { Zettel } from "../models/zettelModel";
 
 type FindOption = {
   userId?: number;

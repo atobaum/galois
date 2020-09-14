@@ -1,9 +1,9 @@
 import Router from "koa-router";
 import Joi from "joi";
 import auth from "./auth";
-import ZettelRepository from "@src/repository/zettelRepository";
-import checkLoggedIn from "@src/middleware/checkLoggedIn";
-import userRepository from "@src/repository/userRepository";
+import ZettelRepository from "../../repository/zettelRepository";
+import checkLoggedIn from "../../middleware/checkLoggedIn";
+import userRepository from "../../repository/userRepository";
 
 // TODO 다른 파일로 빼기
 const api = new Router();

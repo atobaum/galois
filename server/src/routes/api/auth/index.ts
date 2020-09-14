@@ -1,5 +1,5 @@
 import Router from "koa-router";
-import { clearTokens } from "@src/lib/token";
+import { clearTokens } from "../../../lib/token";
 import googleRouter from "./google";
 
 const auth = new Router();

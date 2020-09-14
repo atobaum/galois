@@ -1,4 +1,4 @@
-import userModel, { User } from "@src/models/userModel";
+import userModel, { User } from "../models/userModel";
 
 export default {
   async findById(id: number): Promise<User | null> {

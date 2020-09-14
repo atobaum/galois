@@ -1,9 +1,9 @@
 import Router from "koa-router";
 import axios from "axios";
 import jwt from "jsonwebtoken";
-import config from "@src/config";
-import userRepository from "@src/repository/userRepository";
-import { generateToken, setTokens } from "@src/lib/token";
+import config from "../../../config";
+import userRepository from "../../../repository/userRepository";
+import { generateToken, setTokens } from "../../../lib/token";
 
 const authConfig = config.oauth.google;
 
