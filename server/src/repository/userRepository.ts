@@ -14,7 +14,7 @@ export interface UserRepository {
   findBySocialAccount(provider: string, socialId: string): Promise<User | null>;
   create(args: {
     username: string;
-    social?: { provider: string; socialId: string };
+    socialAccount?: { provider: string; socialId: string };
     thumbnail?: string;
     email: string;
   }): Promise<User>;
