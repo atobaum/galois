@@ -1,22 +1,21 @@
 import Koa from "koa";
 import koaLoader from "./koaLoader";
 import postgrasqlLoader from "./postgresqlLoader";
+import logger from "../lib/logger";
 
 export default async ({ koaApp }: { koaApp: Koa }) => {
   try {
     await postgrasqlLoader();
-    console.log("PostgreSQL Initialized");
+    logger.info("PostgreSQL Initialized");
   } catch (e) {
-    console.error("PostgreSQL Initializing Failed");
-    console.log(e);
+    logger.error(`PostgreSQL Initializing Failed: ${e}`);
   }
 
   try {
     await koaLoader({ app: koaApp });
-    console.log("Koa Initialized");
+    logger.info("Koa Initialized");
   } catch (e) {
-    console.log("Koa Initializing Failed");
-    console.log(e);
+    logger.info(`Koa Initializing Failed: ${e}`);
   }
   return koaApp;
 };
