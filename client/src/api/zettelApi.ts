@@ -1,24 +1,15 @@
 import axios from "axios";
 import { Zettel } from "../models/Zettel";
+import apiWrapper from "./apiWrapper";
 
 export const getZettel = async (id: number | string): Promise<Zettel> => {
-  const option: any = {};
-  const access_token = window.localStorage.getItem("access_token");
-  if (access_token)
-    option.headers = { Authorization: "Bearer " + access_token };
-
-  const data = await axios.get("/api/zettel/" + id, option);
+  const data = await apiWrapper("/api/zettel/" + id, "GET");
   if (data.status === 200) return data.data.zettel;
   else throw new Error("/api/zettels error");
 };
 
 export const getZettels = async (): Promise<Zettel[]> => {
-  const option: any = {};
-  const access_token = window.localStorage.getItem("access_token");
-  if (access_token)
-    option.headers = { Authorization: "Bearer " + access_token };
-
-  const data = await axios.get("/api/zettels", option);
+  const data = await apiWrapper("/api/zettels", "GET");
   if (data.status === 200) return data.data.zettels;
   else throw new Error("/api/zettels error");
 };
@@ -26,12 +17,9 @@ export const getZettels = async (): Promise<Zettel[]> => {
 export const createZettel = async (
   createZettelDTO: Pick<Zettel, "title" | "content" | "tags">
 ): Promise<Zettel> => {
-  const option: any = {};
-  const access_token = window.localStorage.getItem("access_token");
-  if (access_token)
-    option.headers = { Authorization: "Bearer " + access_token };
-
-  const data = await axios.post("/api/zettel", createZettelDTO, option);
+  const data = await apiWrapper("/api/zettel", "POST", {
+    data: createZettelDTO,
+  });
   if (data.status === 200) {
     return data.data;
   } else {
@@ -41,11 +29,6 @@ export const createZettel = async (
 };
 
 export const deleteZettel = async (id: number | string): Promise<boolean> => {
-  const option: any = {};
-  const access_token = window.localStorage.getItem("access_token");
-  if (access_token)
-    option.headers = { Authorization: "Bearer " + access_token };
-
-  const data = await axios.delete("/api/zettel/" + id, option);
+  const data = await apiWrapper("/api/zettel/" + id, "DELETE");
   return true;
 };

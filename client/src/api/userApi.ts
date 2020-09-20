@@ -1,12 +1,9 @@
 import axios from "axios";
+import apiWrapper from "./apiWrapper";
+const apiURL = process.env.API_URL || "";
 
 export const getCurrentUser = async () => {
-  const option: any = {};
-  const access_token = window.localStorage.getItem("access_token");
-  if (access_token)
-    option.headers = { Authorization: "Bearer " + access_token };
-
-  const data = await axios.get("/api/user/mine", option);
+  const data = await apiWrapper("/api/user/mine", "GET");
   if (data.status === 200) return data.data;
   else if (data.status === 204) return null;
 };
