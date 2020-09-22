@@ -1,34 +1,95 @@
-import axios from "axios";
+import { gql } from "@apollo/client";
+import apolloClient from "../lib/apolloClient";
 import { Zettel } from "../models/Zettel";
-import apiWrapper from "./apiWrapper";
 
 export const getZettel = async (id: number | string): Promise<Zettel> => {
-  const data = await apiWrapper("/api/zettel/" + id, "GET");
-  if (data.status === 200) return data.data.zettel;
-  else throw new Error("/api/zettels error");
+  const data = await apolloClient.query({
+    query: gql`
+      query GetZettle($id: Int, $uuid: String) {
+        zettel(id: $id, uuid: $uuid) {
+          id
+          uuid
+          version
+          title
+          content
+          tags
+          createdAt
+          user {
+            username
+          }
+        }
+      }
+    `,
+    variables: {
+      id: typeof id === "number" ? id : undefined,
+      uuid: typeof id === "string" ? id : undefined,
+    },
+  });
+  return data.data.zettel;
 };
 
 export const getZettels = async (): Promise<Zettel[]> => {
-  const data = await apiWrapper("/api/zettels", "GET");
-  if (data.status === 200) return data.data.zettels;
-  else throw new Error("/api/zettels error");
+  const data = await apolloClient.query({
+    query: gql`
+      query GetZettels {
+        zettels {
+          id
+          uuid
+          version
+          title
+          content
+          tags
+          createdAt
+          user {
+            username
+          }
+        }
+      }
+    `,
+  });
+  // TODO error handling
+  return data.data.zettels;
 };
 
 export const createZettel = async (
   createZettelDTO: Pick<Zettel, "title" | "content" | "tags">
 ): Promise<Zettel> => {
-  const data = await apiWrapper("/api/zettel", "POST", {
-    data: createZettelDTO,
+  const data = await apolloClient.mutate({
+    mutation: gql`
+      mutation CreateZettel(
+        $title: String
+        $content: String!
+        $tags: [String]!
+      ) {
+        createZettel(title: $title, content: $content, tags: $tags) {
+          id
+          uuid
+          version
+          title
+          content
+          tags
+          createdAt
+          user {
+            username
+          }
+        }
+      }
+    `,
+    variables: createZettelDTO,
   });
-  if (data.status === 200) {
-    return data.data;
-  } else {
-    // TODO: error handling
-    throw new Error("createZettel error");
-  }
+  return data.data.createZettel;
 };
 
-export const deleteZettel = async (id: number | string): Promise<boolean> => {
-  const data = await apiWrapper("/api/zettel/" + id, "DELETE");
-  return true;
+export const deleteZettel = async (id: number): Promise<boolean> => {
+  const data = await apolloClient.mutate({
+    mutation: gql`
+      mutation DeleteZettel($id: Int!) {
+        deleteZettel(id: $id)
+      }
+    `,
+    variables: {
+      id,
+    },
+  });
+  return data.data.deleteZettel;
 };
