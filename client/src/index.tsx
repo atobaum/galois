@@ -8,7 +8,8 @@ import { createStore } from "redux";
 import { Provider } from "react-redux";
 import rootReducer from "./reducers";
 import { BrowserRouter } from "react-router-dom";
-import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
+import { ApolloProvider } from "@apollo/client";
+import apolloClient from "./lib/apolloClient";
 
 let store = null;
 const reduxDevTool =
@@ -18,11 +19,6 @@ const reduxDevTool =
 if (process.env.NODE_ENV === "development")
   store = createStore(rootReducer, reduxDevTool);
 else store = createStore(rootReducer);
-
-const apolloClient = new ApolloClient({
-  uri: "/graphql",
-  cache: new InMemoryCache(),
-});
 
 ReactDOM.render(
   <React.StrictMode>

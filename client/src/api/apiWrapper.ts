@@ -13,7 +13,6 @@ export default function apiWrapper(url: string, method: Method, options?: any) {
   if (options) {
     if (options.data) {
       option.data = options.data;
-      console.log(option.data);
     }
   }
 

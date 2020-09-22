@@ -15,7 +15,9 @@ const ZettelViewPageCss = css`
 function ZettelViewPage({ match }: any): ReturnType<React.FunctionComponent> {
   const [zettel, setZettel] = useState<Zettel | null>(null);
   useEffect(() => {
-    getZettel(match.params.id).then((zettel) => {
+    let id = Number(match.params.id);
+    if (isNaN(id)) id = match.params.id;
+    getZettel(id).then((zettel) => {
       setZettel(zettel);
     });
   }, [match.params.id]);

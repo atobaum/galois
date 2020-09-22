@@ -1,3 +1,4 @@
+// eslint-disable-next-line
 import React from "react";
 import { Link } from "react-router-dom";
 import ZettelEditor from "../components/ZettelEditor";
@@ -26,6 +27,7 @@ function TopNav() {
             <img
               style={{ width: "2rem", height: "2rem", borderRadius: "50%" }}
               src={user.picture}
+              alt="UserProfileImage"
             />
           )}
           Hi {user.username}
@@ -35,8 +37,7 @@ function TopNav() {
         <Link to="/">Home</Link>
         <Link to="/tag/inbox">Inbox</Link>
         {user ? (
-          <a
-            href="#"
+          <button
             onClick={() => {
               window.localStorage.removeItem("access_token");
               window.localStorage.removeItem("refresh_token");
@@ -45,7 +46,7 @@ function TopNav() {
             }}
           >
             Logout
-          </a>
+          </button>
         ) : (
           <a href="/api/auth/google/redirect">Login</a>
         )}
