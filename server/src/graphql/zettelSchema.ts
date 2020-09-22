@@ -14,6 +14,7 @@ export const zettelTypeDefs = gql`
 
   extend type Query {
     zettels: [Zettel]
+    zettel(id: Int, uuid: String): Zettel
   }
 `;
 
@@ -29,6 +30,17 @@ export const zettelResolvers = {
         userId: ctx.user.id,
       });
       return zettels;
+    },
+    zettel: async (
+      parent: any,
+      { id, uuid }: { id: number; uuid: string },
+      ctx: any
+    ) => {
+      if (!(ctx.user && (id || uuid))) return null;
+      const args = { userId: ctx.user.id, id, uuid };
+      const zettel = (await repository.zettelRepository.findAll(args))[0];
+
+      return zettel;
     },
   },
   Mutation: {},
