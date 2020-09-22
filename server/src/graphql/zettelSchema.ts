@@ -20,6 +20,14 @@ export const zettelTypeDefs = gql`
 
   extend type Mutation {
     createZettel(title: String, content: String!, tags: [String]!): Zettel
+    updateZettel(
+      id: Int
+      title: String
+      content: String
+      tags: [String]
+    ): Zettel
+    deleteZettel(id: Int): Boolean
+    deleteZettelRevision(uuid: String!): Boolean
   }
 `;
 
