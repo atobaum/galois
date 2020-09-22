@@ -77,5 +77,10 @@ export const zettelResolvers = {
       });
       return zettel;
     },
+    deleteZettel: async (parent: any, { id }: { id: number }, ctx: any) => {
+      if (!ctx.user) throw new AuthenticationError("Login First");
+      const deleted = await repository.zettelRepository.delete(id, ctx.user.id);
+      return deleted;
+    },
   },
 };
