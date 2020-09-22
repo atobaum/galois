@@ -10,6 +10,11 @@ export default async ({ app }: { app: Koa }): Promise<Koa> => {
   const apollo = new ApolloServer({
     resolvers,
     typeDefs,
+    context: ({ ctx }: { ctx: Koa.Context }) => {
+      return {
+        user: ctx.state.user,
+      };
+    },
   });
 
   app.use(logger());
