@@ -4,6 +4,10 @@ const rootTypeDef = gql`
   type Query {
     version: String
   }
+
+  type Mutation {
+    echo: String
+  }
 `;
 
 const rootResolver = {
