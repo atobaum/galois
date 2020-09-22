@@ -8,6 +8,7 @@ import repository from "../../repository";
 const api = new Router();
 api.use("/auth", auth.routes());
 
+// Deprecated
 api.get("/zettel/:id", checkLoggedIn, async (ctx) => {
   const args: any = { userId: ctx.params.id };
   if (/^\d+$/.test(ctx.params.id)) {
@@ -26,6 +27,7 @@ api.get("/zettel/:id", checkLoggedIn, async (ctx) => {
   }
 });
 
+// Deprecated
 api.post("/zettel", checkLoggedIn, async (ctx) => {
   const validateSchema = Joi.object({
     title: Joi.string().allow(""),
@@ -56,6 +58,7 @@ api.post("/zettel", checkLoggedIn, async (ctx) => {
   }
 });
 
+// Deprecated
 api.delete("/zettel/:id", checkLoggedIn, async (ctx) => {
   // TODO uuid support
   const id = parseInt(ctx.params.id);
@@ -80,6 +83,7 @@ api.put("/zettel/:id", checkLoggedIn, async (ctx) => {
   ctx.body = "send";
 });
 
+// Deprecated
 api.get("/zettels", checkLoggedIn, async (ctx) => {
   const zettels = await repository.zettelRepository.findAll({
     userId: ctx.state.user.id,
@@ -87,6 +91,7 @@ api.get("/zettels", checkLoggedIn, async (ctx) => {
   ctx.body = { zettels };
 });
 
+// Deprecated
 api.get("/user/mine", async (ctx) => {
   if (!ctx.state.user) {
     ctx.status = 204;
