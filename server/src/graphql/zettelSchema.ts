@@ -9,6 +9,7 @@ export const zettelTypeDefs = gql`
     title: String
     content: String
     user: User!
+    tags: [String]!
     createdAt: Date!
   }
 
