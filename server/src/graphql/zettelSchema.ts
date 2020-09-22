@@ -17,6 +17,10 @@ export const zettelTypeDefs = gql`
     zettels: [Zettel]
     zettel(id: Int, uuid: String): Zettel
   }
+
+  extend type Mutation {
+    createZettel(title: String, content: String!, tags: [String]!): Zettel
+  }
 `;
 
 export const zettelResolvers = {
@@ -44,5 +48,25 @@ export const zettelResolvers = {
       return zettel;
     },
   },
-  Mutation: {},
+  Mutation: {
+    createZettel: async (
+      parent: any,
+      {
+        title,
+        content,
+        tags,
+      }: { title?: string; content: string; tags: string[] },
+      ctx: any
+    ) => {
+      if (!ctx.user) return null;
+
+      const zettel = await repository.zettelRepository.create({
+        title,
+        content,
+        tags,
+        userId: ctx.user.id,
+      });
+      return zettel;
+    },
+  },
 };
