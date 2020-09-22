@@ -1,7 +1,10 @@
 import { gql } from "apollo-server-koa";
 import { userResolvers, userTypeDefs } from "./userSchema";
+import { zettelResolvers, zettelTypeDefs } from "./zettelSchema";
 
 const rootTypeDef = gql`
+  scalar Date
+
   type Query {
     version: String
   }
@@ -17,5 +20,5 @@ const rootResolver = {
   },
 };
 
-export const typeDefs = [rootTypeDef, userTypeDefs];
-export const resolvers = [rootResolver, userResolvers];
+export const typeDefs = [rootTypeDef, userTypeDefs, zettelTypeDefs];
+export const resolvers = [rootResolver, userResolvers, zettelResolvers];
