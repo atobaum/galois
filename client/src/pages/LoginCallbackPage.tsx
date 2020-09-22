@@ -1,9 +1,6 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
 
 export default function LoginCallbackPage() {
-  const history = useHistory();
-
   const decodeQueryString = (q: string) =>
     q
       ? q
