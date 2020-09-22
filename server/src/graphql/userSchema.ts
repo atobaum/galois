@@ -15,7 +15,6 @@ export const userTypeDefs = gql`
 export const userResolvers = {
   Query: {
     me: async (parent: any, args: any, ctx: any) => {
-      console.log(ctx);
       if (!ctx.user) return null;
       const user = await repository.userRepository.findById(ctx.user.id);
       return user;
