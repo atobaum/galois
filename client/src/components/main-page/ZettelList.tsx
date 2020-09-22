@@ -1,17 +1,18 @@
 // eslint-disable-next-line
 import React from "react";
-import ZettelCard from "./ZettelCard";
+import ZettelCard from "../ZettelCard";
 
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
 import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "../reducers";
-import { deleteZettel } from "../api/zettelApi";
-import { deleteZettelAction } from "../reducers/zettelReducer";
+import { RootState } from "../../reducers";
+import { deleteZettel } from "../../api/zettelApi";
+import { deleteZettelAction } from "../../reducers/zettelReducer";
+import ZettelListItem from "./ZettelListItem";
 
 const ZettelListCss = css`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, auto));
+  display: flex;
+  flex-direction: column;
 `;
 
 type ZettelListProps = {
@@ -28,13 +29,13 @@ function ZettelList(props: ZettelListProps) {
     if (deleted) dispatch(deleteZettelAction(id));
   };
   return (
-    <div css={ZettelListCss}>
+    <div css={ZettelListCss} className="zettel-list">
       {zettels
         .filter((zettel) => {
           return filter.tag ? zettel.tags.includes(filter.tag!) : true;
         })
         .map((note) => (
-          <ZettelCard key={note.id} {...note} onDelete={onDeleteZettel} />
+          <ZettelListItem key={note.id} {...note} onDelete={onDeleteZettel} />
         ))}
     </div>
   );

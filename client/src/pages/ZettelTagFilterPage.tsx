@@ -1,6 +1,6 @@
 // eslint-disable-next-line
 import React from "react";
-import ZettelList from "../components/ZettelList";
+import ZettelList from "../components/main-page/ZettelList";
 
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
