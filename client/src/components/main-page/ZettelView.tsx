@@ -12,7 +12,6 @@ type ZettelViewProps = {
   onSubmit: (zettle: Pick<Zettel, "title" | "content" | "tags">) => void;
 };
 const ZettelView: React.FC<ZettelViewProps> = ({ onSubmit }) => {
-  const [show, setShow] = useState(false);
   const [content, setContent] = useState("");
   const [title, setTitle] = useState("");
   const [tags, setTags] = useState<string[]>([]);
@@ -33,7 +32,7 @@ const ZettelView: React.FC<ZettelViewProps> = ({ onSubmit }) => {
 
   return (
     <div css={ZettelViewCss} className="zettel-view">
-      {show ? (
+      {
         <form
           onSubmit={(evt) => {
             evt.preventDefault();
@@ -91,9 +90,7 @@ const ZettelView: React.FC<ZettelViewProps> = ({ onSubmit }) => {
           </div>
           <button>Submit</button>
         </form>
-      ) : (
-        <input placeholder="Type content..." onClick={() => setShow(true)} />
-      )}
+      }
     </div>
   );
 };
