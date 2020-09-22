@@ -1,9 +1,17 @@
-import axios from "axios";
-import apiWrapper from "./apiWrapper";
-const apiURL = process.env.API_URL || "";
+import { gql } from "@apollo/client";
+import apolloClient from "../lib/apolloClient";
 
 export const getCurrentUser = async () => {
-  const data = await apiWrapper("/api/user/mine", "GET");
-  if (data.status === 200) return data.data;
-  else if (data.status === 204) return null;
+  const result = await apolloClient.query({
+    query: gql`
+      query GetCurrentUser {
+        me {
+          username
+          thumbnail
+        }
+      }
+    `,
+  });
+  if (result.data) return result.data.me;
+  else return null;
 };
