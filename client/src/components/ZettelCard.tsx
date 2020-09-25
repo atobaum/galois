@@ -49,9 +49,11 @@ function ZettelCard({ id, content, title, tags, onDelete }: ZettelCardProps) {
       <div>
         {tags &&
           tags.map((tag) => (
-            <Tag key={tag} onClick={() => history.push(`/tag/${tag}`)}>
-              {tag}
-            </Tag>
+            <Tag
+              name={tag}
+              key={tag}
+              onClick={() => history.push(`/tag/${tag}`)}
+            />
           ))}
       </div>
       <button>Archive</button>
