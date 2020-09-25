@@ -4,7 +4,6 @@ import Tag from "../Tag";
 import { Zettel } from "../../models/Zettel";
 import { useMemo } from "react";
 import parseMarkdown from "../../lib/markdownParser";
-import { Link, useHistory } from "react-router-dom";
 
 const ZettelListItemCss = css`
   height: 200px;
@@ -29,22 +28,24 @@ const ZettelListItemCss = css`
 `;
 
 type ZettelListItemProps = Zettel & {
-  onDelete: (id: number) => void;
+  onClick: (id: number) => void;
+  onTagClick: (name: string) => void;
 };
 function ZettelListItem({
   id,
   content,
   title,
   tags,
-  onDelete,
+  createdAt,
+  onClick,
+  onTagClick,
 }: ZettelListItemProps) {
   const parsedContent = useMemo(() => {
     return parseMarkdown(content);
   }, [content]);
-  const history = useHistory();
 
   return (
-    <div css={ZettelListItemCss}>
+    <div css={ZettelListItemCss} onClick={() => onClick(id)}>
       <div>{id}</div>
       <h3>{title}</h3>
       <div
@@ -52,25 +53,21 @@ function ZettelListItem({
         dangerouslySetInnerHTML={{ __html: parsedContent.contents as string }}
       ></div>
       <div>
+        날짜 {createdAt.getMonth() + 1}월 {createdAt.getDate()}일
+      </div>
+      <div>
         {tags &&
           tags.map((tag) => (
-            <Tag key={tag} onClick={() => history.push(`/tag/${tag}`)}>
-              {tag}
-            </Tag>
+            <Tag
+              key={tag}
+              onClick={(evt) => {
+                evt.stopPropagation();
+                onTagClick(name);
+              }}
+              name={tag}
+            />
           ))}
       </div>
-      <button>Archive</button>
-      <button>Edit</button>
-      <button
-        onClick={async () => {
-          if (window.confirm("삭제 ㄱ?")) {
-            onDelete(id);
-          }
-        }}
-      >
-        Delete
-      </button>
-      <Link to={`/zettel/${id}`}>More</Link>
     </div>
   );
 }
