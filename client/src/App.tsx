@@ -6,7 +6,6 @@ import ZettelViewPage from "./pages/ZettelViewPage";
 import { useDispatch } from "react-redux";
 import { addZetel } from "./reducers/zettelReducer";
 import { getZettels } from "./api/zettelApi";
-import ZettelTagFilterPage from "./pages/ZettelTagFilterPage";
 import LoginCallbackPage from "./pages/LoginCallbackPage";
 import useCurrentUser from "./hooks/useCurrentUser";
 
@@ -26,7 +25,6 @@ function App() {
     <div className="App">
       <Switch>
         <Route path="/zettel/:id" component={ZettelViewPage} />
-        <Route path="/tag/:tag" component={ZettelTagFilterPage} />
         <Route path="/login_callback" component={LoginCallbackPage} />
         <Route path="/" component={MainPage} />
       </Switch>
