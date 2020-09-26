@@ -6,7 +6,17 @@ import useCurrentUser from "../hooks/useCurrentUser";
 import { useDispatch } from "react-redux";
 import { startEdit } from "../reducers/editorReducer";
 
-const StatusBarCss = css``;
+const StatusBarCss = css`
+  display: flex;
+  justify-content: space-between;
+
+  button {
+    border: 1px solid gray;
+    border-radius: 0.3rem;
+    padding: 0.2rem;
+    background: none;
+  }
+`;
 
 const StatusBar: React.FC = () => {
   const user = useCurrentUser();
@@ -14,27 +24,28 @@ const StatusBar: React.FC = () => {
 
   return (
     <div className="status-bar" css={StatusBarCss}>
-      <button
-        onClick={() => {
-          disptach(startEdit(null));
-        }}
-      >
-        New
-      </button>
-      {user && (
-        <span>
-          {user.picture && (
-            <img
-              style={{ width: "2rem", height: "2rem", borderRadius: "50%" }}
-              src={user.picture}
-            />
-          )}
-          Hi {user.username}
-        </span>
-      )}
       <div>
         <Link to="/">Home</Link>
-        <Link to="/tag/inbox">Inbox</Link>
+      </div>
+      <div>
+        <button
+          onClick={() => {
+            disptach(startEdit(null));
+          }}
+        >
+          New
+        </button>
+        {user && (
+          <span>
+            {user.thumbnail && (
+              <img
+                style={{ width: "2rem", height: "2rem", borderRadius: "50%" }}
+                src={user.thumbnail}
+              />
+            )}
+            {user.username}
+          </span>
+        )}
         {user ? (
           <button
             onClick={() => {
@@ -49,6 +60,7 @@ const StatusBar: React.FC = () => {
         ) : (
           <a href="/api/auth/google/redirect">Login</a>
         )}
+        <div></div>
       </div>
     </div>
   );
