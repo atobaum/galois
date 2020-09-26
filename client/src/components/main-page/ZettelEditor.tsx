@@ -3,7 +3,12 @@ import React, { forwardRef, useImperativeHandle, useState } from "react";
 import { jsx, css } from "@emotion/core";
 import Tag from "../Tag";
 
-const ZettelEditorCss = css``;
+const ZettelEditorCss = css`
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+`;
 
 type ZettelEditorProps = {
   title: string | null;
