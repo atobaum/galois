@@ -5,12 +5,9 @@ import React from "react";
 import { jsx, css } from "@emotion/core";
 import StatusBar from "../components/StatusBar";
 import GNB from "../components/GNB";
-import ZettelView from "../components/main-page/ZettelView";
 import ZettelList from "../components/main-page/ZettelList";
-import { addZetel } from "../reducers/zettelReducer";
 import { useDispatch } from "react-redux";
-import { Zettel } from "../models/Zettel";
-import { createZettel } from "../api/zettelApi";
+import ZettelViewerPanel from "../components/main-page/ZettelViewerPanel";
 
 const MainPageCss = css`
   height: 100vh;
@@ -47,12 +44,7 @@ function MainPage() {
     <div css={MainPageCss}>
       <GNB />
       <StatusBar />
-      <ZettelView
-        onSubmit={async (args: Pick<Zettel, "title" | "content" | "tags">) => {
-          const createdZettel = await createZettel(args);
-          dispatch(addZetel(createdZettel));
-        }}
-      />
+      <ZettelViewerPanel />
       <ZettelList />
     </div>
   );
