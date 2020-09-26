@@ -58,7 +58,14 @@ const StatusBar: React.FC = () => {
             Logout
           </button>
         ) : (
-          <a href="/api/auth/google/redirect">Login</a>
+          <a
+            href={
+              (process.env.REACT_APP_API_URL || "") +
+              "/api/auth/google/redirect"
+            }
+          >
+            Login
+          </a>
         )}
         <div></div>
       </div>
