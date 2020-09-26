@@ -62,7 +62,7 @@ function ZettelListItem({
               key={tag}
               onClick={(evt) => {
                 evt.stopPropagation();
-                onTagClick(name);
+                onTagClick(tag);
               }}
               name={tag}
             />

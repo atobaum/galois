@@ -77,9 +77,8 @@ const ZettelView: React.FC<ZettelViewProps> = ({ onSubmit }) => {
                 onClick={() => {
                   setTags(tags.filter((t) => t !== tag));
                 }}
-              >
-                {tag}
-              </Tag>
+                name={tag}
+              />
             ))}
             <input
               value={tagInput}
