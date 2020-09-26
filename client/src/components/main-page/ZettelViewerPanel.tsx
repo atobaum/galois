@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
 import { useSelector } from "react-redux";
@@ -14,6 +14,14 @@ const ZettelViewerPanel: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
   const zettel: Zettel | null = curState.zettel;
 
+  // const onSubmit={async (args: Pick<Zettel, "title" | "content" | "tags">) => {
+  //   const createdZettel = await createZettel(args);
+  //   dispatch(addZetel(createdZettel));
+  // }}
+
+  useMemo(() => {
+    setIsEditing(false);
+  }, [zettel]);
   const submitHandler = () => {
     if (!isEditing) setIsEditing(true);
     else {
@@ -21,6 +29,8 @@ const ZettelViewerPanel: React.FC = () => {
       setIsEditing(false);
     }
   };
+
+  const editorRef = useRef();
 
   if (zettel) {
     return (
@@ -34,7 +44,12 @@ const ZettelViewerPanel: React.FC = () => {
         </div>
         <div>{zettel.title}</div>
         {isEditing ? (
-          <ZettelEditor />
+          <ZettelEditor
+            content={zettel.content}
+            tags={zettel.tags}
+            onSubmit={console.log}
+            ref={editorRef}
+          />
         ) : (
           <ZettelViewer content={zettel.content} tags={zettel.tags} />
         )}
