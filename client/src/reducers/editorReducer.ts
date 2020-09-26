@@ -1,19 +1,26 @@
 import { Zettel } from "../models/Zettel";
 
-const SET_EDITOR = "editor/SET_EDITOR" as const;
-export const setEditor = (zettel: Zettel) => ({
-  type: SET_EDITOR,
+const SET_VIEWER = "editor/SET_VIEWER" as const;
+const START_EDIT = "editor/START_EDIT" as const;
+
+export const setViewer = (zettel: Zettel) => ({
+  type: SET_VIEWER,
   payload: zettel,
 });
 
-type EditorAction = ReturnType<typeof setEditor>;
+export const startEdit = (zettel: Zettel | null = null) => ({
+  type: START_EDIT,
+  payload: zettel,
+});
+
+type EditorAction = ReturnType<typeof setViewer> | ReturnType<typeof startEdit>;
 type EditorState = {
-  isNew: boolean;
+  isEditing: boolean;
   zettel: Zettel | null;
 };
 
 const initialState: EditorState = {
-  isNew: false,
+  isEditing: true,
   zettel: null,
 };
 
@@ -22,11 +29,16 @@ export default function editorReducer(
   action: EditorAction
 ): EditorState {
   switch (action.type) {
-    case SET_EDITOR:
+    case SET_VIEWER:
       return {
-        ...state,
-        isNew: false,
+        isEditing: false,
         zettel: action.payload,
+      };
+    case START_EDIT:
+      const zettel = action.payload;
+      return {
+        isEditing: true,
+        zettel: zettel,
       };
     default:
       return state;

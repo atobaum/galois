@@ -6,7 +6,7 @@ import { jsx, css } from "@emotion/core";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../reducers";
 import ZettelListItem from "./ZettelListItem";
-import { setEditor } from "../../reducers/editorReducer";
+import { setViewer } from "../../reducers/editorReducer";
 
 const ZettelListCss = css`
   display: flex;
@@ -25,7 +25,7 @@ function ZettelList(props: ZettelListProps) {
           key={note.id}
           {...note}
           onTagClick={() => {}}
-          onClick={() => dispatch(setEditor(note))}
+          onClick={() => dispatch(setViewer(note))}
         />
       ))}
     </div>

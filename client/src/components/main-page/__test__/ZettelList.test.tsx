@@ -15,7 +15,7 @@ describe("ZettelList", () => {
     fireEvent.click(firstZettel!);
 
     const editorState = useSelector((state: any) => state.editor);
-    expect(editorState.isNew).toBe(false);
+    expect(editorState.isEditing).toBe(false);
     expect(editorState.zettel.id).toBe(initZettels[0].id);
   });
 });

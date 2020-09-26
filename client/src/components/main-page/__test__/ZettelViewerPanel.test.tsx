@@ -1,17 +1,17 @@
-import { fireEvent, render } from "@testing-library/react";
+import { act, fireEvent, render } from "@testing-library/react";
 import React from "react";
 import { useDispatch } from "react-redux";
 
 import { initZettels } from "../../../__mocks__/react-redux";
 import ZettelViewerPanel from "../ZettelViewerPanel";
-import { setEditor } from "../../../reducers/editorReducer";
+import { setViewer } from "../../../reducers/editorReducer";
 
 jest.mock("react-redux");
 
 describe("ZettelViewerPanel", () => {
   const dispatch = useDispatch();
   it("renders current zettel", () => {
-    dispatch(setEditor(initZettels[1]));
+    dispatch(setViewer(initZettels[1]));
 
     const { getByText } = render(<ZettelViewerPanel />);
     const zettel = initZettels[1];
@@ -23,18 +23,22 @@ describe("ZettelViewerPanel", () => {
   });
 
   it("'Edit' 버튼 눌렀을 때 수정모드", () => {
-    dispatch(setEditor(initZettels[1]));
+    dispatch(setViewer(initZettels[1]));
 
     const { getByText } = render(<ZettelViewerPanel />);
     const zettel = initZettels[1];
 
     if (zettel.title) getByText(zettel.title);
     const editBtn = getByText("Edit");
-    fireEvent.click(editBtn);
+    act(() => {
+      fireEvent.click(editBtn);
+    });
 
-    const submitBtn = getByText("Submit");
-    fireEvent.click(submitBtn);
-
-    getByText("Edit");
+    expect(dispatch).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        type: "editor/START_EDIT",
+        payload: expect.objectContaining({ id: zettel.id }),
+      })
+    );
   });
 });
