@@ -62,7 +62,11 @@ const ZettelEditor: React.FC<ZettelEditorProps> = forwardRef(
             setContent("");
           }}
         >
-          <input onChange={(e) => setTitle(e.target.value)} value={title} />
+          <input
+            placeholder="Type title..."
+            onChange={(e) => setTitle(e.target.value)}
+            value={title}
+          />
           <textarea
             autoFocus
             value={content}
