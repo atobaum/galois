@@ -18,6 +18,9 @@ const ZettelViewerPanel: React.FC = () => {
   //   const createdZettel = await createZettel(args);
   //   dispatch(addZetel(createdZettel));
   // }}
+  const editorRef = useRef<{
+    getData: () => { title: string; content: string; tags: string[] };
+  }>(null);
 
   useMemo(() => {
     setIsEditing(false);
@@ -26,11 +29,13 @@ const ZettelViewerPanel: React.FC = () => {
     if (!isEditing) setIsEditing(true);
     else {
       // Submit
+      if (editorRef.current) {
+        const data = editorRef.current.getData();
+        console.log(data);
+      }
       setIsEditing(false);
     }
   };
-
-  const editorRef = useRef();
 
   if (zettel) {
     return (
@@ -42,16 +47,20 @@ const ZettelViewerPanel: React.FC = () => {
           </button>
           <button>More</button>
         </div>
-        <div>{zettel.title}</div>
         {isEditing ? (
           <ZettelEditor
+            title={zettel.title}
             content={zettel.content}
             tags={zettel.tags}
             onSubmit={console.log}
             ref={editorRef}
           />
         ) : (
-          <ZettelViewer content={zettel.content} tags={zettel.tags} />
+          <ZettelViewer
+            title={zettel.title}
+            content={zettel.content}
+            tags={zettel.tags}
+          />
         )}
       </div>
     );

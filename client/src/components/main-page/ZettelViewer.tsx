@@ -8,17 +8,23 @@ import parseMarkdown from "../../lib/markdownParser";
 const ZettelViewerCss = css``;
 
 type ZettelViewerProps = {
+  title: string | null;
   content: string;
   tags: string[];
 };
 
-const ZettelViewer: React.FC<ZettelViewerProps> = ({ content, tags }) => {
+const ZettelViewer: React.FC<ZettelViewerProps> = ({
+  title,
+  content,
+  tags,
+}) => {
   const history = useHistory();
   const parsedContent = useMemo(() => {
     return parseMarkdown(content);
   }, [content]);
   return (
     <div css={ZettelViewerCss}>
+      <div>{title}</div>
       <div>
         {tags &&
           tags.map((tag) => (

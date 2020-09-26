@@ -6,6 +6,7 @@ import Tag from "../Tag";
 const ZettelEditorCss = css``;
 
 type ZettelEditorProps = {
+  title: string | null;
   content: string | null;
   tags: string[];
   ref: React.Ref<any>;
@@ -13,13 +14,22 @@ type ZettelEditorProps = {
 };
 
 const ZettelEditor: React.FC<ZettelEditorProps> = forwardRef(
-  ({ content: originalContent, tags: originalTags, onSubmit }, ref) => {
+  (
+    {
+      title: originalTitle,
+      content: originalContent,
+      tags: originalTags,
+      onSubmit,
+    },
+    ref
+  ) => {
+    const [title, setTitle] = useState(originalTitle || "");
     const [content, setContent] = useState(originalContent || "");
     const [tags, setTags] = useState(originalTags);
     const [tagInput, setTagInput] = useState("");
     useImperativeHandle(ref, () => ({
-      getData(): { content: string; tags: string[] } {
-        return { content, tags };
+      getData(): { title: string; content: string; tags: string[] } {
+        return { title: title.trim().replace(/\s/, " "), content, tags };
       },
     }));
 
@@ -47,6 +57,7 @@ const ZettelEditor: React.FC<ZettelEditorProps> = forwardRef(
             setContent("");
           }}
         >
+          <input onChange={(e) => setTitle(e.target.value)} value={title} />
           <textarea
             autoFocus
             value={content}

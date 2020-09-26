@@ -15,6 +15,7 @@ describe("ZettelEditor", () => {
     const { container } = render(
       <ZettelEditor
         onSubmit={() => {}}
+        title={zettel.title}
         content={zettel.content}
         tags={zettel.tags}
         ref={null}
@@ -29,6 +30,7 @@ describe("ZettelEditor", () => {
     const { getByPlaceholderText, getByText } = render(
       <ZettelEditor
         onSubmit={onSubmit}
+        title={zettel.title}
         content={zettel.content}
         tags={zettel.tags}
         ref={ref}
@@ -51,6 +53,7 @@ describe("ZettelEditor", () => {
 
     const data = ref.current.getData();
     expect(data).toEqual({
+      title: zettel.title,
       content: "newcontent",
       tags: [...zettel.tags, "new tag"],
     });
