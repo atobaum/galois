@@ -25,7 +25,10 @@ export const getZettel = async (id: number | string): Promise<Zettel> => {
       uuid: typeof id === "string" ? id : undefined,
     },
   });
-  return data.data.zettel;
+
+  const z = data.data.zettel;
+  if (z) z.createdAt = new Date(z.createdAt);
+  return z;
 };
 
 export const getZettels = async (): Promise<Zettel[]> => {
@@ -48,7 +51,11 @@ export const getZettels = async (): Promise<Zettel[]> => {
     `,
   });
   // TODO error handling
-  return data.data.zettels;
+  const zettels = data.data.zettels || [];
+  return zettels.map((z: any) => ({
+    ...z,
+    createdAt: new Date(z.createdAt),
+  }));
 };
 
 export const createZettel = async (
@@ -77,7 +84,10 @@ export const createZettel = async (
     `,
     variables: createZettelDTO,
   });
-  return data.data.createZettel;
+
+  const z = data.data.createZettel;
+  if (z) z.createdAt = new Date(z.createdAt);
+  return z;
 };
 
 export const deleteZettel = async (id: number): Promise<boolean> => {

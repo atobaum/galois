@@ -1,5 +1,6 @@
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
+import { MouseEventHandler } from "react";
 
 const TagCss = css`
   color: gray;
@@ -11,17 +12,14 @@ const Pointer = css`
 `;
 
 type TagProps = {
-  onClick?: () => void;
-  children: string;
+  onClick?: MouseEventHandler;
+  name: string;
 };
 
-function Tag({ onClick, children }: TagProps) {
+function Tag({ onClick, name }: TagProps) {
   return (
-    <span
-      css={onClick ? Pointer : TagCss}
-      onClick={onClick ? onClick : undefined}
-    >
-      #{children}
+    <span css={onClick ? Pointer : TagCss} onClick={onClick}>
+      #{name}
     </span>
   );
 }
