@@ -48,7 +48,10 @@ export const getZettels = async (): Promise<Zettel[]> => {
     `,
   });
   // TODO error handling
-  return data.data.zettels;
+  return data.data.zettels.map((z: any) => ({
+    ...z,
+    createdAt: new Date(z.createdAt),
+  }));
 };
 
 export const createZettel = async (
