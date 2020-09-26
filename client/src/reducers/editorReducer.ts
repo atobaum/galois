@@ -8,13 +8,11 @@ export const setEditor = (zettel: Zettel) => ({
 
 type EditorAction = ReturnType<typeof setEditor>;
 type EditorState = {
-  isEditing: boolean;
   isNew: boolean;
   zettel: Zettel | null;
 };
 
 const initialState: EditorState = {
-  isEditing: false,
   isNew: false,
   zettel: null,
 };
@@ -28,10 +26,8 @@ export default function editorReducer(
       return {
         ...state,
         isNew: false,
-        isEditing: true,
         zettel: action.payload,
       };
-      break;
     default:
       return state;
   }
