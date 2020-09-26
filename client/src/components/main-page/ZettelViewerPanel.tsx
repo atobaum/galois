@@ -1,12 +1,9 @@
 import React, { useMemo, useState } from "react";
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
-import { useSelector } from "../../__mocks__/react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "../../reducers";
 import { Zettel } from "../../models/Zettel";
-import parseMarkdown from "../../lib/markdownParser";
-import Tag from "../Tag";
-import { useHistory } from "react-router-dom";
 import ZettelViewer from "./ZettelViewer";
 import ZettelEditor from "./ZettelEditor";
 
