@@ -1,5 +1,4 @@
 import Koa from "koa";
-import "./loaders/mongooseLoader";
 import config from "./config";
 import loaders from "./loaders";
 
