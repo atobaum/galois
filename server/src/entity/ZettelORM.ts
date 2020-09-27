@@ -1,4 +1,4 @@
-import User from "./UserDAO";
+import User from "./UserORM";
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -12,23 +12,23 @@ import {
   JoinColumn,
   OneToMany,
 } from "typeorm";
-import Tag from "./TagDAO";
-import RevisionDAO from "./RevisionDAO";
+import TagORM from "./TagORM";
+import RevisionORM from "./RevisionORM";
 
 @Entity({ name: "zettel" })
-export default class ZettelDAO {
+export default class ZettelORM {
   @PrimaryGeneratedColumn()
   readonly id!: number;
 
   @Column({ length: 255, nullable: true })
   title!: string;
 
-  @OneToMany((type) => RevisionDAO, (revision) => revision.zettel)
-  revisions!: RevisionDAO[];
+  @OneToMany((type) => RevisionORM, (revision) => revision.zettel)
+  revisions!: RevisionORM[];
 
-  @ManyToMany((type) => Tag)
+  @ManyToMany((type) => TagORM)
   @JoinTable({ name: "note_tags_tag" })
-  tags!: Tag[];
+  tags!: TagORM[];
 
   @Column()
   fk_user_id!: number;

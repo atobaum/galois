@@ -7,10 +7,10 @@ import {
   JoinColumn,
   DeleteDateColumn,
 } from "typeorm";
-import UserDAO from "./UserDAO";
+import UserORM from "./UserORM";
 
 @Entity({ name: "refresh_token" })
-export default class RefreshTokenDAO {
+export default class RefreshTokenORM {
   @PrimaryGeneratedColumn()
   id!: number;
 
@@ -30,7 +30,7 @@ export default class RefreshTokenDAO {
   @DeleteDateColumn({ type: "timestamptz", name: "revoked_at" })
   readonly revokedAt!: Date;
 
-  @ManyToOne((type) => UserDAO, { onDelete: "CASCADE" })
+  @ManyToOne((type) => UserORM, { onDelete: "CASCADE" })
   @JoinColumn({ name: "fk_user_id" })
-  user!: UserDAO;
+  user!: UserORM;
 }

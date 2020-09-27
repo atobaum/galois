@@ -1,18 +1,18 @@
-import ZettelDAO from "./ZettelDAO";
-import LinkDAO from "./LinkDAO";
-import TagDAO from "./TagDAO";
-import UserDAO from "./UserDAO";
-import RefreshToken from "./RefreshTokenDAO";
-import Revision from "./RevisionDAO";
-import SocialAccount from "./SocialAccountDAO";
+import ZettelORM from "./ZettelORM";
+import LinkORM from "./LinkORM";
+import TagORM from "./TagORM";
+import UserORM from "./UserORM";
+import RefreshTokenORM from "./RefreshTokenORM";
+import RevisionORM from "./RevisionORM";
+import SocialAccountORM from "./SocialAccountORM";
 
 const entities = [
-  UserDAO,
-  SocialAccount,
-  RefreshToken,
-  LinkDAO,
-  ZettelDAO,
-  Revision,
-  TagDAO,
+  UserORM,
+  SocialAccountORM,
+  RefreshTokenORM,
+  LinkORM,
+  ZettelORM,
+  RevisionORM,
+  TagORM,
 ];
 export default entities;

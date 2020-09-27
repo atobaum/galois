@@ -1,6 +1,6 @@
 import { getManager, getRepository } from "typeorm";
-import UserDAO from "../entity/UserDAO";
-import SocialAccountDAO from "../entity/SocialAccountDAO";
+import UserORM from "../entity/UserORM";
+import SocialAccountORM from "../entity/SocialAccountORM";
 
 export interface User {
   readonly id: number;
@@ -23,9 +23,9 @@ export interface UserRepository {
 }
 
 export default class UserRepositoryPostgres implements UserRepository {
-  async findById(id: number): Promise<UserDAO | null> {
+  async findById(id: number): Promise<UserORM | null> {
     const manager = getManager();
-    const user = (await manager.findOne(UserDAO, id)) || null;
+    const user = (await manager.findOne(UserORM, id)) || null;
     return user;
   }
 
@@ -33,7 +33,7 @@ export default class UserRepositoryPostgres implements UserRepository {
     provider: string,
     socialId: string
   ): Promise<User | null> {
-    const repo = getRepository(SocialAccountDAO);
+    const repo = getRepository(SocialAccountORM);
     const socialAccount =
       (await repo.findOne({
         relations: ["user"],
@@ -54,12 +54,12 @@ export default class UserRepositoryPostgres implements UserRepository {
   }): Promise<User> {
     const manager = getManager();
 
-    const user = new UserDAO();
+    const user = new UserORM();
     user.username = args.username;
     user.email = args.email;
     user.thumbnail = args.thumbnail;
 
-    const socialAccount = new SocialAccountDAO();
+    const socialAccount = new SocialAccountORM();
     socialAccount.user = user;
     socialAccount.socialId = args.socialAccount.socialId;
     socialAccount.provider = args.socialAccount.provider;

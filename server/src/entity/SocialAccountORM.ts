@@ -9,11 +9,11 @@ import {
   DeleteDateColumn,
   Index,
 } from "typeorm";
-import UserDAO from "./UserDAO";
+import UserORM from "./UserORM";
 
 @Entity({ name: "social_account" })
 @Index(["provider", "socialId"])
-export default class SocialAccountDAO {
+export default class SocialAccountORM {
   @PrimaryGeneratedColumn()
   id!: number;
 
@@ -26,9 +26,9 @@ export default class SocialAccountDAO {
   @Column()
   fk_user_id!: number;
 
-  @ManyToOne((type) => UserDAO)
+  @ManyToOne((type) => UserORM)
   @JoinColumn({ name: "fk_user_id" })
-  user!: UserDAO;
+  user!: UserORM;
 
   @CreateDateColumn({ type: "timestamptz", name: "created_at" })
   readonly createdAt!: Date;

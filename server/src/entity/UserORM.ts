@@ -8,11 +8,11 @@ import {
   OneToMany,
 } from "typeorm";
 import { generateToken } from "../lib/token";
-import RefreshToken from "./RefreshTokenDAO";
-import SocialAccountDAO from "./SocialAccountDAO";
+import RefreshTokenORM from "./RefreshTokenORM";
+import SocialAccountORM from "./SocialAccountORM";
 
 @Entity({ name: "user" })
-export default class UserDAO {
+export default class UserORM {
   @PrimaryGeneratedColumn()
   readonly id!: number;
 
@@ -25,8 +25,8 @@ export default class UserDAO {
   @Column({ type: "varchar", length: 512, nullable: true })
   thumbnail?: string;
 
-  @OneToMany((type) => SocialAccountDAO, (social) => social.user)
-  socialAccounts!: SocialAccountDAO[];
+  @OneToMany((type) => SocialAccountORM, (social) => social.user)
+  socialAccounts!: SocialAccountORM[];
 
   @CreateDateColumn({ type: "timestamptz", name: "created_at" })
   readonly createdAt!: Date;
@@ -53,11 +53,11 @@ export default class UserDAO {
   }
 
   async generateRefreshToken(): Promise<string> {
-    const refreshTokenDb = new RefreshToken();
+    const refreshTokenDb = new RefreshTokenORM();
     refreshTokenDb.fk_user_id = this.id;
     //TODO
     refreshTokenDb.parent_id = undefined;
-    await getRepository(RefreshToken).save(refreshTokenDb);
+    await getRepository(RefreshTokenORM).save(refreshTokenDb);
 
     return await generateToken(
       {

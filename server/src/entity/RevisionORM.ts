@@ -8,20 +8,20 @@ import {
   DeleteDateColumn,
   JoinColumn,
 } from "typeorm";
-import ZettelDAO from "./ZettelDAO";
+import ZettelORM from "./ZettelORM";
 
 @Entity({ name: "revision" })
 @Index(["zettel_id", "version"], { unique: true })
-export default class RevisionDAO {
+export default class RevisionORM {
   @PrimaryGeneratedColumn("uuid")
   readonly uuid!: string;
 
   @Column()
   zettel_id!: number;
 
-  @ManyToOne((type) => ZettelDAO, (zettel) => zettel.revisions)
+  @ManyToOne((type) => ZettelORM, (zettel) => zettel.revisions)
   @JoinColumn({ name: "zettel_id" })
-  zettel!: ZettelDAO;
+  zettel!: ZettelORM;
 
   @Column()
   version!: number;

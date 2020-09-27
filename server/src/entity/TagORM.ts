@@ -7,7 +7,7 @@ import {
 } from "typeorm";
 
 @Entity({ name: "tag" })
-export default class TagDAO {
+export default class TagORM {
   @PrimaryGeneratedColumn()
   readonly id!: number;
 
@@ -17,12 +17,12 @@ export default class TagDAO {
   @CreateDateColumn({ type: "timestamptz", name: "created_at" })
   readonly createdAt!: Date;
 
-  static async findOrCreate(name: string): Promise<TagDAO> {
-    const tagRepo = getRepository(TagDAO);
+  static async findOrCreate(name: string): Promise<TagORM> {
+    const tagRepo = getRepository(TagORM);
     const tag = await tagRepo.findOne({ name });
     if (tag) return tag;
 
-    const newTag = new TagDAO();
+    const newTag = new TagORM();
     newTag.name = name;
     await tagRepo.save(newTag);
     return newTag;
