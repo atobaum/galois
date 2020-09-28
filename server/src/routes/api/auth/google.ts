@@ -2,8 +2,7 @@ import Router from "koa-router";
 import axios from "axios";
 import jwt from "jsonwebtoken";
 import config from "../../../config";
-import { generateToken, setTokens } from "../../../lib/token";
-import repository from "../../../repository";
+import { services } from "../../../services";
 
 const authConfig = config.oauth.google;
 
@@ -53,12 +52,9 @@ router.get("/callback", async (ctx) => {
     const openId = jwt.decode(id_token) as any;
     const { email, sub, name, picture } = openId;
 
-    let user = await repository.userRepository.findBySocialAccount(
-      "google",
-      sub + ""
-    );
-    if (!user) {
-      user = await repository.userRepository.create({
+    let authTokens = await services.user.login("google", sub + "");
+    if (!authTokens) {
+      authTokens = await services.user.join({
         username: name,
         socialAccount: { provider: "google", socialId: sub + "" },
         thumbnail: picture,
@@ -66,15 +62,14 @@ router.get("/callback", async (ctx) => {
       });
     }
 
-    const accessToken = await generateToken<{ id: number }>(
-      {
-        id: user.id,
-      },
-      { subject: "access_token", expiresIn: "1h" }
-    );
-
+    if (!authTokens) {
+      // TODO error
+      throw new Error("가입 오류");
+    }
     ctx.redirect(
-      `/login_callback#access_token=${encodeURIComponent(accessToken)}`
+      `/login_callback#access_token=${encodeURIComponent(
+        authTokens.accessToken
+      )}&refresh_token=${encodeURIComponent(authTokens.refreshToken)}`
     );
   }
 });

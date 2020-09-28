@@ -1,5 +1,5 @@
 import { AuthenticationError, gql } from "apollo-server-koa";
-import repository from "../repository";
+import { repositories, services } from "../services";
 
 export const zettelTypeDefs = gql`
   type Zettel {
@@ -39,7 +39,7 @@ export const zettelResolvers = {
   Query: {
     zettels: async (parent: any, args: any, ctx: any) => {
       if (!ctx.user) return null;
-      const zettels = await repository.zettelRepository.findAll({
+      const zettels = await repositories.zettel.findAll({
         userId: ctx.user.id,
       });
       return zettels;
@@ -51,10 +51,8 @@ export const zettelResolvers = {
     ) => {
       if (!ctx.user) throw new AuthenticationError("Login First");
       if (!(id || uuid)) return null;
-      const args = { userId: ctx.user.id, id, uuid };
-      const zettel = (await repository.zettelRepository.findAll(args))[0];
-
-      return zettel;
+      if (uuid) return services.zettel.getZettelByUUID(uuid, ctx.user.id);
+      else return services.zettel.getZettelById(id, ctx.user.id);
     },
   },
   Mutation: {
@@ -69,7 +67,7 @@ export const zettelResolvers = {
     ) => {
       if (!ctx.user) throw new AuthenticationError("Login First");
 
-      const zettel = await repository.zettelRepository.create({
+      const zettel = await services.zettel.createZettel({
         title,
         content,
         tags,
@@ -79,7 +77,7 @@ export const zettelResolvers = {
     },
     deleteZettel: async (parent: any, { id }: { id: number }, ctx: any) => {
       if (!ctx.user) throw new AuthenticationError("Login First");
-      const deleted = await repository.zettelRepository.delete(id, ctx.user.id);
+      const deleted = await services.zettel.removeZettel(id, ctx.user.id);
       return deleted;
     },
   },
