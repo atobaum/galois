@@ -1,6 +1,7 @@
 import Entity from "../../shared/Entity";
 import { generateToken } from "../../../lib/token";
 
+const lifetime = 7 * 24 * 60 * 60; //7d
 export default class RefreshToken extends Entity {
   readonly createdAt: Date;
   private revokedAt: Date | null;
@@ -41,11 +42,19 @@ export default class RefreshToken extends Entity {
       {
         id: this.id,
         iat: toNumericDate(this.createdAt),
-        exp: toNumericDate(this.createdAt) + 7 * 24 * 60 * 60, //7d
+        exp: toNumericDate(this.createdAt) + lifetime,
       },
       {
         subject: "refresh_token",
       }
+    );
+  }
+
+  //returns remaining life in seconds
+  public getRemaining(): number {
+    if (this.revokedAt) return 0;
+    return (
+      lifetime - (toNumericDate(new Date()) - toNumericDate(this.createdAt))
     );
   }
 

@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
-import { clearScreenDown } from "readline";
 import RefreshToken from "../RefreshToken";
+
+const sevenDaysInSecs = 7 * 24 * 60 * 60;
 
 describe("RefreshToken", () => {
   const time1 = new Date("2020-08-08");
@@ -22,6 +23,26 @@ describe("RefreshToken", () => {
     expect(token.isRevoked()).toBeFalsy();
     expect(token.isModified()).toBeFalsy();
     expect(token.isNew()).toBeFalsy();
+  });
+
+  it("token의 남은 시간 계산", () => {
+    const token = RefreshToken.create(1, time1);
+    const now = new Date();
+
+    const remaining = token.getRemaining();
+    expect(
+      Math.abs(
+        sevenDaysInSecs -
+          (remaining + toNumericDate(now) - toNumericDate(time1))
+      )
+    ).toBeLessThanOrEqual(2);
+  });
+
+  it("remocked token의 남은 시간 계산", () => {
+    const token = RefreshToken.create(1, time1, time2);
+
+    const remaining = token.getRemaining();
+    expect(remaining).toBeFalsy();
   });
 
   it("revoked token", () => {
@@ -47,7 +68,6 @@ describe("RefreshToken", () => {
     const encodedJwt = await token.generateJWT();
     const decoded = jwt.decode(encodedJwt) as any;
 
-    const sevenDaysInSecs = 7 * 24 * 60 * 60;
     expect(decoded.id).toBe(token.id);
     expect(decoded.iat).toBe(toNumericDate(token.createdAt));
     expect(decoded.exp).toBe(toNumericDate(token.createdAt) + sevenDaysInSecs);
