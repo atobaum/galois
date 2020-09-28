@@ -1,4 +1,5 @@
 import Entity from "../../shared/Entity";
+import { generateToken } from "../../../lib/token";
 
 export default class RefreshToken extends Entity {
   readonly createdAt: Date;
@@ -39,7 +40,25 @@ export default class RefreshToken extends Entity {
     return new RefreshToken(id, createdAt, revokedAt);
   }
 
+  public generateJWT(): Promise<string> {
+    if (!this.id) throw new Error("Cannot generate refresh token jwt");
+    return generateToken(
+      {
+        id: this.id,
+        iat: toNumericDate(this.createdAt),
+        exp: toNumericDate(this.createdAt) + 7 * 24 * 60 * 60, //7d
+      },
+      {
+        subject: "refresh_token",
+      }
+    );
+  }
+
   public static generate(): RefreshToken {
     return new RefreshToken(null, new Date());
   }
+}
+
+function toNumericDate(date: Date): number {
+  return ~~(date.getTime() / 1000);
 }

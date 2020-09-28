@@ -1,3 +1,5 @@
+import jwt from "jsonwebtoken";
+import { clearScreenDown } from "readline";
 import RefreshToken from "../RefreshToken";
 
 describe("RefreshToken", () => {
@@ -39,9 +41,26 @@ describe("RefreshToken", () => {
     expect(token.isNew()).toBeFalsy();
   });
 
+  it("generates token", async (done) => {
+    const token = RefreshToken.create(1, time1);
+
+    const encodedJwt = await token.generateJWT();
+    const decoded = jwt.decode(encodedJwt) as any;
+
+    const sevenDaysInSecs = 7 * 24 * 60 * 60;
+    expect(decoded.id).toBe(token.id);
+    expect(decoded.iat).toBe(toNumericDate(token.createdAt));
+    expect(decoded.exp).toBe(toNumericDate(token.createdAt) + sevenDaysInSecs);
+    done();
+  });
+
   it("토큰 생성 오류", () => {
     expect(() => RefreshToken.create(1, future)).toThrow();
     expect(() => RefreshToken.create(1, time2, time1)).toThrow();
     expect(() => RefreshToken.create(1, time1, future)).toThrow();
   });
 });
+
+function toNumericDate(date: Date): number {
+  return ~~(date.getTime() / 1000);
+}
