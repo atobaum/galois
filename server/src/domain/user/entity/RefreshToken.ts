@@ -4,7 +4,6 @@ import { generateToken } from "../../../lib/token";
 export default class RefreshToken extends Entity {
   readonly createdAt: Date;
   private revokedAt: Date | null;
-  private modified: boolean = false;
 
   constructor(id: number | null, createdAt: Date, revokedAt?: Date) {
     super(id);
@@ -20,10 +19,6 @@ export default class RefreshToken extends Entity {
     if (this.isRevoked()) return;
     this.revokedAt = new Date();
     this.modified = true;
-  }
-
-  public isModified(): boolean {
-    return this.modified;
   }
 
   public static create(

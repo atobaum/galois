@@ -1,5 +1,6 @@
 export default abstract class Entity<K = number> {
   readonly id: K | null;
+  protected modified: boolean = false;
 
   constructor(id: K | null) {
     this.id = id || null;
@@ -15,5 +16,9 @@ export default abstract class Entity<K = number> {
 
   public isNew(): boolean {
     return !this.id;
+  }
+
+  public isModified(): boolean {
+    return this.modified;
   }
 }
