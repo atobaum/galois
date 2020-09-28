@@ -47,17 +47,29 @@ export default class MemoryUserRepository implements IUserRepository {
       )
         user = this.db[id];
     }
+    if (user && user.refreshTokens) {
+      user.refreshTokens = user.refreshTokens.filter((rt) => !rt.isRevoked());
+    }
     return user;
   }
 
   async findById(id: number, option?: any): Promise<User | null> {
     const user = this.db[id] || null;
+    if (user && user.refreshTokens) {
+      user.refreshTokens = user.refreshTokens.filter((rt) => !rt.isRevoked());
+    }
     return user;
   }
   async save(entity: User): Promise<number> {
     if (!entity.id) {
       entity.id = this.nextId;
       this.nextId++;
+    }
+
+    if (entity.refreshTokens) {
+      entity.refreshTokens.forEach((rt) => {
+        if (rt.isNew()) rt.id = ~~(Math.random() * 1000);
+      });
     }
     this.db[entity.id] = entity;
     return entity.id;
