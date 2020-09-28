@@ -17,13 +17,6 @@ export default class RefreshTokenORM {
   @Column()
   fk_user_id!: number;
 
-  @Column({ default: false })
-  disabled!: boolean;
-
-  // TODO
-  @Column({ nullable: true })
-  parent_id?: number;
-
   @CreateDateColumn({ type: "timestamptz", name: "created_at" })
   readonly createdAt!: Date;
 
