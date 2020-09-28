@@ -72,10 +72,10 @@ export default class User extends AggregateRoot {
     };
   }
 
-  static create(props: UserProps, id: number): User {
+  static create(props: UserProps, id?: number): User {
     // props validation with joi
 
     const user = new User(props, id);
-    throw new Error("asdf");
+    return user;
   }
 }
