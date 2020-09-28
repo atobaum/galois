@@ -11,8 +11,28 @@ import { generateToken } from "../lib/token";
 import RefreshTokenORM from "./RefreshTokenORM";
 import SocialAccountORM from "./SocialAccountORM";
 
+export type AuthToken = {
+  refreshToken: string;
+  accessToken: string;
+};
+
+export interface IUser {
+  id: number;
+  username: string;
+  email: string;
+  thumbnail: string | null;
+
+  // socialAccounts
+  createdAt: Date;
+  updatedAt: Date;
+
+  generateAuthTokens(): Promise<AuthToken>;
+  refresh(refreshToken: string): Promise<AuthToken>;
+  revokeRefreshToken(refreshToken: string): Promise<boolean>;
+}
+
 @Entity({ name: "user" })
-export default class UserORM {
+export default class UserORM implements IUser {
   @PrimaryGeneratedColumn()
   readonly id!: number;
 
@@ -23,7 +43,7 @@ export default class UserORM {
   email!: string;
 
   @Column({ type: "varchar", length: 512, nullable: true })
-  thumbnail?: string;
+  thumbnail: string | null = null;
 
   @OneToMany((type) => SocialAccountORM, (social) => social.user)
   socialAccounts!: SocialAccountORM[];

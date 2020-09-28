@@ -15,7 +15,7 @@ const config = {
   database: env.TYPEORM_DATABASE,
   synchronize: true,
   logging: false,
-  entities: ["src/entity/**/*.ts"],
+  entities: ["src/typeorm/**/*.ts"],
   migrations: ["src/migration/**/*.ts"],
   subscribers: ["src/subscriber/**/*.ts"],
 };

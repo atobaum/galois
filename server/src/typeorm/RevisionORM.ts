@@ -10,6 +10,11 @@ import {
 } from "typeorm";
 import ZettelORM from "./ZettelORM";
 
+export enum ZettelContentType {
+  plain = "plain",
+  markdown = "md",
+}
+
 @Entity({ name: "revision" })
 @Index(["zettel_id", "version"], { unique: true })
 export default class RevisionORM {
@@ -25,6 +30,9 @@ export default class RevisionORM {
 
   @Column()
   version!: number;
+
+  @Column({ type: "varchar", length: 16, default: ZettelContentType.markdown })
+  type!: ZettelContentType;
 
   @Column("text")
   content!: string;

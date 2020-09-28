@@ -1,5 +1,5 @@
 import { ConnectionOptions, createConnection, Connection } from "typeorm";
-import entities from "../entity";
+import entities from "../typeorm";
 import config from "../config";
 
 export default function postgrasqlLoader(): Promise<Connection> {
