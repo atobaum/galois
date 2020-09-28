@@ -1,12 +1,12 @@
 import IValueObject from "../../shared/IValueObject";
 
-type Provider = "google" | "facebook" | "github";
+export type SocialProvider = "google" | "facebook" | "github";
 
 export default class SocialAccount implements IValueObject {
-  readonly provider: Provider;
+  readonly provider: SocialProvider;
   readonly socialId: string;
 
-  constructor(provider: Provider, socialId: string) {
+  constructor(provider: SocialProvider, socialId: string) {
     this.provider = provider;
     this.socialId = socialId;
   }

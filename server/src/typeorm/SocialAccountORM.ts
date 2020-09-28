@@ -9,6 +9,7 @@ import {
   DeleteDateColumn,
   Index,
 } from "typeorm";
+import { SocialProvider } from "../domain/user/entity/SocialAccount";
 import UserORM from "./UserORM";
 
 @Entity({ name: "social_account" })
@@ -18,7 +19,7 @@ export default class SocialAccountORM {
   id!: number;
 
   @Column({ type: "varchar", length: 16 })
-  provider!: string;
+  provider!: SocialProvider;
 
   @Column({ name: "social_id", type: "varchar", length: 255 })
   socialId!: string;
