@@ -1,51 +1,12 @@
 import { getManager, getRepository } from "typeorm";
-import { User } from "./userRepository";
-import ZettelORM from "../entity/ZettelORM";
-import RevisionORM from "../entity/RevisionORM";
-import TagORM from "../entity/TagORM";
+import { User } from "../user/UserRepositoryTypeORMImpl";
+import ZettelORM from "../../typeorm/ZettelORM";
+import RevisionORM from "../../typeorm/RevisionORM";
+import TagORM from "../../typeorm/TagORM";
+import IZettelRepository from "./IZettelRepository";
+import Zettel from "./entity/Zettle";
 
-type FindOption = {
-  userId: number;
-  id?: number;
-  version?: number;
-  uuid?: string;
-};
-
-export interface Zettel {
-  readonly id: number;
-  readonly version: number;
-  readonly uuid: string;
-  title?: string;
-  content: string;
-  readonly user: User;
-  readonly createdAt: Date;
-}
-
-type CreateZettelDTO = {
-  title?: string;
-  content: string;
-  tags: string[];
-  userId: number;
-};
-
-type EditZettelDTO = {
-  id: number;
-  title?: string;
-  content?: string;
-  tags?: string[];
-  userId: number;
-};
-
-export interface ZettelRepository {
-  findAll(args: FindOption): Promise<Zettel[]>;
-  findByTag(tag: string): Promise<Zettel[]>;
-  create(args: CreateZettelDTO): Promise<Zettel>;
-  createRevision(args: EditZettelDTO): Promise<Zettel>;
-  delete(zettelId: number, userId: number): Promise<boolean>;
-  save(zettel: Zettel): Promise<boolean>;
-}
-
-export default class ZettelRepositoryPostgresql implements ZettelRepository {
+export default class ZettelRepositoryTypeORMImpl implements IZettelRepository {
   async save(zettel: Zettel): Promise<boolean> {
     return true;
   }
