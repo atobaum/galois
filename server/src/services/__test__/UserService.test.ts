@@ -35,10 +35,11 @@ describe("UserService", () => {
   describe("join", () => {
     it("가입 가능", async (done) => {
       const tokens = await userService.join(newUserInfo);
-      expect(tokens.refreshToken).toBeTruthy();
-      expect(tokens.accessToken).toBeTruthy();
+      expect(tokens).toBeTruthy();
+      expect(tokens!.refreshToken).toBeTruthy();
+      expect(tokens!.accessToken).toBeTruthy();
 
-      const accessTokenData = jwt.decode(tokens.accessToken) as any;
+      const accessTokenData = jwt.decode(tokens!.accessToken) as any;
       const id = accessTokenData.id;
 
       const user = (await repo.findById(id)) as User;
@@ -59,8 +60,9 @@ describe("UserService", () => {
   describe("login", () => {
     it("가능", async (done) => {
       const tokens = await userService.login("google", "128");
-      expect(tokens.refreshToken).toBeTruthy();
-      expect(tokens.accessToken).toBeTruthy();
+      expect(tokens).toBeTruthy();
+      expect(tokens!.refreshToken).toBeTruthy();
+      expect(tokens!.accessToken).toBeTruthy();
       done();
     });
 
@@ -74,8 +76,9 @@ describe("UserService", () => {
   describe("refresh", () => {
     it("성공", async (done) => {
       const tokens = await userService.login("google", "128");
-      const accessTokenData = jwt.decode(tokens.accessToken) as any;
-      const refreshTokenData = jwt.decode(tokens.refreshToken) as any;
+      expect(tokens).toBeTruthy();
+      const accessTokenData = jwt.decode(tokens!.accessToken) as any;
+      const refreshTokenData = jwt.decode(tokens!.refreshToken) as any;
 
       await new Promise((res) => setTimeout(res, 2000));
 
@@ -83,14 +86,16 @@ describe("UserService", () => {
         refreshTokenData.id,
         accessTokenData.id
       );
-      expect(newTokens.refreshToken).toBe(tokens.refreshToken);
-      expect(newTokens.accessToken).not.toBe(tokens.accessToken);
+      expect(newTokens).toBeTruthy();
+      expect(newTokens!.refreshToken).toBe(tokens!.refreshToken);
+      expect(newTokens!.accessToken).not.toBe(tokens!.accessToken);
       done();
     });
 
     it("실패", async (done) => {
       const tokens = await userService.login("google", "128");
-      const accessTokenData = jwt.decode(tokens.accessToken) as any;
+      expect(tokens).toBeTruthy();
+      const accessTokenData = jwt.decode(tokens!.accessToken) as any;
 
       const newTokens = await userService.refresh(7098, accessTokenData.id);
       expect(newTokens).toBeNull();
@@ -102,8 +107,9 @@ describe("UserService", () => {
     it("성공", async (done) => {
       const tokens = await userService.login("google", "128");
 
-      const accessTokenData = jwt.decode(tokens.accessToken) as any;
-      const refreshTokenData = jwt.decode(tokens.refreshToken) as any;
+      expect(tokens).toBeTruthy();
+      const accessTokenData = jwt.decode(tokens!.accessToken) as any;
+      const refreshTokenData = jwt.decode(tokens!.refreshToken) as any;
       const userId = accessTokenData.id;
       const refreshTokenId = refreshTokenData.id;
 
@@ -112,7 +118,8 @@ describe("UserService", () => {
         (rt) => rt.id === refreshTokenId
       );
 
-      expect(retrievedRefreshToken?.isRevoked()).toBe(false);
+      expect(retrievedRefreshToken).toBeTruthy();
+      expect(retrievedRefreshToken!.isRevoked()).toBe(false);
 
       await userService.logout(refreshTokenId, userId);
 
