@@ -24,8 +24,21 @@ jobs:
     env:
       working-directory: ./server
       JWT_SECRET: testasdf
+      TYPEORM_HOST: localhost
+      TYPEORM_USERNAME: postgres
+      TYPEORM_PASSWORD: postgres
+      TYPEORM_DATABASE: postgres
+      TYPEORM_SYNCHRONIZE: false
+      TYPEORM_LOGGING: true
 
     steps:
+    - name: Setup PostgreSQL
+      uses: Harmon758/postgresql-action@v1.0.0
+      with:
+        postgresql db: galois
+        postgresql user: postgres
+        postgresql password: postgres
+
     - uses: actions/checkout@v2
       
     - name: Use Node.js ${{ matrix.node-version }}
@@ -47,7 +60,14 @@ jobs:
         node-version: ${{ matrix.node-version }}
         registry-url: 'https://npm.pkg.github.com'
 
-    - working-directory: client
-      run: |
-        yarn
-        yarn test:ci
+    - name: Install dependencies
+      working-directory: server
+      run: yarn
+        
+    - name: Initialize DB schema
+      working-directory: server
+      run: yarn typeorm:cli schema:sync
+
+    - name: Run test
+      working-directory: server
+      run: yarn test:ci
