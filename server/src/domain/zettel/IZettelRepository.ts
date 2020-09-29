@@ -4,11 +4,8 @@ import Zettel from "./entity/Zettle";
 
 type FindOption = {
   userId: number;
-  id?: number;
-  version?: number;
-  uuid?: string;
   limit: number;
-  cursor: number;
+  cursor?: number;
 };
 
 type CreateZettelDTO = {
@@ -20,6 +17,7 @@ type CreateZettelDTO = {
 };
 
 export default interface IZettelRepository extends IRepository<Zettel> {
+  findByUUID(uuid: string): Promise<Zettel | null>;
   findAll(args: FindOption): Promise<Zettel[]>;
   findByTag(tag: string): Promise<Zettel[]>;
 }
