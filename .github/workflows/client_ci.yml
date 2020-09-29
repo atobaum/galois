@@ -23,6 +23,7 @@ jobs:
 
     env:
       working-directory: ./client
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
     steps:
       - uses: actions/checkout@v2
@@ -47,7 +48,11 @@ jobs:
           node-version: ${{ matrix.node-version }}
           registry-url: "https://npm.pkg.github.com"
 
-      - working-directory: client
+      - name: Test
+        working-directory: client
         run: |
           yarn
           yarn test:ci
+
+      - name: Upload coverage report
+        run: bash <(curl -s https://codecov.io/bash) -f client/coverage/clover.xml -F client
