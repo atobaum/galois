@@ -1,3 +1,4 @@
+import { UserDTO } from "../../../graphql/userSchema";
 import { generateToken } from "../../../lib/token";
 import AggregateRoot from "../../shared/AggregateRoot";
 import RefreshToken from "./RefreshToken";
@@ -64,11 +65,11 @@ export default class User extends AggregateRoot {
     );
   }
 
-  public getDTO() {
+  public getDTO(): UserDTO {
     return {
       username: this.username,
       email: this.email,
-      thumbnail: this.thumbnail,
+      thumbnail: this.thumbnail || undefined,
     };
   }
 
