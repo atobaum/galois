@@ -1,4 +1,5 @@
 import IRepository from "../shared/IRepository";
+import { ContentType } from "./entity/Revision";
 import Zettel from "./entity/Zettle";
 
 type FindOption = {
@@ -6,20 +7,15 @@ type FindOption = {
   id?: number;
   version?: number;
   uuid?: string;
+  limit: number;
+  cursor: number;
 };
 
 type CreateZettelDTO = {
-  title?: string;
+  title: string | null;
   content: string;
+  contentType: ContentType;
   tags: string[];
-  userId: number;
-};
-
-type EditZettelDTO = {
-  id: number;
-  title?: string;
-  content?: string;
-  tags?: string[];
   userId: number;
 };
 

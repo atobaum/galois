@@ -1,31 +1,75 @@
+import { ContentType } from "../domain/zettel/entity/Revision";
 import Zettel from "../domain/zettel/entity/Zettle";
+import { Collection } from "../graphql/zettelSchema";
+
+type FindZettelOption = {
+  cursor?: number;
+  limit: number;
+};
+type CreateZettelRequestDTO = {
+  title: string | null;
+  content: string;
+  contentType: ContentType;
+  tags: string[];
+};
 
 export default class ZettelService {
-  getZettelById(id: number, userId: number, version?: number): Zettel {
-    throw new Error("a");
+  getZettelById(
+    args: { id: number; version?: number },
+    userId: number
+  ): Promise<Zettel> {
+    throw new Error("NOT_IMPLEMENTED");
   }
 
-  getZettelByUUID(uuid: string, userId: number): Zettel {
-    throw new Error("a");
+  getZettelByUUID(uuid: string, userId: number): Promise<Zettel> {
+    throw new Error("NOT_IMPLEMENTED");
   }
 
-  getZettelByTag(tag: string): Zettel[] {
-    throw new Error("a");
+  findZettelByTag(tag: string, userId: number): Promise<Collection<Zettel>> {
+    throw new Error("NOT_IMPLEMENTED");
   }
 
-  getRevisions(id: number): any[] {
-    throw new Error("a");
+  findZettels(
+    option: FindZettelOption,
+    userId: number
+  ): Promise<Collection<Zettel>> {
+    throw new Error("NOT_IMPLEMENTED");
   }
 
-  createZettel(zettelDTO: any): any {}
+  getRevisions(id: number, userId: number): Promise<Zettel> {
+    throw new Error("NOT_IMPLEMENTED");
+  }
 
-  createRevision(id: number, revision: any): any {}
+  createZettel(args: CreateZettelRequestDTO, userId: number): Promise<Zettel> {
+    throw new Error("NOT_IMPLEMENTED");
+  }
 
-  updateTitle(id: number, newTitle: any): any {}
+  createRevision(
+    args: { id: number; content: string; contentType: ContentType },
+    revision: any
+  ): Promise<Zettel> {
+    throw new Error("NOT_IMPLEMENTED");
+  }
 
-  updateTags(id: number, newTags: string[]): any {}
+  updateTitle(
+    args: { id: number; title: string | null },
+    newTitle: any
+  ): Promise<Zettel> {
+    throw new Error("NOT_IMPLEMENTED");
+  }
 
-  removeZettel(id: number, userId: number): any {}
+  updateTags(
+    args: { id: number; tags: string[] },
+    newTags: string[]
+  ): Promise<Zettel> {
+    throw new Error("NOT_IMPLEMENTED");
+  }
 
-  removeRevision(uuid: string, userId: number): any {}
+  removeZettel(id: number, userId: number): Promise<boolean> {
+    throw new Error("NOT_IMPLEMENTED");
+  }
+
+  removeRevision(uuid: string, userId: number): Promise<boolean> {
+    throw new Error("NOT_IMPLEMENTED");
+  }
 }
