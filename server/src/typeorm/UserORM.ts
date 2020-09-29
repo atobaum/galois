@@ -8,7 +8,7 @@ import {
 } from "typeorm";
 import SocialAccountORM from "./SocialAccountORM";
 
-@Entity({ name: "user" })
+@Entity({ name: "user_account" })
 export default class UserORM {
   @PrimaryGeneratedColumn()
   readonly id!: number;
