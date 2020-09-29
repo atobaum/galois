@@ -1,18 +1,19 @@
-import { clearScreenDown } from "readline";
-import MemoryUserRepository from "../../MemoryUserRepository";
-import User from "../User";
+import MemoryUserRepository from "../MemoryUserRepository";
+import User from "../entity/User";
 
 describe("MemoryUserRepository", () => {
   const repo = new MemoryUserRepository();
   it("findById", async (done) => {
     const user = await repo.findById(1);
-    expect(user.id).toBe(1);
+    expect(user).toBeTruthy();
+    expect(user!.id).toBe(1);
     done();
   });
 
   it("findBySocialAccount", async (done) => {
     const user = await repo.findBySocialAccount("google", "127");
-    expect(user.id).toBe(2);
+    expect(user).toBeTruthy();
+    expect(user!.id).toBe(2);
     done();
   });
 
