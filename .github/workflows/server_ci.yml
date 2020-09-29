@@ -30,6 +30,7 @@ jobs:
       TYPEORM_DATABASE: postgres
       TYPEORM_SYNCHRONIZE: false
       TYPEORM_LOGGING: true
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
     steps:
       - name: Setup PostgreSQL
@@ -71,3 +72,6 @@ jobs:
       - name: Run test
         working-directory: server
         run: yarn test:ci
+
+      - name: Upload coverage report
+        run: bash <(curl -s https://codecov.io/bash) -f server/coverage/clover.xml -F server
