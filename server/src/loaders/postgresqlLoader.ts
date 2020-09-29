@@ -3,6 +3,14 @@ import entities from "../typeorm";
 import config from "../config";
 
 export default function postgrasqlLoader(): Promise<Connection> {
+  let logging: any;
+
+  if (process.env.TYPEORM_LOGGING === "true") {
+    logging = true;
+  } else {
+    logging = ["error", "warn"];
+  }
+
   return new Promise((resolve, reject) => {
     let connectionOptions: ConnectionOptions = {
       type: "postgres",
@@ -11,7 +19,7 @@ export default function postgrasqlLoader(): Promise<Connection> {
       database: config.postgresql.database,
       username: config.postgresql.username,
       password: config.postgresql.password,
-      logging: process.env.TYPEORM_LOGGING === "true",
+      logging,
       entities,
     };
 
