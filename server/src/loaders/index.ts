@@ -1,5 +1,4 @@
 import Koa from "koa";
-import "./mongooseLoader";
 import koaLoader from "./koaLoader";
 import postgrasqlLoader from "./postgresqlLoader";
 

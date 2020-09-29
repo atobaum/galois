@@ -1,10 +1,10 @@
 import { ConnectionOptions, createConnection, Connection } from "typeorm";
-import entities from "../entity";
+import entities from "../typeorm";
 import config from "../config";
 
 export default function postgrasqlLoader(): Promise<Connection> {
   return new Promise((resolve, reject) => {
-    const connectionOptions: ConnectionOptions = {
+    let connectionOptions: ConnectionOptions = {
       type: "postgres",
       host: config.postgresql.host,
       port: config.postgresql.port,
@@ -13,14 +13,21 @@ export default function postgrasqlLoader(): Promise<Connection> {
       password: config.postgresql.password,
       logging: process.env.TYPEORM_LOGGING === "true",
       entities,
-      // heroku 연결 하기 위해
-      ssl: true,
-      extra: {
-        ssl: {
-          rejectUnauthorized: false,
-        },
-      },
     };
+
+    // Heroku postgresql 접속 안되서
+    if (!process.env.GITHUB_RUN_ID) {
+      connectionOptions = {
+        ...connectionOptions,
+        ssl: true,
+        extra: {
+          ssl: {
+            rejectUnauthorized: false,
+          },
+        },
+      };
+    }
+
     createConnection(connectionOptions)
       .then((conn) => {
         console.log("Database connected.");

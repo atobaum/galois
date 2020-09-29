@@ -1,51 +1,12 @@
 import { getManager, getRepository } from "typeorm";
-import { User } from "./userRepository";
-import ZettelDAO from "../entity/ZettelDAO";
-import RevisionDAO from "../entity/RevisionDAO";
-import TagDAO from "../entity/TagDAO";
+import { User } from "../user/UserRepositoryTypeORMImpl";
+import ZettelORM from "../../typeorm/ZettelORM";
+import RevisionORM from "../../typeorm/RevisionORM";
+import TagORM from "../../typeorm/TagORM";
+import IZettelRepository from "./IZettelRepository";
+import Zettel from "./entity/Zettle";
 
-type FindOption = {
-  userId: number;
-  id?: number;
-  version?: number;
-  uuid?: string;
-};
-
-export interface Zettel {
-  readonly id: number;
-  readonly version: number;
-  readonly uuid: string;
-  title?: string;
-  content: string;
-  readonly user: User;
-  readonly createdAt: Date;
-}
-
-type CreateZettelDTO = {
-  title?: string;
-  content: string;
-  tags: string[];
-  userId: number;
-};
-
-type EditZettelDTO = {
-  id: number;
-  title?: string;
-  content?: string;
-  tags?: string[];
-  userId: number;
-};
-
-export interface ZettelRepository {
-  findAll(args: FindOption): Promise<Zettel[]>;
-  findByTag(tag: string): Promise<Zettel[]>;
-  create(args: CreateZettelDTO): Promise<Zettel>;
-  createRevision(args: EditZettelDTO): Promise<Zettel>;
-  delete(zettelId: number, userId: number): Promise<boolean>;
-  save(zettel: Zettel): Promise<boolean>;
-}
-
-export default class ZettelRepositoryPostgresql implements ZettelRepository {
+export default class ZettelRepositoryTypeORMImpl implements IZettelRepository {
   async save(zettel: Zettel): Promise<boolean> {
     return true;
   }
@@ -63,15 +24,15 @@ export default class ZettelRepositoryPostgresql implements ZettelRepository {
     userId,
   }: CreateZettelDTO): Promise<Readonly<Zettel> & { tags: string[] }> {
     const manager = getManager();
-    const zettel = new ZettelDAO();
+    const zettel = new ZettelORM();
     zettel.fk_user_id = userId;
     if (title) zettel.title = title;
 
-    const tagsDAO = await Promise.all(tags.map(TagDAO.findOrCreate));
+    const tagsDAO = await Promise.all(tags.map(TagORM.findOrCreate));
     zettel.tags = tagsDAO;
     await manager.save(zettel);
 
-    const revision = new RevisionDAO();
+    const revision = new RevisionORM();
     revision.content = content;
     revision.zettel_id = zettel.id;
     revision.version = 1;
@@ -90,7 +51,7 @@ export default class ZettelRepositoryPostgresql implements ZettelRepository {
   }
 
   async delete(zettelId: number, userId: number): Promise<boolean> {
-    const zettelRepo = getRepository(ZettelDAO);
+    const zettelRepo = getRepository(ZettelORM);
     const zettel = await zettelRepo.findOne(zettelId);
 
     // TODO validate, errorhandling
@@ -107,7 +68,7 @@ export default class ZettelRepositoryPostgresql implements ZettelRepository {
     uuid,
   }: FindOption): Promise<(Readonly<Zettel> & { tags: string[] })[]> {
     if (!userId) return [];
-    const query = getRepository(ZettelDAO)
+    const query = getRepository(ZettelORM)
       .createQueryBuilder("zettel")
       .leftJoinAndSelect("zettel.tags", "tags")
       .leftJoinAndSelect("zettel.revisions", "revision")

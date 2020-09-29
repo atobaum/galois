@@ -5,7 +5,7 @@ import {
   PrimaryGeneratedColumn,
   JoinColumn,
 } from "typeorm";
-import ZettelDAO from "./ZettelDAO";
+import ZettelORM from "./ZettelORM";
 
 export enum LinkType {
   externalSource = "src", //url(display name??), book, quote,
@@ -15,7 +15,7 @@ export enum LinkType {
 }
 
 @Entity({ name: "link" })
-export default class LinkDAO {
+export default class LinkORM {
   @PrimaryGeneratedColumn()
   readonly id!: number;
 
@@ -25,13 +25,13 @@ export default class LinkDAO {
   @Column()
   fk_to_zettel_id!: number;
 
-  @ManyToOne((type) => ZettelDAO, { onDelete: "CASCADE" })
+  @ManyToOne((type) => ZettelORM, { onDelete: "CASCADE" })
   @JoinColumn({ name: "fk_from_zettel_id" })
-  fromZettel!: ZettelDAO;
+  fromZettel!: ZettelORM;
 
-  @ManyToOne((type) => ZettelDAO, { onDelete: "CASCADE" })
+  @ManyToOne((type) => ZettelORM, { onDelete: "CASCADE" })
   @JoinColumn({ name: "fk_to_zettel_id" })
-  toZettel!: ZettelDAO;
+  toZettel!: ZettelORM;
 
   @Column("varchar", { length: 16, default: LinkType.reference })
   type!: LinkType;
