@@ -1,35 +1,13 @@
 import User from "../entity/User";
-import postgrasqlLoader from "../../../loaders/postgresqlLoader";
-import { getManager } from "typeorm";
 import TypeormUserRepositoy from "../TypeormUserRepository";
 import SocialAccount from "../entity/SocialAccount";
+import initState from "../../../test/initState";
+import postgrasqlLoader from "../../../loaders/postgresqlLoader";
 
-const existedUser: any = {
-  username: "test1",
-  email: "test@test.aom",
-  thumbnail: "thumbnail",
-  socialAccount: {
-    provider: "google",
-    socialId: "123",
-  },
-};
+const existedUser = initState.user;
 
 beforeAll(async () => {
-  if (!process.env.TYPEORM_DATABASE)
-    process.env.TYPEORM_DATABASE = "galois_test";
   await postgrasqlLoader();
-  const manager = getManager();
-  await manager.query("DELETE FROM social_account;");
-  await manager.query("DELETE FROM refresh_token;");
-  await manager.query("DELETE FROM user_account;");
-  const res = await manager.query(
-    `insert into user_account (username, email, thumbnail) values ('${existedUser.username}', '${existedUser.email}', '${existedUser.thumbnail}') returning id;`
-  );
-  existedUser.id = res[0].id;
-
-  await manager.query(
-    `insert into social_account (fk_user_id, provider, social_id) values (${existedUser.id}, 'google', '123');`
-  );
 });
 
 describe("TypeormUserRepository", () => {
