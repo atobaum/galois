@@ -14,7 +14,7 @@ on:
       - "server/**"
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
 
     strategy:
