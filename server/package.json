@@ -8,7 +8,7 @@
     "start": "ts-node src/index.ts",
     "start:prod": "node build/index.js",
     "test": "jest --watch",
-    "test:ci": "jest --collect-coverage",
+    "test:ci": "jest --collect-coverage --collectCoverageFrom=src/**/*.{ts}",
     "build": "tsc",
     "typeorm:cli": "ts-node ./node_modules/typeorm/cli.js"
   },
