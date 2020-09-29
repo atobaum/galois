@@ -39,4 +39,9 @@ export default class SocialAccountORM {
 
   @DeleteDateColumn({ type: "timestamptz", name: "deleted_at" })
   readonly deletedAt?: Date;
+
+  constructor(provider: SocialProvider, socialId: string) {
+    this.provider = provider;
+    this.socialId = socialId;
+  }
 }

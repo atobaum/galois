@@ -18,10 +18,10 @@ export default class RefreshTokenORM {
   fk_user_id!: number;
 
   @CreateDateColumn({ type: "timestamptz", name: "created_at" })
-  readonly createdAt!: Date;
+  createdAt!: Date;
 
   @DeleteDateColumn({ type: "timestamptz", name: "revoked_at" })
-  readonly revokedAt!: Date;
+  revokedAt!: Date;
 
   @ManyToOne((type) => UserORM, { onDelete: "CASCADE" })
   @JoinColumn({ name: "fk_user_id" })

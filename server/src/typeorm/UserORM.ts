@@ -30,4 +30,8 @@ export default class UserORM {
 
   @UpdateDateColumn({ type: "timestamptz", name: "updated_at" })
   readonly updatedAt!: Date;
+
+  constructor(id?: number) {
+    if (id) this.id = id;
+  }
 }
