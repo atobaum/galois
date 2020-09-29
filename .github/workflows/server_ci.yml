@@ -5,13 +5,13 @@ name: Server CI
 
 on:
   push:
-    branches: [ develop ]
+    branches: [develop, master]
     paths:
-      - 'server/**'
+      - "server/**"
   pull_request:
-    branches: [ develop ]
+    branches: [develop, master]
     paths:
-      - 'server/**'
+      - "server/**"
 
 jobs:
   build:
@@ -32,42 +32,42 @@ jobs:
       TYPEORM_LOGGING: true
 
     steps:
-    - name: Setup PostgreSQL
-      uses: Harmon758/postgresql-action@v1.0.0
-      with:
-        postgresql db: galois
-        postgresql user: postgres
-        postgresql password: postgres
+      - name: Setup PostgreSQL
+        uses: Harmon758/postgresql-action@v1.0.0
+        with:
+          postgresql db: galois
+          postgresql user: postgres
+          postgresql password: postgres
 
-    - uses: actions/checkout@v2
-      
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }} 
+      - uses: actions/checkout@v2
 
-    - name: Cache
-      uses: actions/cache@v2.1.1
-      with:
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Cache
+        uses: actions/cache@v2.1.1
+        with:
           path: client/node_modules
           key: ${{ runner.OS }}-build-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.OS }}-build-
             ${{ runner.OS }}-
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-        registry-url: 'https://npm.pkg.github.com'
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+          registry-url: "https://npm.pkg.github.com"
 
-    - name: Install dependencies
-      working-directory: server
-      run: yarn
-        
-    - name: Initialize DB schema
-      working-directory: server
-      run: yarn typeorm:cli schema:sync
+      - name: Install dependencies
+        working-directory: server
+        run: yarn
 
-    - name: Run test
-      working-directory: server
-      run: yarn test:ci
+      - name: Initialize DB schema
+        working-directory: server
+        run: yarn typeorm:cli schema:sync
+
+      - name: Run test
+        working-directory: server
+        run: yarn test:ci

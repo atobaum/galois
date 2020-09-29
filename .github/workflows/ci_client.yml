@@ -5,13 +5,13 @@ name: Client CI
 
 on:
   push:
-    branches: [ develop ]
+    branches: [develop, master]
     paths:
-      - 'client/**'
+      - "client/**"
   pull_request:
-    branches: [ develop ]
+    branches: [develop, master]
     paths:
-      - 'client/**'
+      - "client/**"
 
 jobs:
   build:
@@ -25,29 +25,29 @@ jobs:
       working-directory: ./client
 
     steps:
-    - uses: actions/checkout@v2
-      
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }} 
+      - uses: actions/checkout@v2
 
-    - name: Cache
-      uses: actions/cache@v2.1.1
-      with:
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Cache
+        uses: actions/cache@v2.1.1
+        with:
           path: client/node_modules
           key: ${{ runner.OS }}-build-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.OS }}-build-
             ${{ runner.OS }}-
 
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-        registry-url: 'https://npm.pkg.github.com'
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+          registry-url: "https://npm.pkg.github.com"
 
-    - working-directory: client
-      run: |
-        yarn
-        yarn test:ci
+      - working-directory: client
+        run: |
+          yarn
+          yarn test:ci
