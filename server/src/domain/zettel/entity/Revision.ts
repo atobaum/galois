@@ -3,7 +3,7 @@ import Entity from "../../shared/Entity";
 export type ContentType = "md" | "plain";
 type RevisionDTO = {
   uuid: string | null;
-  version: number | null;
+  version: number;
   type: ContentType;
   content: string;
   createdAt: Date;
@@ -12,14 +12,14 @@ type RevisionDTO = {
 // Is this a value object
 export default class Revision extends Entity<string> {
   // zettelId
-  private version: number | null;
+  private version: number;
   private type: ContentType;
   private content: string;
   private createdAt: Date;
 
   constructor(args: {
     uuid?: string;
-    version?: number;
+    version: number;
     type: ContentType;
     content: string;
     createdAt: Date;
@@ -30,7 +30,7 @@ export default class Revision extends Entity<string> {
         "Inconsistant Data in Revision.constructor: uuid and version must be both null or not."
       );
 
-    this.version = args.version || null;
+    this.version = args.version;
     this.type = args.type;
     this.content = args.content;
     this.createdAt = args.createdAt;
