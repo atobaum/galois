@@ -20,7 +20,7 @@ export default class ZettelORM {
   @PrimaryGeneratedColumn()
   readonly id!: number;
 
-  @Column({ length: 255, nullable: true })
+  @Column({ type: "varchar", length: 255, nullable: true })
   title!: string | null;
 
   @OneToMany((type) => RevisionORM, (revision) => revision.zettel)
