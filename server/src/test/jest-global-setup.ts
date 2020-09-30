@@ -22,7 +22,7 @@ module.exports = async () => {
   );
 
   await manager.query(
-    `insert into social_account (fk_user_id, provider, social_id) values (${existedUser.id}, 'google', '123');`
+    `insert into social_account (fk_user_id, provider, social_id) values (${existedUser.id}, '${existedUser.socialAccount.provider}', '${existedUser.socialAccount.socialId}');`
   );
 
   const zettel = initState.zettel;
