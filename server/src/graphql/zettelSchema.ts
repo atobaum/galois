@@ -10,10 +10,10 @@ export type Collection<T> = {
 };
 
 export type ZettelDTO = {
-  id: number;
-  version: number;
-  uuid: string;
-  title?: string;
+  id?: number;
+  version?: number;
+  uuid?: string;
+  title: string | null;
   content: string;
   user: UserDTO;
   tags: string[];
