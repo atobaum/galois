@@ -3,6 +3,7 @@ import TypeormUserRepositoy from "../TypeormUserRepository";
 import SocialAccount from "../entity/SocialAccount";
 import initState from "../../../test/initState";
 import postgrasqlLoader from "../../../loaders/postgresqlLoader";
+import "@src/test/custom-matcher";
 
 const existedUser = initState.user;
 
@@ -15,13 +16,13 @@ describe("TypeormUserRepository", () => {
 
   it("findById", async (done) => {
     const user = await repo.findById(existedUser.id);
-    expect(user).toBeTruthy();
-    expect(user!.getDTO()).toMatchObject({
+    expect(user).toBeRight();
+    expect(user.getRight().getDTO()).toMatchObject({
       username: existedUser.username,
       email: existedUser.email,
       thumbnail: existedUser.thumbnail,
     });
-    expect(user!.id).toBe(existedUser.id);
+    expect(user.getRight().id).toBe(existedUser.id);
     done();
   });
 
@@ -30,8 +31,8 @@ describe("TypeormUserRepository", () => {
       existedUser.socialAccount.provider,
       existedUser.socialAccount.socialId
     );
-    expect(user).toBeTruthy();
-    expect(user!.id).toBe(existedUser.id);
+    expect(user).toBeRight();
+    expect(user.getRight().id).toBe(existedUser.id);
     done();
   });
 
@@ -44,12 +45,12 @@ describe("TypeormUserRepository", () => {
       socialAccounts: [socialAccount],
     });
     const id = await repo.save(user);
-    const getUser = await repo.findById(id);
+    const getUser = await repo.findById(id.getRight());
 
     expect(id).toBeTruthy();
-    expect(getUser).toBeTruthy();
-    expect(getUser!.id).toBe(id);
-    expect(getUser!.getDTO()).toMatchObject(user.getDTO());
+    expect(getUser).toBeRight();
+    expect(getUser.getRight().id).toBe(id.getRight());
+    expect(getUser.getRight().getDTO()).toMatchObject(user.getDTO());
     done();
   });
 });

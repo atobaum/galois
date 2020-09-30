@@ -18,7 +18,7 @@ export type AuthToken = {
   accessToken: string;
 };
 
-export default class User extends AggregateRoot {
+export default class User extends AggregateRoot<any> {
   private username: string;
   private email: string;
   private thumbnail: string | null;

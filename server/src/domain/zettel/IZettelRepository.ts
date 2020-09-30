@@ -1,3 +1,5 @@
+import { Collection } from "../../graphql/zettelSchema";
+import Either from "../../lib/Either";
 import IRepository from "../shared/IRepository";
 import { ContentType } from "./entity/Revision";
 import Zettel from "./entity/Zettle";
@@ -17,7 +19,7 @@ type CreateZettelDTO = {
 };
 
 export default interface IZettelRepository extends IRepository<Zettel> {
-  findByUUID(uuid: string): Promise<Zettel | null>;
-  findAll(args: FindOption): Promise<Zettel[]>;
-  findByTag(tag: string): Promise<Zettel[]>;
+  findByUUID(uuid: string): Promise<Either<any, Zettel>>;
+  findAll(args: FindOption): Promise<Either<any, Collection<Zettel>>>;
+  findByTag(tag: string): Promise<Either<any, Collection<Zettel>>>;
 }

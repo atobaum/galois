@@ -6,6 +6,7 @@ import User from "../../domain/user/entity/User";
 import IUserRepository from "../../domain/user/IUserRepository";
 import MemoryUserRepository from "../../domain/user/MemoryUserRepository";
 import UserService from "../UserService";
+import "@src/test/custom-matcher";
 
 let repo: IUserRepository;
 let userService: UserService;
@@ -42,8 +43,8 @@ describe("UserService", () => {
       const accessTokenData = jwt.decode(tokens!.accessToken) as any;
       const id = accessTokenData.id;
 
-      const user = (await repo.findById(id)) as User;
-      expect(user.getDTO()).toEqual(
+      const user = await repo.findById(id);
+      expect(user.getRight().getDTO()).toEqual(
         expect.objectContaining({
           username: newUserInfo.username,
           email: newUserInfo.email,
@@ -114,9 +115,10 @@ describe("UserService", () => {
       const refreshTokenId = refreshTokenData.id;
 
       let user = await repo.findById(userId);
-      const retrievedRefreshToken = user?.refreshTokens?.find(
-        (rt) => rt.id === refreshTokenId
-      );
+      expect(user).toBeRight();
+      const retrievedRefreshToken = user
+        .getRight()
+        .refreshTokens?.find((rt) => rt.id === refreshTokenId);
 
       expect(retrievedRefreshToken).toBeTruthy();
       expect(retrievedRefreshToken!.isRevoked()).toBe(false);
@@ -124,9 +126,9 @@ describe("UserService", () => {
       await userService.logout(refreshTokenId, userId);
 
       user = await repo.findById(userId);
-      const revokedRefreshToken = user?.refreshTokens?.find(
-        (rt) => rt.id === refreshTokenId
-      );
+      const revokedRefreshToken = user
+        .getRight()
+        .refreshTokens?.find((rt) => rt.id === refreshTokenId);
       expect(revokedRefreshToken).toBeUndefined();
       done();
     });

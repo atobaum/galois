@@ -5,13 +5,15 @@ import ZettelORM from "../../typeorm/ZettelORM";
 import RevisionORM from "../../typeorm/RevisionORM";
 import TagORM from "../../typeorm/TagORM";
 import Revision from "./entity/Revision";
+import { Collection } from "../../graphql/zettelSchema";
+import Either from "../../lib/Either";
 
 export default class TypeormZettelRepository implements IZettelRepository {
   async findAll(args: {
     userId: number;
     limit: number;
     cursor?: number;
-  }): Promise<Zettel[]> {
+  }): Promise<Either<any, Collection<Zettel>>> {
     const query = getRepository(ZettelORM)
       .createQueryBuilder("zettel")
       .leftJoinAndSelect("zettel.tags", "tags")
@@ -47,11 +49,11 @@ export default class TypeormZettelRepository implements IZettelRepository {
     });
   }
 
-  findByTag(tag: string): Promise<Zettel[]> {
+  findByTag(tag: string): Promise<Either<any, Collection<Zettel>>> {
     throw new Error("Method not implemented.");
   }
 
-  async findById(id: number, option?: any): Promise<Zettel | null> {
+  async findById(id: number, option?: any): Promise<Either<any, Zettel>> {
     const repo = getRepository(ZettelORM);
     const result = await repo
       .createQueryBuilder("zettel")

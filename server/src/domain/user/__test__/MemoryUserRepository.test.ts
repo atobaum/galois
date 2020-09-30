@@ -1,19 +1,20 @@
 import MemoryUserRepository from "../MemoryUserRepository";
 import User from "../entity/User";
+import "@src/test/custom-matcher";
 
 describe("MemoryUserRepository", () => {
   const repo = new MemoryUserRepository();
   it("findById", async (done) => {
     const user = await repo.findById(1);
-    expect(user).toBeTruthy();
-    expect(user!.id).toBe(1);
+    expect(user).toBeRight();
+    expect(user.getRight().id).toBe(1);
     done();
   });
 
   it("findBySocialAccount", async (done) => {
     const user = await repo.findBySocialAccount("google", "127");
-    expect(user).toBeTruthy();
-    expect(user!.id).toBe(2);
+    expect(user).toBeRight();
+    expect(user.getRight().id).toBe(2);
     done();
   });
 
@@ -24,11 +25,10 @@ describe("MemoryUserRepository", () => {
       username: "adfs",
     });
     const id = await repo.save(user);
-    const getUser = await repo.findById(id);
+    const getUser = await repo.findById(id.getRight());
 
     expect(id).toBeTruthy();
-    expect(user.id).toBe(id);
-    expect(getUser).toBe(user);
+    expect(getUser.getRight().id).toBe(user.id);
     done();
   });
 });
