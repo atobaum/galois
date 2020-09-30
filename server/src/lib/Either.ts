@@ -1,4 +1,4 @@
-export default class Either<L, R> {
+export default class Either<L = any, R = any> {
   isRight: boolean;
   isLeft: boolean;
   private v: L | R;
