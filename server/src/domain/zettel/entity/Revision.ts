@@ -1,3 +1,4 @@
+import Either from "../../../lib/Either";
 import Entity from "../../shared/Entity";
 
 export type ContentType = "md" | "plain";
@@ -24,11 +25,7 @@ export default class Revision extends Entity<string> {
     content: string;
     createdAt: Date;
   }) {
-    super(args.uuid || null);
-    if ((args.version && !args.uuid) || (!args.version && args.uuid))
-      throw new Error(
-        "Inconsistant Data in Revision.constructor: uuid and version must be both null or not."
-      );
+    super(args.uuid);
 
     this.version = args.version;
     this.type = args.type;
@@ -44,5 +41,15 @@ export default class Revision extends Entity<string> {
       content: this.content,
       createdAt: this.createdAt,
     };
+  }
+
+  public static create(args: {
+    version: number;
+    uuid?: string;
+    createdAt: Date;
+    content: string;
+    contentType: ContentType;
+  }): Either<any, Revision> {
+    throw new Error();
   }
 }

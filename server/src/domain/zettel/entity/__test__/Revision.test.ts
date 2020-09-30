@@ -13,13 +13,4 @@ describe("Revision", () => {
 
     expect(revision.toDTO()).toMatchObject(newRevision);
   });
-
-  it("checks uuid and version", () => {
-    expect(() => {
-      new Revision({ ...newRevision, uuid: "123" });
-    }).toThrow();
-    expect(() => {
-      new Revision({ ...newRevision, version: 123 });
-    }).toThrow();
-  });
 });
