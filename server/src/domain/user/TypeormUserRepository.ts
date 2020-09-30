@@ -5,7 +5,6 @@ import User from "./entity/User";
 import SocialAccountORM from "../../typeorm/SocialAccountORM";
 import SocialAccount from "./entity/SocialAccount";
 import RefreshTokenORM from "../../typeorm/RefreshTokenORM";
-import { userResolvers } from "../../graphql/userSchema";
 
 export default class TypeormUserRepositoy implements IUserRepository {
   async findById(id: number, option?: any): Promise<User | null> {
