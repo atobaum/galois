@@ -4,7 +4,13 @@ import AggregateRoot from "../../shared/AggregateRoot";
 import Revision, { ContentType } from "./Revision";
 import Tag from "./Tag";
 
-export default class Zettel extends AggregateRoot {
+export type ZettelChange =
+  | ["ADD_TAG", Tag]
+  | ["REMOVE_TAG", Tag]
+  | ["SET_TITLE"]
+  | ["UPDATE_CONTENT"];
+
+export default class Zettel extends AggregateRoot<ZettelChange> {
   private title: string | null;
   private userId: number;
   private createdAt: Date;
@@ -31,6 +37,8 @@ export default class Zettel extends AggregateRoot {
     if (!newTitle) this.title = null;
     else this.title = newTitle;
 
+    this.addChange(["SET_TITLE"]);
+
     return Either.right(this);
     // remove prev change
     // save Change
@@ -38,23 +46,33 @@ export default class Zettel extends AggregateRoot {
 
   public addTag(tagName: string): Either<any, Zettel> {
     const newTag = new Tag(tagName);
+    if (this.changes.some((t) => t[1]?.equals(newTag)))
+      return Either.left("Cannot add removed tag: " + tagName);
+
     const oldTag = this.tags.find((t) => t.equals(newTag));
-    if (oldTag) return Either.left();
+    if (oldTag) return Either.left("Cannot add existing tag: " + tagName);
+
     this.tags.push(newTag);
 
-    // save Change
+    this.addChange(["ADD_TAG", newTag]);
     return Either.right(this);
   }
 
   public removeTag(tagName: string): Either<any, Zettel> {
     const newTag = new Tag(tagName);
+    if (this.changes.some((t) => t[1]?.equals(newTag)))
+      return Either.left("Cannot remove added tag: " + tagName);
+
     const index = this.tags.findIndex((t) => t.equals(newTag));
-    if (index < 0) return Either.left();
+    if (index < 0)
+      return Either.left("Zettel.removeTag: Np such tag " + tagName);
     this.tags.splice(index, 1);
 
+    this.addChange(["REMOVE_TAG", newTag]);
     // change log 추가
-    throw new Error();
+    return Either.right(this);
   }
+
   public updateContent(
     content: string,
     contentType?: ContentType
@@ -83,6 +101,8 @@ export default class Zettel extends AggregateRoot {
       uuid: revision.uuid,
       title: this.title,
       content: revision.content,
+      contentType: revision.type,
+      //TODO user
       user: { email: "asdf", username: "Asdf", thumbnail: "safd" },
       // userId: this.userId,
       tags: this.tags.map((t) => t.name),
@@ -97,20 +117,18 @@ export default class Zettel extends AggregateRoot {
     title,
     userId,
     createdAt,
-    content,
-    contentType,
+    revision: { content, type: contentType },
     tags,
   }: CreateZettelDTO): Either<any, Zettel> {
-    // id 있으면 version. uuid, createdAt도 있어야.
+    // id 있으면 version. uuid도 있어야.
     // 다 있거나 다 없거나
-    const destiny = [id, version, uuid, createdAt];
+    const destiny = [id, version, uuid];
     if (!destiny.every((v) => v) && destiny.some((v) => v))
-      return Either.left();
+      return Either.left("Zettel.create: id, version, uuid error");
 
     // Version of new zettel is 1
     if (!version) version = 1;
 
-    createdAt = createdAt || new Date();
     const tagEntities = tags.map((t) => new Tag(t));
 
     const revisionOrFailure = Revision.create({
@@ -118,9 +136,9 @@ export default class Zettel extends AggregateRoot {
       uuid,
       createdAt,
       content,
-      contentType,
+      type: contentType,
     });
-    if (revisionOrFailure.isLeft) return Either.left();
+    if (revisionOrFailure.isLeft) return Either.left("Revision Create Error");
     const revision = revisionOrFailure.getValue();
 
     const zettel = new Zettel({
@@ -141,9 +159,11 @@ type CreateZettelDTO = {
   uuid?: string;
   title: string | null;
   userId: number;
-  createdAt?: Date;
+  createdAt: Date;
   //updatedAt?: Date;
-  content: string;
-  contentType: ContentType;
+  revision: {
+    content: string;
+    type: ContentType;
+  };
   tags: string[];
 };

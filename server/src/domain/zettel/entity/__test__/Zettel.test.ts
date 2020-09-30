@@ -54,6 +54,21 @@ describe("Zettel", () => {
     expect(result.isLeft);
   });
 
+  it("태그 지웠다 추가하면 안됨", () => {
+    const z1 = Zettel.create(newZettelData).getRight();
+    z1.removeTag("t1");
+    let result = z1.addTag("t1");
+    expect(result.isLeft).toBe(true);
+  });
+
+  it("태그 추가했다 지우면 안됨", () => {
+    const z1 = Zettel.create(newZettelData).getRight();
+    z1.addTag("t2");
+    let result = z1.removeTag("t2");
+    expect(result.isLeft).toBe(true);
+  });
+
+  // TODO 두번 수정 못함
   // it("setRevision", () => {
   //   const z1= Zettel.create(newZettelData).getRight();
 
@@ -66,6 +81,12 @@ describe("Zettel", () => {
     const z = zettelOrFail.getRight();
     z.addTag("t2");
 
-    expect(z.toDTO()).toMatchObject({ ...newZettelData, tags: ["t1", "t2"] });
+    expect(z.toDTO()).toMatchObject({
+      createdAt: newZettelData.createdAt,
+      title: newZettelData.title,
+      content: newZettelData.revision.content,
+      contentType: newZettelData.revision.type,
+      tags: ["t1", "t2"],
+    });
   });
 });

@@ -15,6 +15,7 @@ export type ZettelDTO = {
   uuid?: string;
   title: string | null;
   content: string;
+  contentType: ContentType;
   user: UserDTO;
   tags: string[];
   createdAt: Date;

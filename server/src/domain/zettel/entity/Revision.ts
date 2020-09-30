@@ -49,9 +49,10 @@ export default class Revision extends Entity<string> {
     uuid?: string;
     createdAt: Date;
     content: string;
-    contentType: ContentType;
+    type: ContentType;
   }): Either<any, Revision> {
-    throw new Error();
+    args.type;
+    return Either.right(new Revision(args));
   }
 
   public setUUID(uuid: string): Either<any, Revision> {
