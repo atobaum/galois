@@ -13,4 +13,13 @@ describe("Revision", () => {
 
     expect(revision.toDTO()).toMatchObject(newRevision);
   });
+
+  it("sets uuid", () => {
+    const revision = new Revision(newRevision);
+    const uuid = "394f77b0-7a60-487b-8aa1-11876544897d";
+
+    revision.setUUID(uuid);
+    expect(revision.isNew()).toBe(false);
+    expect(revision.toDTO().uuid).toBe(uuid);
+  });
 });

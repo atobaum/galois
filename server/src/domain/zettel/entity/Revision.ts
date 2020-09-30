@@ -1,4 +1,5 @@
 import Either from "../../../lib/Either";
+import { isUUID } from "../../../lib/utils";
 import Entity from "../../shared/Entity";
 
 export type ContentType = "md" | "plain";
@@ -51,5 +52,11 @@ export default class Revision extends Entity<string> {
     contentType: ContentType;
   }): Either<any, Revision> {
     throw new Error();
+  }
+
+  public setUUID(uuid: string): Either<any, Revision> {
+    if (this._id || !isUUID(uuid)) return Either.left();
+    this._id = uuid;
+    return Either.right(this);
   }
 }
