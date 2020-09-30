@@ -16,8 +16,7 @@ export default class Zettel extends Entity {
     userId: number;
     createdAt: Date;
     revision: Revision;
-    tags: string[];
-    id: number | null;
+    id?: number;
   }) {
     super(args.id);
     this.title = args.title;

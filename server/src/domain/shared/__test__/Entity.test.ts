@@ -5,13 +5,13 @@ class ConcreteEntity2 extends Entity {}
 
 describe("Entity", () => {
   it("isNew, isModified", () => {
-    const newEntity = new ConcreteEntity(null);
+    const newEntity = new ConcreteEntity();
     expect(newEntity.isNew()).toBe(true);
     expect(newEntity.isModified()).toBe(false);
   });
 
   it("equals", () => {
-    const newEntity = new ConcreteEntity(null);
+    const newEntity = new ConcreteEntity();
     const entity1 = new ConcreteEntity(1);
     const entity11 = new ConcreteEntity(1);
     const entity12 = new ConcreteEntity(2);

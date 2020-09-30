@@ -2,7 +2,7 @@ import Entity from "../../shared/Entity";
 
 export type ContentType = "md" | "plain";
 type RevisionDTO = {
-  uuid: string | null;
+  uuid?: string;
   version: number;
   type: ContentType;
   content: string;

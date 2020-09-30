@@ -1,10 +1,10 @@
 export default abstract class Entity<K = number> {
-  protected _id: K | null;
+  protected _id?: K;
   protected modified: boolean = false;
   private __proto__: any;
 
-  constructor(id: K | null) {
-    this._id = id || null;
+  constructor(id?: K) {
+    this._id = id;
   }
 
   public equals(obj?: Entity<any>): boolean {
@@ -25,12 +25,12 @@ export default abstract class Entity<K = number> {
   }
 
   //deprecated
-  public set id(v: K | null) {
-    if (v === null) return;
+  public set id(v: K | undefined) {
+    if (v === undefined) return;
     if (!this._id) this._id = v;
   }
 
-  public get id(): K | null {
+  public get id(): K | undefined {
     return this._id;
   }
 }
