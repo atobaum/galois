@@ -19,6 +19,16 @@ export default class Either<L = any, R = any> {
     return this.v;
   }
 
+  getLeft() {
+    if (this.isRight) throw new Error("Cannot get right value of Left");
+    else return this.v as L;
+  }
+
+  getRight() {
+    if (this.isLeft) throw new Error("Cannot get left value of Right");
+    else return this.v as R;
+  }
+
   map<U = R>(fn: (v: R) => U): Either<L, U> {
     if (this.isLeft) return this as Either<L, any>;
     return Either.right<U>(fn(this.v as R));
