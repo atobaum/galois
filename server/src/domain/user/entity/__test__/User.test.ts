@@ -1,4 +1,3 @@
-import { doesNotThrow } from "assert";
 import jwt from "jsonwebtoken";
 import User from "../User";
 
