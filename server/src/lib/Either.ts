@@ -39,6 +39,11 @@ export default class Either<L = any, R = any> {
     return fn(this.v as R);
   }
 
+  static fromNullable<R>(v: R | null | undefined | ""): Either<any, R> {
+    if (v) return Either.right(v);
+    else return Either.left(v);
+  }
+
   static right<R>(v?: R): Either<any, R> {
     return new Either<any, R>(true, v);
   }
