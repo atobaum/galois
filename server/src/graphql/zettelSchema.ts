@@ -6,7 +6,7 @@ import { UserDTO } from "./userSchema";
 
 export type Collection<T> = {
   data: T[];
-  nextCursor: number | string;
+  nextCursor?: number;
 };
 
 export type ZettelDTO = {

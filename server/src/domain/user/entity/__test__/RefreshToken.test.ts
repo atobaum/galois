@@ -10,7 +10,7 @@ describe("RefreshToken", () => {
   it("새 토큰 만들기", () => {
     const token = RefreshToken.generate();
 
-    expect(token.id).toBeNull();
+    expect(token.id).toBe(undefined);
     expect(token.isRevoked()).toBeFalsy();
     expect(token.isModified()).toBeFalsy();
     expect(token.isNew()).toBeTruthy();
