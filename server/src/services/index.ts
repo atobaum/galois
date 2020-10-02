@@ -1,4 +1,4 @@
-import TypeormZettelRepository from "@src/domain/zettel/TypeormZettelRepository";
+import TypeormZettelRepository from "../domain/zettel/TypeormZettelRepository";
 import IUserRepository from "../domain/user/IUserRepository";
 import MemoryUserRepository from "../domain/user/MemoryUserRepository";
 import IZettelRepository from "../domain/zettel/IZettelRepository";
