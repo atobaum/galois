@@ -4,7 +4,6 @@ import { getManager, getRepository } from "typeorm";
 import ZettelORM from "../../typeorm/ZettelORM";
 import RevisionORM from "../../typeorm/RevisionORM";
 import TagORM from "../../typeorm/TagORM";
-import Revision from "./entity/Revision";
 import { Collection } from "../../graphql/zettelSchema";
 import Either from "../../lib/Either";
 
@@ -27,26 +26,26 @@ export default class TypeormZettelRepository implements IZettelRepository {
 
     const result = await query.getMany();
 
-    return result.map((zettelORM) => {
+    const temp = result.map((zettelORM) => {
       const revisionORM = zettelORM.revisions[0];
-      const revision = new Revision({
-        uuid: revisionORM.uuid,
-        version: revisionORM.version,
-        type: revisionORM.type,
-        content: revisionORM.content,
-        createdAt: revisionORM.createdAt,
-      });
 
-      const zettel = new Zettel({
+      const zettel = Zettel.create({
         title: zettelORM.title,
         userId: zettelORM.fk_user_id,
         createdAt: zettelORM.createdAt,
-        revision: revision,
+        uuid: revisionORM.uuid,
+        version: revisionORM.version,
+        revision: {
+          content: revisionORM.content,
+          type: revisionORM.type,
+        },
         tags: zettelORM.tags.map((t) => t.name),
         id: zettelORM.id,
       });
       return zettel;
     });
+
+    return Either.right({ data: temp.map((zettel) => zettel.getRight()) });
   }
 
   findByTag(tag: string): Promise<Either<any, Collection<Zettel>>> {
@@ -59,60 +58,71 @@ export default class TypeormZettelRepository implements IZettelRepository {
       .createQueryBuilder("zettel")
       .leftJoinAndSelect("zettel.tags", "tags")
       .leftJoinAndSelect("zettel.revisions", "revision")
-      .andWhere("zettel.deletedAt IS NULL");
-    if (!result) return null;
-    return null;
+      .leftJoinAndSelect("zettel.user", "user")
+      .andWhere("zettel.deletedAt IS NULL")
+      .andWhere("zettel.id=:id", { id })
+      .getOne();
+    return Either.fromNullable(result).flatMap((orm) => {
+      const revision = orm.revisions[0];
+      return Zettel.create({
+        id: orm.id,
+        version: revision.version,
+        uuid: revision.uuid,
+        title: orm.title,
+        userId: orm.user.id,
+        createdAt: orm.createdAt,
+        revision: {
+          content: revision.content,
+          type: revision.type,
+        },
+        tags: orm.tags.map((t) => t.name),
+      });
+    });
   }
 
-  findByUUID(uuid: string): Promise<Zettel | null> {
+  findByUUID(uuid: string): any {
     throw new Error("Method not implemented.");
   }
 
-  save(zettel: Zettel): Promise<number> {
+  save(zettel: Zettel): Promise<Either<any, number>> {
     if (zettel.isNew()) return this.createZettel(zettel);
     else return this.updateZettel(zettel);
   }
 
-  private async createZettel(zettel: Zettel): Promise<number> {
+  private async createZettel(zettel: Zettel): Promise<Either<any, number>> {
     const zettelORM = new ZettelORM();
-    zettelORM.fk_user_id = zettel.userId;
-    zettelORM.createdAt = zettel.createdAt;
-    zettelORM.title = zettel.title;
+    const dto = zettel.toDTO();
+    zettelORM.fk_user_id = 1;
+    zettelORM.createdAt = dto.createdAt;
+    zettelORM.title = dto.title;
 
     const revisionORM = new RevisionORM();
-    const revisionDTO = zettel.revision.toDTO();
     revisionORM.version = 1;
-    revisionORM.content = revisionDTO.content;
-    revisionORM.createdAt = revisionDTO.createdAt;
-    revisionORM.type = revisionDTO.type;
+    revisionORM.content = dto.content;
+    revisionORM.createdAt = dto.createdAt;
+    revisionORM.type = dto.contentType;
 
     //tags
-    const tagsORM = await Promise.all(zettel.tags.map(TagORM.findOrCreate));
+    const tagsORM = await Promise.all(dto.tags.map(TagORM.findOrCreate));
     zettelORM.tags = tagsORM;
 
     const manager = getManager();
-    await manager.save(zettel);
+    await manager.save(zettelORM);
 
     revisionORM.zettel_id = zettelORM.id;
     await manager.save(revisionORM);
 
     zettel.id = zettelORM.id;
-    zettel.revision = new Revision({
-      uuid: revisionORM.uuid,
-      version: 1,
-      content: revisionORM.content,
-      type: revisionORM.type,
-      createdAt: revisionORM.createdAt,
-    });
+    zettel.getRevision().setUUID(revisionORM.uuid);
 
-    return zettelORM.id;
+    return Either.right(zettelORM.id);
   }
 
-  private async updateZettel(zettel: Zettel): Promise<number> {
+  private async updateZettel(zettel: Zettel): Promise<Either<any, number>> {
     throw new Error("Method not implemented.");
   }
 
-  async delete(zettelId: number): Promise<void> {
+  async delete(zettelId: number): Promise<any> {
     const zettelRepo = getRepository(ZettelORM);
     const result = await zettelRepo.softDelete(zettelId);
   }
