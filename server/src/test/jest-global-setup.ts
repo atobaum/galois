@@ -1,12 +1,9 @@
-// import { getManager } from "typeorm";
-
+import { getManager } from "typeorm";
 import postgrasqlLoader from "../loaders/postgresqlLoader";
 
-// import postgrasqlLoader from "./src/loaders/postgresqlLoader";
-const getManager = require("typeorm").getManager;
 import initState from "./initState";
 
-module.exports = async () => {
+export default async () => {
   const existedUser = initState.user;
   if (!process.env.TYPEORM_DATABASE)
     process.env.TYPEORM_DATABASE = "galois_test";
