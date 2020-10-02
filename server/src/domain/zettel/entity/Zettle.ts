@@ -33,6 +33,10 @@ export default class Zettel extends AggregateRoot<ZettelChange> {
     this.tags = args.tags;
   }
 
+  public getRevision(): Revision {
+    return this.revision;
+  }
+
   public setTitle(newTitle: string): Either<any, Zettel> {
     if (!newTitle) this.title = null;
     else this.title = newTitle;
