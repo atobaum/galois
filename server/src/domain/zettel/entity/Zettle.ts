@@ -1,51 +1,52 @@
 import { ZettelDTO } from "../../../graphql/zettelSchema";
 import Either from "../../../lib/Either";
 import AggregateRoot from "../../shared/AggregateRoot";
-import Revision, { ContentType } from "./Revision";
+import { ContentType } from "./Revision";
 import Tag from "./Tag";
 
 export type ZettelChange =
   | ["ADD_TAG", Tag]
   | ["REMOVE_TAG", Tag]
-  | ["SET_TITLE"]
-  | ["UPDATE_CONTENT"];
+  | ["UPDATE_TITLE", string | null]
+  | ["UPDATE_CONTENT", { content: string; contentType: ContentType }];
 
 export default class Zettel extends AggregateRoot<ZettelChange> {
   private title: string | null;
+  private content: string;
+  private contentType: ContentType;
+  private tags: Tag[];
   private userId: number;
   private createdAt: Date;
-  private revision: Revision;
-  private tags: Tag[];
+  private updatedAt: Date;
 
   private constructor(args: {
-    title: string | null;
-    userId: number;
-    createdAt: Date;
-    revision: Revision;
-    tags: Tag[];
     id?: number;
+    title: string | null;
+    content: string;
+    contentType: ContentType;
+    userId: number;
+    tags: Tag[];
+    createdAt: Date;
+    updatedAt: Date;
   }) {
     super(args.id);
     this.title = args.title;
+    this.content = args.content;
+    this.contentType = args.contentType;
     this.userId = args.userId;
-    this.createdAt = args.createdAt;
-    this.revision = args.revision;
     this.tags = args.tags;
+    this.createdAt = args.createdAt;
+    this.updatedAt = args.updatedAt;
   }
 
-  public getRevision(): Revision {
-    return this.revision;
-  }
+  public updateTitle(newTitle: string): Either<any, Zettel> {
+    if (!this.changes.find((change) => change[0] === "UPDATE_TITLE"))
+      this.addChange(["UPDATE_TITLE", this.title]);
 
-  public setTitle(newTitle: string): Either<any, Zettel> {
     if (!newTitle) this.title = null;
     else this.title = newTitle;
 
-    this.addChange(["SET_TITLE"]);
-
     return Either.right(this);
-    // remove prev change
-    // save Change
   }
 
   public addTag(tagName: string): Either<any, Zettel> {
@@ -81,16 +82,17 @@ export default class Zettel extends AggregateRoot<ZettelChange> {
     content: string,
     contentType?: ContentType
   ): Either<any, Zettel> {
-    // 이미 수정했는지 확인
-    const oldRevisionDTO = this.revision.toDTO();
-    const revision = new Revision({
-      version: oldRevisionDTO.version + 1,
-      type: contentType || oldRevisionDTO.type,
-      content,
-      createdAt: new Date(),
-    });
+    if (!this.changes.find((change) => change[0] === "UPDATE_CONTENT"))
+      this.addChange([
+        "UPDATE_CONTENT",
+        { content: this.content, contentType: this.contentType },
+      ]);
 
-    this.revision = revision;
+    this.content = content;
+    if (contentType) this.contentType = contentType;
+
+    return Either.right(this);
+    // 이미 수정했는지 확인
 
     // save Change
 
@@ -98,64 +100,48 @@ export default class Zettel extends AggregateRoot<ZettelChange> {
   }
 
   public toDTO(): ZettelDTO {
-    const revision = this.revision.toDTO();
     return {
       id: this._id,
-      version: revision.version,
-      uuid: revision.uuid,
       title: this.title,
-      content: revision.content,
-      contentType: revision.type,
-      //TODO user
-      user: {
-        id: this.userId,
-        email: "asdf",
-        username: "Asdf",
-        thumbnail: "safd",
-      },
+      content: this.content,
+      contentType: this.contentType,
       tags: this.tags.map((t) => t.name),
       createdAt: this.createdAt,
+      updatedAt: this.updatedAt,
     };
   }
 
   public static create({
     id,
-    version,
-    uuid,
     title,
+    content,
+    contentType,
+    tags,
     userId,
     createdAt,
-    revision: { content, type: contentType },
-    tags,
+    updatedAt,
   }: CreateZettelDTO): Either<any, Zettel> {
     // id 있으면 version. uuid도 있어야.
     // 다 있거나 다 없거나
-    const destiny = [id, version, uuid];
+    const destiny = [id, updatedAt];
     if (!destiny.every((v) => v) && destiny.some((v) => v))
-      return Either.left("Zettel.create: id, version, uuid error");
+      return Either.left("Zettel.create: id, updatedAt error");
 
-    // Version of new zettel is 1
-    if (!version) version = 1;
+    if (!updatedAt) updatedAt = createdAt;
+    if (createdAt > updatedAt)
+      return Either.left("createdAt must be before updatedAt");
 
     const tagEntities = tags.map((t) => new Tag(t));
 
-    const revisionOrFailure = Revision.create({
-      version,
-      uuid,
-      createdAt,
-      content,
-      type: contentType,
-    });
-    if (revisionOrFailure.isLeft) return Either.left("Revision Create Error");
-    const revision = revisionOrFailure.getValue();
-
     const zettel = new Zettel({
+      id: id,
       title,
       userId,
-      createdAt,
-      revision,
+      content,
+      contentType,
       tags: tagEntities,
-      id: id,
+      createdAt,
+      updatedAt,
     });
     return Either.right(zettel);
   }
@@ -163,15 +149,11 @@ export default class Zettel extends AggregateRoot<ZettelChange> {
 
 type CreateZettelDTO = {
   id?: number;
-  version?: number;
-  uuid?: string;
   title: string | null;
   userId: number;
   createdAt: Date;
-  //updatedAt?: Date;
-  revision: {
-    content: string;
-    type: ContentType;
-  };
+  updatedAt?: Date;
+  content: string;
+  contentType: ContentType;
   tags: string[];
 };
