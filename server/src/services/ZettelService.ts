@@ -1,31 +1,113 @@
+import IZettelRepository from "@src/domain/zettel/IZettelRepository";
+import Either from "../lib/Either";
+import { ContentType } from "../domain/zettel/entity/Revision";
 import Zettel from "../domain/zettel/entity/Zettle";
+import { Collection, ZettelDTO } from "../graphql/zettelSchema";
+
+type FindZettelOption = {
+  cursor?: number;
+  limit: number;
+};
+type CreateZettelRequestDTO = {
+  title: string | null;
+  content: string;
+  contentType: ContentType;
+  tags: string[];
+};
 
 export default class ZettelService {
-  getZettelById(id: number, userId: number, version?: number): Zettel {
-    throw new Error("a");
+  private zettelRepo: IZettelRepository;
+  constructor(zettelRepo: IZettelRepository) {
+    this.zettelRepo = zettelRepo;
   }
 
-  getZettelByUUID(uuid: string, userId: number): Zettel {
-    throw new Error("a");
+  getZettelById(
+    args: { id: number; version?: number },
+    userId: number
+  ): Promise<Zettel> {
+    throw new Error("NOT_IMPLEMENTED");
   }
 
-  getZettelByTag(tag: string): Zettel[] {
-    throw new Error("a");
+  getZettelByUUID(uuid: string, userId: number): Promise<Zettel> {
+    throw new Error("NOT_IMPLEMENTED");
   }
 
-  getRevisions(id: number): any[] {
-    throw new Error("a");
+  findZettelByTag(tag: string, userId: number): Promise<Collection<Zettel>> {
+    throw new Error("NOT_IMPLEMENTED");
   }
 
-  createZettel(zettelDTO: any): any {}
+  async findZettels(
+    option: FindZettelOption,
+    userId: number
+  ): Promise<Either<any, Collection<ZettelDTO>>> {
+    const collection = await this.zettelRepo.findAll({
+      limit: option.limit,
+      userId,
+    });
+    return collection.map((c) => ({
+      data: c.data.map((z) => z.toDTO()),
+      nextCursor: c.nextCursor,
+    }));
+  }
 
-  createRevision(id: number, revision: any): any {}
+  getRevisions(id: number, userId: number): Promise<Zettel> {
+    throw new Error("NOT_IMPLEMENTED");
+  }
 
-  updateTitle(id: number, newTitle: any): any {}
+  async createZettel(
+    args: CreateZettelRequestDTO,
+    userId: number
+  ): Promise<Either<any, Zettel>> {
+    const newZettel = await Zettel.create({
+      createdAt: new Date(),
+      revision: {
+        content: args.content,
+        type: args.contentType,
+      },
+      tags: args.tags,
+      title: args.title,
+      userId,
+    });
 
-  updateTags(id: number, newTags: string[]): any {}
+    if (newZettel.isLeft) return newZettel;
+    const id = await this.zettelRepo.save(newZettel.getRight());
 
-  removeZettel(id: number, userId: number): any {}
+    if (id.isLeft) return Either.left(id.getLeft());
+    return await this.zettelRepo.findById(id.getRight());
+  }
 
-  removeRevision(uuid: string, userId: number): any {}
+  createRevision(
+    args: {
+      id: number;
+      title: string;
+      tags: string[];
+      content: string;
+      contentType: ContentType;
+    },
+    userId: number
+  ): Promise<Either<any, Zettel>> {
+    throw new Error("NOT_IMPLEMENTED");
+  }
+
+  updateTitle(
+    args: { id: number; title: string | null },
+    newTitle: any
+  ): Promise<Zettel> {
+    throw new Error("NOT_IMPLEMENTED");
+  }
+
+  updateTags(
+    args: { id: number; tags: string[] },
+    newTags: string[]
+  ): Promise<Zettel> {
+    throw new Error("NOT_IMPLEMENTED");
+  }
+
+  removeZettel(id: number, userId: number): Promise<boolean> {
+    throw new Error("NOT_IMPLEMENTED");
+  }
+
+  removeRevision(uuid: string, userId: number): Promise<boolean> {
+    throw new Error("NOT_IMPLEMENTED");
+  }
 }

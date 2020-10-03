@@ -5,19 +5,16 @@ import User from "./entity/User";
 import SocialAccountORM from "../../typeorm/SocialAccountORM";
 import SocialAccount from "./entity/SocialAccount";
 import RefreshTokenORM from "../../typeorm/RefreshTokenORM";
-import { userResolvers } from "../../graphql/userSchema";
+import Either from "../../lib/Either";
 
 export default class TypeormUserRepositoy implements IUserRepository {
-  async findById(id: number, option?: any): Promise<User | null> {
+  async findById(id: number, option?: any) {
     const manager = getManager();
-    const user = (await manager.findOne(UserORM, id)) || null;
-    return user && this.ormToDomain(user);
+    const user = await manager.findOne(UserORM, id);
+    return Either.fromNullable(user).map((user) => this.ormToDomain(user));
   }
 
-  async findBySocialAccount(
-    provider: string,
-    socialId: string
-  ): Promise<User | null> {
+  async findBySocialAccount(provider: string, socialId: string) {
     const repo = getRepository(SocialAccountORM);
     const socialAccount =
       (await repo.findOne({
@@ -27,11 +24,12 @@ export default class TypeormUserRepositoy implements IUserRepository {
           socialId,
         },
       })) || null;
-    if (!socialAccount) return null;
-    return socialAccount.user && this.ormToDomain(socialAccount.user);
+    return Either.fromNullable(socialAccount)
+      .map((v) => v.user)
+      .map(this.ormToDomain);
   }
 
-  async save(user: User): Promise<number> {
+  async save(user: User) {
     const manager = getManager();
     if (user.isNew()) {
       const userOrm = new UserORM();
@@ -68,7 +66,7 @@ export default class TypeormUserRepositoy implements IUserRepository {
         if (refreshTokensOrm)
           await Promise.all(refreshTokensOrm.map((rt) => m.save(rt)));
       });
-      return userOrm.id!;
+      return Either.right(userOrm.id!);
     } else {
       // TODO UPDATE
       throw new Error("Not implemented: TypeOrmUserRepository.save");
@@ -82,7 +80,7 @@ export default class TypeormUserRepositoy implements IUserRepository {
     }
   }
 
-  delete(id: number): Promise<void> {
+  delete(id: number): any {
     throw new Error("Method not implemented.");
   }
 

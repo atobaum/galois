@@ -34,32 +34,33 @@ export default class UserService {
     const id = await this.userRepo.save(user);
     if (!id) throw new Error("Fail to save user");
 
-    const refreshJWT = await refreshToken.generateJWT();
-    const accessJWT = await user.generateAccessToken();
-
-    return {
-      refreshToken: refreshJWT,
-      accessToken: accessJWT,
-    };
+    return await this.login(
+      args.socialAccount.provider,
+      args.socialAccount.socialId
+    );
   }
 
   async login(
     provider: SocialProvider,
     socialId: string
   ): Promise<AuthToken | null> {
-    const user = await this.userRepo.findBySocialAccount(provider, socialId);
-    if (!user) return null;
-
+    let user = await this.userRepo.findBySocialAccount(provider, socialId);
     const refreshToken = RefreshToken.generate();
-    user.addRefreshToken(refreshToken);
-    const id = await this.userRepo.save(user);
-    if (!id) throw new Error("Fail to save user");
+    user = user.map((u) => {
+      u.addRefreshToken(refreshToken);
+      return u;
+    });
+    if (user.isLeft) return null;
 
-    const refreshJWT = await refreshToken.generateJWT();
-    const accessJWT = await user.generateAccessToken();
+    // const id = await this.userRepo.save(user.getRight());
+    // if (id.isLeft) throw new Error("Fail to save user");
+
+    // const refreshJWT = await refreshToken.generateJWT();
+    const accessJWT = await user.getRight().generateAccessToken();
 
     return {
-      refreshToken: refreshJWT,
+      // refreshToken: refreshJWT,
+      refreshToken: "123",
       accessToken: accessJWT,
     };
   }
@@ -69,38 +70,40 @@ export default class UserService {
       join: ["refreshToken"],
     });
 
-    if (!user) return; //log
-    const refreshToken = user.refreshTokens!.find(
-      (t) => t.id === refreshTokenId
-    );
+    if (user.isLeft) return; //log
+    const refreshToken = user
+      .getRight()
+      .refreshTokens!.find((t) => t.id === refreshTokenId);
     if (!refreshToken) return;
     refreshToken.revoke();
 
-    await this.userRepo.save(user);
+    await this.userRepo.save(user.getRight());
   }
 
   async refresh(
     refreshTokenId: number,
     userId: number
   ): Promise<AuthToken | null> {
-    const user = await this.userRepo.findById(userId, {
+    let user = await this.userRepo.findById(userId, {
       join: ["refreshToken"],
     });
 
-    if (!user) return null;
-    let refreshToken = user.refreshTokens!.find((t) => t.id === refreshTokenId);
+    if (user.isLeft) return null;
+    let refreshToken = user
+      .getRight()
+      .refreshTokens!.find((t) => t.id === refreshTokenId);
     if (!refreshToken) return null;
     if (refreshToken.getRemaining() < 1 * 60 * 60) {
       //1h
       refreshToken.revoke();
       refreshToken = RefreshToken.generate();
-      user.addRefreshToken(refreshToken);
-      const id = await this.userRepo.save(user);
+      user.getRight().addRefreshToken(refreshToken);
+      const id = await this.userRepo.save(user.getRight());
       if (!id) throw new Error("Fail to save user");
     }
 
     const refreshJWT = await refreshToken.generateJWT();
-    const accessJWT = await user.generateAccessToken();
+    const accessJWT = await user.getRight().generateAccessToken();
 
     return {
       refreshToken: refreshJWT,

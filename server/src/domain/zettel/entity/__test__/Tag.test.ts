@@ -8,5 +8,6 @@ describe("<VO>Tag", () => {
 
     expect(t1.equals(t2)).toBe(true);
     expect(t1.equals(t3)).toBe(false);
+    expect(t1.equals(new Object())).toBe(false);
   });
 });

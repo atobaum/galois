@@ -3,8 +3,11 @@ import path from "path";
 
 const env = process.env;
 
+let filename = ".env";
+if (env.NODE_ENV === "test") filename = ".test.env";
+
 dotenv.config({
-  path: path.resolve(process.cwd(), ".env"),
+  path: path.resolve(process.cwd(), filename),
 });
 
 export default {

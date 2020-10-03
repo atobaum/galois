@@ -20,8 +20,8 @@ export default class ZettelORM {
   @PrimaryGeneratedColumn()
   readonly id!: number;
 
-  @Column({ length: 255, nullable: true })
-  title!: string;
+  @Column({ type: "varchar", length: 255, nullable: true })
+  title!: string | null;
 
   @OneToMany((type) => RevisionORM, (revision) => revision.zettel)
   revisions!: RevisionORM[];
@@ -41,7 +41,7 @@ export default class ZettelORM {
   isPublic!: boolean;
 
   @CreateDateColumn({ type: "timestamptz", name: "created_at" })
-  readonly createdAt!: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn({ type: "timestamptz", name: "updated_at" })
   readonly updatedAt!: Date;

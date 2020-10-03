@@ -8,12 +8,8 @@ import {
   DeleteDateColumn,
   JoinColumn,
 } from "typeorm";
+import { ContentType } from "../domain/zettel/entity/Revision";
 import ZettelORM from "./ZettelORM";
-
-export enum ZettelContentType {
-  plain = "plain",
-  markdown = "md",
-}
 
 @Entity({ name: "revision" })
 @Index(["zettel_id", "version"], { unique: true })
@@ -31,14 +27,14 @@ export default class RevisionORM {
   @Column()
   version!: number;
 
-  @Column({ type: "varchar", length: 16, default: ZettelContentType.markdown })
-  type!: ZettelContentType;
+  @Column({ type: "varchar", length: 16, default: "md" })
+  type!: ContentType;
 
   @Column("text")
   content!: string;
 
   @CreateDateColumn({ type: "timestamptz", name: "created_at" })
-  readonly createdAt!: Date;
+  createdAt!: Date;
 
   @DeleteDateColumn({ type: "timestamptz", name: "deleted_at" })
   readonly deletedAt?: Date;

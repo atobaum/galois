@@ -23,7 +23,8 @@ export const userResolvers = {
     me: async (parent: any, args: any, ctx: any): Promise<UserDTO | null> => {
       if (!ctx.user) return null;
       const user = await repositories.user.findById(ctx.user.id);
-      return user && user.getDTO();
+      if (user.isLeft) return null;
+      else return user.getRight().getDTO();
     },
   },
 };

@@ -1,3 +1,4 @@
+import Either from "../../lib/Either";
 import SocialAccount from "./entity/SocialAccount";
 import User from "./entity/User";
 import IUserRepository from "./IUserRepository";
@@ -34,10 +35,7 @@ export default class MemoryUserRepository implements IUserRepository {
     this.nextId = 3;
   }
 
-  async findBySocialAccount(
-    provider: string,
-    socialId: string
-  ): Promise<User | null> {
+  async findBySocialAccount(provider: string, socialId: string) {
     let user = null;
     for (let id in this.db) {
       if (
@@ -50,17 +48,17 @@ export default class MemoryUserRepository implements IUserRepository {
     if (user && user.refreshTokens) {
       user.refreshTokens = user.refreshTokens.filter((rt) => !rt.isRevoked());
     }
-    return user;
+    return Either.fromNullable(user);
   }
 
-  async findById(id: number, option?: any): Promise<User | null> {
+  async findById(id: number, option?: any) {
     const user = this.db[id] || null;
     if (user && user.refreshTokens) {
       user.refreshTokens = user.refreshTokens.filter((rt) => !rt.isRevoked());
     }
-    return user;
+    return Either.right(user);
   }
-  async save(entity: User): Promise<number> {
+  async save(entity: User) {
     if (!entity.id) {
       entity.id = this.nextId;
       this.nextId++;
@@ -72,9 +70,10 @@ export default class MemoryUserRepository implements IUserRepository {
       });
     }
     this.db[entity.id] = entity;
-    return entity.id;
+    return Either.right(entity.id);
   }
-  async delete(id: number): Promise<void> {
+  async delete(id: number) {
     delete this.db[id];
+    return Either.right();
   }
 }

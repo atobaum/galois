@@ -26,6 +26,11 @@ Atomic interconnected note taking service inspired by [Wiki](https://en.wikipedi
 - react w/ typescript
 - redux
 
+# 환경설정
+
+서버의 `.env.sample`을 `.env`로 바꾸고 알맞게 설정한다.
+테스트 환경에서는 `.test.env`를 읽는다.
+
 # 참고
 
 - [Zettelkasten](https://en.wikipedia.org/wiki/Zettelkasten)

@@ -18,7 +18,7 @@ export type AuthToken = {
   accessToken: string;
 };
 
-export default class User extends AggregateRoot {
+export default class User extends AggregateRoot<any> {
   private username: string;
   private email: string;
   private thumbnail: string | null;
@@ -27,7 +27,7 @@ export default class User extends AggregateRoot {
   refreshTokens: RefreshToken[] | null;
 
   private constructor(props: UserProps, id?: number) {
-    super(id || null);
+    super(id);
     this.username = props.username;
     this.email = props.email;
     this.thumbnail = props.thumbnail;
@@ -58,8 +58,9 @@ export default class User extends AggregateRoot {
     this.refreshTokens.push(token);
   }
 
-  public generateAccessToken(): Promise<string> {
-    return generateToken(
+  public async generateAccessToken(): Promise<string> {
+    if (!this.id) throw new Error("Id is undefined");
+    return await generateToken(
       { id: this.id },
       { expiresIn: "1h", subject: "access_token" }
     );

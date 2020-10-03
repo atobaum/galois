@@ -6,7 +6,7 @@ export default class RefreshToken extends Entity {
   readonly createdAt: Date;
   private revokedAt: Date | null;
 
-  constructor(id: number | null, createdAt: Date, revokedAt?: Date) {
+  constructor(id: number | undefined, createdAt: Date, revokedAt?: Date) {
     super(id);
     this.createdAt = createdAt;
     this.revokedAt = revokedAt || null;
@@ -59,7 +59,7 @@ export default class RefreshToken extends Entity {
   }
 
   public static generate(): RefreshToken {
-    return new RefreshToken(null, new Date());
+    return new RefreshToken(undefined, new Date());
   }
 }
 

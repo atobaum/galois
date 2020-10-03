@@ -36,22 +36,26 @@ export const getZettels = async (): Promise<Zettel[]> => {
     query: gql`
       query GetZettels {
         zettels {
-          id
-          uuid
-          version
-          title
-          content
-          tags
-          createdAt
-          user {
-            username
+          nextCursor
+          data {
+            id
+            version
+            uuid
+            title
+            content
+            user {
+              username
+            }
+            tags
+            createdAt
           }
         }
       }
     `,
   });
   // TODO error handling
-  const zettels = data.data.zettels || [];
+  const collection = data.data.zettels;
+  const zettels = collection.data || [];
   return zettels.map((z: any) => ({
     ...z,
     createdAt: new Date(z.createdAt),
@@ -68,7 +72,12 @@ export const createZettel = async (
         $content: String!
         $tags: [String]!
       ) {
-        createZettel(title: $title, content: $content, tags: $tags) {
+        createZettel(
+          title: $title
+          content: $content
+          tags: $tags
+          contentType: MARKDOWN
+        ) {
           id
           uuid
           version
