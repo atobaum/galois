@@ -16,7 +16,7 @@ type ModalAction = ReturnType<typeof openModal> | ReturnType<typeof closeModal>;
 
 type ModalState = {
   visible: boolean;
-  component: ReactElement;
+  component: ReactElement | null;
 };
 
 const initialState: ModalState = {

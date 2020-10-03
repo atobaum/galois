@@ -13,12 +13,13 @@ export const unsetUser = () => ({
 type User = {
   username: string;
   email: string;
+  picture?: string;
 };
 
 type CoreAction = ReturnType<typeof setUser> | ReturnType<typeof unsetUser>;
 
 type CoreState = {
-  user: User;
+  user: User | null;
 };
 
 const initState = {

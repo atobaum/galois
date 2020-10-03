@@ -1,11 +1,13 @@
-import "./env";
-import "./database";
-import apolloServer from "./graphql/apolloServer";
-import app from "./app";
+import Koa from "koa";
+import config from "./config";
+import loaders from "./loaders";
 
-apolloServer.applyMiddleware({ app });
+async function startServer() {
+  const app = new Koa();
+  await loaders({ koaApp: app });
+  app.listen(config.port, () => {
+    console.log("Koa server is listening to port " + config.port);
+  });
+}
 
-const port = process.env.PORT || 4000;
-app.listen(port, () => {
-  console.log("Koa server is listening to port " + port);
-});
+startServer();

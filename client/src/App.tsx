@@ -1,24 +1,33 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from "react";
+import "./App.css";
+import { Switch, Route } from "react-router-dom";
+import MainPage from "./pages/MainPage";
+import ZettelViewPage from "./pages/ZettelViewPage";
+import { useDispatch } from "react-redux";
+import { addZetel } from "./reducers/zettelReducer";
+import { getZettels } from "./api/zettelApi";
+import LoginCallbackPage from "./pages/LoginCallbackPage";
+import useCurrentUser from "./hooks/useCurrentUser";
 
 function App() {
+  const dispatch = useDispatch();
+  const user = useCurrentUser();
+
+  useEffect(() => {
+    if (user)
+      getZettels().then((data) => {
+        data.forEach((z) => dispatch(addZetel(z)));
+      });
+    // eslint-disable-next-line
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Switch>
+        <Route path="/zettel/:id" component={ZettelViewPage} />
+        <Route path="/login_callback" component={LoginCallbackPage} />
+        <Route path="/" component={MainPage} />
+      </Switch>
     </div>
   );
 }

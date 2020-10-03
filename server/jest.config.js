@@ -10,4 +10,9 @@ module.exports = {
     "!**/__tests__/utils/**",
     "!**/__tests__/images/**",
   ],
+  globalSetup: "<rootDir>/src/test/jest-global-setup.ts",
+  globalTeardown: "<rootDir>/src/test/jest-global-teardown.ts",
+  moduleNameMapper: {
+    "@src/(.*)$": "<rootDir>/src/$1",
+  },
 };

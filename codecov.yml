@@ -1,0 +1,29 @@
+coverage:
+  status:
+    project:
+      default:
+        target: auto
+      client:
+        target: auto
+        flags:
+          - client
+      server:
+        target: auto
+        flags:
+          - server
+comment:
+  layout: "reach, diff, flags, files"
+  behavior: default
+  require_changes: false
+  require_base: yes
+  require_head: yes
+  branches: null
+flags:
+  client:
+    paths:
+      - client/
+    carryforward: false
+  server:
+    paths:
+      - server/
+    carryforward: true
