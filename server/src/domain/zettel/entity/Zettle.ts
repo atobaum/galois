@@ -39,6 +39,12 @@ export default class Zettel extends AggregateRoot<ZettelChange> {
     this.updatedAt = args.updatedAt;
   }
 
+  // call after saved
+  public completeUpdate(updatedAt: Date) {
+    this.updatedAt = updatedAt;
+    this.clearChanges();
+  }
+
   public getUserId(): number {
     return this.userId;
   }
