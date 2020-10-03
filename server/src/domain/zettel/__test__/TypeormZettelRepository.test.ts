@@ -34,16 +34,13 @@ describe("TypeormZettelRepository", () => {
   });
 
   it("creates new zettel", async () => {
-    console.log(existedUser);
     const created = new Date("2020-08-08T12:03:02");
     const zettelOrFail = Zettel.create({
       title: "new zettel",
       userId: existedUser.id,
       createdAt: created,
-      revision: {
-        content: "enw zettel content",
-        type: "plain",
-      },
+      content: "enw zettel content",
+      contentType: "plain",
       tags: [],
     });
 

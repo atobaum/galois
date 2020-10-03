@@ -2,7 +2,6 @@ import { AuthenticationError, gql } from "apollo-server-koa";
 import { ContentType } from "../domain/zettel/entity/Revision";
 import Zettel from "../domain/zettel/entity/Zettle";
 import { services } from "../services";
-import { UserDTO } from "./userSchema";
 
 export type Collection<T> = {
   data: T[];
@@ -11,26 +10,25 @@ export type Collection<T> = {
 
 export type ZettelDTO = {
   id?: number;
-  version?: number;
   uuid?: string;
   title: string | null;
   content: string;
   contentType: ContentType;
-  user: UserDTO;
   tags: string[];
   createdAt: Date;
+  updatedAt: Date;
 };
 
 export const zettelTypeDefs = gql`
   type Zettel {
     id: Int!
-    version: Int!
     uuid: String!
     title: String
-    content: String
-    user: User!
+    content: String!
+    contentType: ContentType!
     tags: [String]!
     createdAt: Date!
+    updatedAt: Date!
   }
 
   enum ContentType {
@@ -64,14 +62,21 @@ export const zettelTypeDefs = gql`
       tags: [String]
     ): Zettel
     deleteZettel(id: Int!): Boolean
-    # deleteZettelRevision(uuid: String!): Boolean
   }
 `;
 
 export const zettelResolvers = {
   Zettel: {
-    //TODO implement
-    user: () => ({}),
+    contentType: (parent: { contentType: string }) => {
+      switch (parent.contentType) {
+        case "markdown":
+          return "MARKDOWN";
+        case "plain":
+          return "PLAIN";
+        default:
+          return "ERROR";
+      }
+    },
   },
   Query: {
     zettels: async (
@@ -79,7 +84,7 @@ export const zettelResolvers = {
       { limit = 20, cursor }: { limit?: number; cursor?: number },
       ctx: any
     ): Promise<Collection<ZettelDTO> | null> => {
-      if (!ctx.user) return null;
+      if (!ctx.user) throw new AuthenticationError("Login First");
       const result = await services.zettel.findZettels(
         { limit, cursor },
         ctx.user.id

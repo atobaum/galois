@@ -9,7 +9,6 @@ export default async () => {
     process.env.TYPEORM_DATABASE = "galois_test";
   await postgrasqlLoader();
   const manager = getManager();
-  await manager.query("DELETE FROM revision;");
   await manager.query("DELETE FROM zettel;");
   await manager.query("DELETE FROM social_account;");
   await manager.query("DELETE FROM refresh_token;");
@@ -23,9 +22,6 @@ export default async () => {
   );
 
   const zettel = initState.zettel;
-
-  const insertZettelQuery = `insert into zettel  (id, title, fk_user_id) values (${zettel.id}, '${zettel.title}', '${existedUser.id}');`;
-  const insertRevisionQuery = `insert into revision ("content","type",uuid,"version",zettel_id) values ('${zettel.content}', '${zettel.contentType}', '${zettel.uuid}', ${zettel.version}, ${zettel.id});`;
+  const insertZettelQuery = `insert into zettel  (id, title, content, content_type, fk_user_id) values (${zettel.id}, '${zettel.title}', '${zettel.content}', '${zettel.contentType}', ${existedUser.id});`;
   await manager.query(insertZettelQuery);
-  await manager.query(insertRevisionQuery);
 };

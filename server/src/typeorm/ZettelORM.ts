@@ -10,10 +10,9 @@ import {
   ManyToOne,
   DeleteDateColumn,
   JoinColumn,
-  OneToMany,
 } from "typeorm";
 import TagORM from "./TagORM";
-import RevisionORM from "./RevisionORM";
+import { ContentType } from "@src/domain/zettel/entity/Revision";
 
 @Entity({ name: "zettel" })
 export default class ZettelORM {
@@ -23,8 +22,11 @@ export default class ZettelORM {
   @Column({ type: "varchar", length: 255, nullable: true })
   title!: string | null;
 
-  @OneToMany((type) => RevisionORM, (revision) => revision.zettel)
-  revisions!: RevisionORM[];
+  @Column({ name: "content_type", type: "varchar", length: 16, default: "md" })
+  contentType!: ContentType;
+
+  @Column("text")
+  content!: string;
 
   @ManyToMany((type) => TagORM)
   @JoinTable({ name: "note_tags_tag" })
