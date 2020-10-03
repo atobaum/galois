@@ -39,6 +39,10 @@ export default class Zettel extends AggregateRoot<ZettelChange> {
     this.updatedAt = args.updatedAt;
   }
 
+  public getUserId(): number {
+    return this.userId;
+  }
+
   public updateTitle(newTitle: string): Either<any, Zettel> {
     if (!this.changes.find((change) => change[0] === "UPDATE_TITLE"))
       this.addChange(["UPDATE_TITLE", this.title]);
