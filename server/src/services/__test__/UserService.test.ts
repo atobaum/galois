@@ -74,63 +74,63 @@ describe("UserService", () => {
     });
   });
 
-  describe("refresh", () => {
-    it("성공", async (done) => {
-      const tokens = await userService.login("google", "128");
-      expect(tokens).toBeTruthy();
-      const accessTokenData = jwt.decode(tokens!.accessToken) as any;
-      const refreshTokenData = jwt.decode(tokens!.refreshToken) as any;
+  // describe("refresh", () => {
+  //   it("성공", async (done) => {
+  //     const tokens = await userService.login("google", "128");
+  //     expect(tokens).toBeTruthy();
+  //     const accessTokenData = jwt.decode(tokens!.accessToken) as any;
+  //     const refreshTokenData = jwt.decode(tokens!.refreshToken) as any;
 
-      await new Promise((res) => setTimeout(res, 2000));
+  //     await new Promise((res) => setTimeout(res, 2000));
 
-      const newTokens = await userService.refresh(
-        refreshTokenData.id,
-        accessTokenData.id
-      );
-      expect(newTokens).toBeTruthy();
-      expect(newTokens!.refreshToken).toBe(tokens!.refreshToken);
-      expect(newTokens!.accessToken).not.toBe(tokens!.accessToken);
-      done();
-    });
+  //     const newTokens = await userService.refresh(
+  //       refreshTokenData.id,
+  //       accessTokenData.id
+  //     );
+  //     expect(newTokens).toBeTruthy();
+  //     expect(newTokens!.refreshToken).toBe(tokens!.refreshToken);
+  //     expect(newTokens!.accessToken).not.toBe(tokens!.accessToken);
+  //     done();
+  //   });
 
-    it("실패", async (done) => {
-      const tokens = await userService.login("google", "128");
-      expect(tokens).toBeTruthy();
-      const accessTokenData = jwt.decode(tokens!.accessToken) as any;
+  //   it("실패", async (done) => {
+  //     const tokens = await userService.login("google", "128");
+  //     expect(tokens).toBeTruthy();
+  //     const accessTokenData = jwt.decode(tokens!.accessToken) as any;
 
-      const newTokens = await userService.refresh(7098, accessTokenData.id);
-      expect(newTokens).toBeNull();
-      done();
-    });
-  });
+  //     const newTokens = await userService.refresh(7098, accessTokenData.id);
+  //     expect(newTokens).toBeNull();
+  //     done();
+  //   });
+  // });
 
-  describe("logout", () => {
-    it("성공", async (done) => {
-      const tokens = await userService.login("google", "128");
+  // describe("logout", () => {
+  //   it("성공", async (done) => {
+  //     const tokens = await userService.login("google", "128");
 
-      expect(tokens).toBeTruthy();
-      const accessTokenData = jwt.decode(tokens!.accessToken) as any;
-      const refreshTokenData = jwt.decode(tokens!.refreshToken) as any;
-      const userId = accessTokenData.id;
-      const refreshTokenId = refreshTokenData.id;
+  //     expect(tokens).toBeTruthy();
+  //     const accessTokenData = jwt.decode(tokens!.accessToken) as any;
+  //     const refreshTokenData = jwt.decode(tokens!.refreshToken) as any;
+  //     const userId = accessTokenData.id;
+  //     const refreshTokenId = refreshTokenData.id;
 
-      let user = await repo.findById(userId);
-      expect(user).toBeRight();
-      const retrievedRefreshToken = user
-        .getRight()
-        .refreshTokens?.find((rt) => rt.id === refreshTokenId);
+  //     let user = await repo.findById(userId);
+  //     expect(user).toBeRight();
+  //     const retrievedRefreshToken = user
+  //       .getRight()
+  //       .refreshTokens?.find((rt) => rt.id === refreshTokenId);
 
-      expect(retrievedRefreshToken).toBeTruthy();
-      expect(retrievedRefreshToken!.isRevoked()).toBe(false);
+  //     expect(retrievedRefreshToken).toBeTruthy();
+  //     expect(retrievedRefreshToken!.isRevoked()).toBe(false);
 
-      await userService.logout(refreshTokenId, userId);
+  //     await userService.logout(refreshTokenId, userId);
 
-      user = await repo.findById(userId);
-      const revokedRefreshToken = user
-        .getRight()
-        .refreshTokens?.find((rt) => rt.id === refreshTokenId);
-      expect(revokedRefreshToken).toBeUndefined();
-      done();
-    });
-  });
+  //     user = await repo.findById(userId);
+  //     const revokedRefreshToken = user
+  //       .getRight()
+  //       .refreshTokens?.find((rt) => rt.id === refreshTokenId);
+  //     expect(revokedRefreshToken).toBeUndefined();
+  //     done();
+  //   });
+  // });
 });
