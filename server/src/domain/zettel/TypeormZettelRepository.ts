@@ -98,7 +98,46 @@ export default class TypeormZettelRepository implements IZettelRepository {
   }
 
   private async updateZettel(zettel: Zettel): Promise<Either<any, number>> {
-    throw new Error("Method not implemented.");
+    const changes = zettel.getChanges();
+    if (changes.length == 0) return Either.right(zettel.id);
+
+    const repo = getRepository(ZettelORM);
+    let orm = await repo.findOne(zettel.id, {
+      where: { deletedAt: null },
+    });
+
+    if (!orm) return Either.left(`Zettel of id ${zettel.id} is not exist`);
+
+    const dto = zettel.toDTO();
+
+    for (const change of changes) {
+      switch (change[0]) {
+        case "ADD_TAG":
+          break;
+        case "REMOVE_TAG":
+          break;
+        case "UPDATE_TITLE":
+          orm.title = dto.title;
+          break;
+        case "UPDATE_CONTENT":
+          orm.content = dto.content;
+          orm.contentType = dto.contentType;
+          break;
+        default:
+          Either.left("Unsupported change type: " + change[0]);
+      }
+    }
+
+    try {
+      orm = await repo.save(orm);
+    } catch (e) {
+      return Either.left("Error while saving: " + e);
+    }
+
+    zettel.completeUpdate(orm.updatedAt);
+    return Either.right(zettel.id);
+    //  ["ADD_TAG", Tag]
+    //  ["REMOVE_TAG", Tag]
   }
 
   async delete(zettelId: number): Promise<any> {

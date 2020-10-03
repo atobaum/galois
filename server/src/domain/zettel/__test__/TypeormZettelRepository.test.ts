@@ -58,17 +58,16 @@ describe("TypeormZettelRepository", () => {
     expect(createdZettel.toDTO().title).toBe("new zettel");
   });
 
-  it("update", async (done) => {
-    const now = new Date();
+  it("update content", async (done) => {
     const zettel = (await repo.findById(existedZettel.id)).getRight();
+    const updatedAt = zettel.toDTO().updatedAt;
+    await new Promise((res) => setTimeout(res, 300));
 
     zettel.updateContent("new content content", "plain");
-    let result: any = repo.save(zettel);
+    let result: any = await repo.save(zettel);
 
     expect(result).toBeRight();
-    expect(
-      Math.abs(zettel.toDTO().updatedAt.getTime() - now.getTime())
-    ).toBeLessThan(1000);
+    expect(zettel.toDTO().updatedAt).not.toEqual(updatedAt);
 
     result = await repo.findById(existedZettel.id);
     expect(result).toBeRight();
