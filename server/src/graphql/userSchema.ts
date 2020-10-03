@@ -2,6 +2,7 @@ import { gql } from "apollo-server-koa";
 import { repositories } from "../services";
 
 export type UserDTO = {
+  id?: number;
   username: string;
   email: string;
   thumbnail?: string;

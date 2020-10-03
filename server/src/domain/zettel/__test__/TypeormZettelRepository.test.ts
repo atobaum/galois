@@ -5,6 +5,7 @@ import "@src/test/custom-matcher";
 import Zettel from "../entity/Zettle";
 
 const existedZettel = initState.zettel;
+const existedUser = initState.user;
 
 beforeAll(async () => {
   await postgrasqlLoader();
@@ -33,10 +34,11 @@ describe("TypeormZettelRepository", () => {
   });
 
   it("creates new zettel", async () => {
+    console.log(existedUser);
     const created = new Date("2020-08-08T12:03:02");
     const zettelOrFail = Zettel.create({
       title: "new zettel",
-      userId: 1,
+      userId: existedUser.id,
       createdAt: created,
       revision: {
         content: "enw zettel content",

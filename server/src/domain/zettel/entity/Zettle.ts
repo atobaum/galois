@@ -107,8 +107,12 @@ export default class Zettel extends AggregateRoot<ZettelChange> {
       content: revision.content,
       contentType: revision.type,
       //TODO user
-      user: { email: "asdf", username: "Asdf", thumbnail: "safd" },
-      // userId: this.userId,
+      user: {
+        id: this.userId,
+        email: "asdf",
+        username: "Asdf",
+        thumbnail: "safd",
+      },
       tags: this.tags.map((t) => t.name),
       createdAt: this.createdAt,
     };

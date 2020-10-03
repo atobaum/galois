@@ -92,7 +92,7 @@ export default class TypeormZettelRepository implements IZettelRepository {
   private async createZettel(zettel: Zettel): Promise<Either<any, number>> {
     const zettelORM = new ZettelORM();
     const dto = zettel.toDTO();
-    zettelORM.fk_user_id = 1;
+    zettelORM.fk_user_id = dto.user.id || 1;
     zettelORM.createdAt = dto.createdAt;
     zettelORM.title = dto.title;
 
