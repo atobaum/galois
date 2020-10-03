@@ -2,7 +2,6 @@ import { AuthenticationError, gql } from "apollo-server-koa";
 import { ContentType } from "../domain/zettel/entity/Revision";
 import Zettel from "../domain/zettel/entity/Zettle";
 import { services } from "../services";
-import { UserDTO } from "./userSchema";
 
 export type Collection<T> = {
   data: T[];
@@ -11,26 +10,25 @@ export type Collection<T> = {
 
 export type ZettelDTO = {
   id?: number;
-  version?: number;
   uuid?: string;
   title: string | null;
   content: string;
   contentType: ContentType;
-  user: UserDTO;
   tags: string[];
   createdAt: Date;
+  updatedAt: Date;
 };
 
 export const zettelTypeDefs = gql`
   type Zettel {
     id: Int!
-    version: Int!
     uuid: String!
     title: String
-    content: String
-    user: User!
+    content: String!
+    contentType: ContentType!
     tags: [String]!
     createdAt: Date!
+    updatedAt: Date!
   }
 
   enum ContentType {
@@ -64,15 +62,10 @@ export const zettelTypeDefs = gql`
       tags: [String]
     ): Zettel
     deleteZettel(id: Int!): Boolean
-    # deleteZettelRevision(uuid: String!): Boolean
   }
 `;
 
 export const zettelResolvers = {
-  Zettel: {
-    //TODO implement
-    user: () => ({}),
-  },
   Query: {
     zettels: async (
       parent: any,

@@ -2,7 +2,6 @@ import IZettelRepository from "./IZettelRepository";
 import Zettel from "./entity/Zettle";
 import { getManager, getRepository } from "typeorm";
 import ZettelORM from "../../typeorm/ZettelORM";
-import RevisionORM from "../../typeorm/RevisionORM";
 import TagORM from "../../typeorm/TagORM";
 import { Collection } from "../../graphql/zettelSchema";
 import Either from "../../lib/Either";
@@ -16,7 +15,6 @@ export default class TypeormZettelRepository implements IZettelRepository {
     const query = getRepository(ZettelORM)
       .createQueryBuilder("zettel")
       .leftJoinAndSelect("zettel.tags", "tags")
-      .leftJoinAndSelect("zettel.revisions", "revision")
       .andWhere("zettel.fk_user_id=:user_id", { user_id: args.userId })
       .limit(args.limit);
 
@@ -27,18 +25,12 @@ export default class TypeormZettelRepository implements IZettelRepository {
     const result = await query.getMany();
 
     const temp = result.map((zettelORM) => {
-      const revisionORM = zettelORM.revisions[0];
-
       const zettel = Zettel.create({
         title: zettelORM.title,
         userId: zettelORM.fk_user_id,
         createdAt: zettelORM.createdAt,
-        uuid: revisionORM.uuid,
-        version: revisionORM.version,
-        revision: {
-          content: revisionORM.content,
-          type: revisionORM.type,
-        },
+        content: zettelORM.content,
+        contentType: zettelORM.contentType,
         tags: zettelORM.tags.map((t) => t.name),
         id: zettelORM.id,
       });
@@ -57,24 +49,20 @@ export default class TypeormZettelRepository implements IZettelRepository {
     const result = await repo
       .createQueryBuilder("zettel")
       .leftJoinAndSelect("zettel.tags", "tags")
-      .leftJoinAndSelect("zettel.revisions", "revision")
       .leftJoinAndSelect("zettel.user", "user")
       .andWhere("zettel.deletedAt IS NULL")
       .andWhere("zettel.id=:id", { id })
       .getOne();
+
     return Either.fromNullable(result).flatMap((orm) => {
-      const revision = orm.revisions[0];
       return Zettel.create({
         id: orm.id,
-        version: revision.version,
-        uuid: revision.uuid,
         title: orm.title,
         userId: orm.user.id,
         createdAt: orm.createdAt,
-        revision: {
-          content: revision.content,
-          type: revision.type,
-        },
+        updatedAt: orm.updatedAt,
+        content: orm.content,
+        contentType: orm.contentType,
         tags: orm.tags.map((t) => t.name),
       });
     });
@@ -92,15 +80,11 @@ export default class TypeormZettelRepository implements IZettelRepository {
   private async createZettel(zettel: Zettel): Promise<Either<any, number>> {
     const zettelORM = new ZettelORM();
     const dto = zettel.toDTO();
-    zettelORM.fk_user_id = dto.user.id || 1;
+    zettelORM.fk_user_id = zettel.getUserId();
+    zettelORM.content = dto.content;
+    zettelORM.contentType = dto.contentType;
     zettelORM.createdAt = dto.createdAt;
     zettelORM.title = dto.title;
-
-    const revisionORM = new RevisionORM();
-    revisionORM.version = 1;
-    revisionORM.content = dto.content;
-    revisionORM.createdAt = dto.createdAt;
-    revisionORM.type = dto.contentType;
 
     //tags
     const tagsORM = await Promise.all(dto.tags.map(TagORM.findOrCreate));
@@ -108,12 +92,6 @@ export default class TypeormZettelRepository implements IZettelRepository {
 
     const manager = getManager();
     await manager.save(zettelORM);
-
-    revisionORM.zettel_id = zettelORM.id;
-    await manager.save(revisionORM);
-
-    zettel.id = zettelORM.id;
-    zettel.getRevision().setUUID(revisionORM.uuid);
 
     return Either.right(zettelORM.id);
   }
