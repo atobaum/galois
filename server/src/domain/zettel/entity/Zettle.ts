@@ -55,7 +55,7 @@ export default class Zettel extends AggregateRoot<ZettelChange> {
 
   public addTag(tagName: string): Either<any, Zettel> {
     const newTag = new Tag(tagName);
-    if (this.changes.some((t) => t[1]?.equals(newTag)))
+    if (this.changes.some((t) => t[0] === "ADD_TAG" && t[1]?.equals(newTag)))
       return Either.left("Cannot add removed tag: " + tagName);
 
     const oldTag = this.tags.find((t) => t.equals(newTag));
@@ -69,7 +69,7 @@ export default class Zettel extends AggregateRoot<ZettelChange> {
 
   public removeTag(tagName: string): Either<any, Zettel> {
     const newTag = new Tag(tagName);
-    if (this.changes.some((t) => t[1]?.equals(newTag)))
+    if (this.changes.some((t) => t[0] === "REMOVE_TAG" && t[1]?.equals(newTag)))
       return Either.left("Cannot remove added tag: " + tagName);
 
     const index = this.tags.findIndex((t) => t.equals(newTag));
