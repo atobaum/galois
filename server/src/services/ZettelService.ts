@@ -60,10 +60,8 @@ export default class ZettelService {
   ): Promise<Either<any, Zettel>> {
     const newZettel = await Zettel.create({
       createdAt: new Date(),
-      revision: {
-        content: args.content,
-        type: args.contentType,
-      },
+      content: args.content,
+      contentType: args.contentType,
       tags: args.tags,
       title: args.title,
       userId,

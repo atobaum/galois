@@ -32,28 +32,28 @@ export const getZettel = async (id: number | string): Promise<Zettel> => {
 };
 
 export const getZettels = async (): Promise<Zettel[]> => {
-  const data = await apolloClient.query({
-    query: gql`
-      query GetZettels {
-        zettels {
-          nextCursor
-          data {
-            id
-            version
-            uuid
-            title
-            content
-            user {
-              username
+  const data = await apolloClient
+    .query({
+      query: gql`
+        query GetZettels {
+          zettels {
+            nextCursor
+            data {
+              id
+              title
+              content
+              contentType
+              tags
+              createdAt
+              updatedAt
             }
-            tags
-            createdAt
           }
         }
-      }
-    `,
-  });
+      `,
+    })
+    .catch((e) => console.log(e));
   // TODO error handling
+  if (!data) return [];
   const collection = data.data.zettels;
   const zettels = collection.data || [];
   return zettels.map((z: any) => ({
@@ -79,15 +79,11 @@ export const createZettel = async (
           contentType: MARKDOWN
         ) {
           id
-          uuid
-          version
           title
           content
+          contentType
           tags
           createdAt
-          user {
-            username
-          }
         }
       }
     `,

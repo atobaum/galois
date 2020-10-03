@@ -26,13 +26,14 @@ export default class TypeormZettelRepository implements IZettelRepository {
 
     const temp = result.map((zettelORM) => {
       const zettel = Zettel.create({
+        id: zettelORM.id,
         title: zettelORM.title,
         userId: zettelORM.fk_user_id,
-        createdAt: zettelORM.createdAt,
         content: zettelORM.content,
         contentType: zettelORM.contentType,
         tags: zettelORM.tags.map((t) => t.name),
-        id: zettelORM.id,
+        createdAt: zettelORM.createdAt,
+        updatedAt: zettelORM.updatedAt,
       });
       return zettel;
     });
