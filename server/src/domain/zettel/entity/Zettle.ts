@@ -96,11 +96,6 @@ export default class Zettel extends AggregateRoot<ZettelChange> {
     if (contentType) this.contentType = contentType;
 
     return Either.right(this);
-    // 이미 수정했는지 확인
-
-    // save Change
-
-    return Either.right(this);
   }
 
   public toDTO(): ZettelDTO {
