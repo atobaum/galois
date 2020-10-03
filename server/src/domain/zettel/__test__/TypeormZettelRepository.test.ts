@@ -56,10 +56,30 @@ describe("TypeormZettelRepository", () => {
     expect(getZettelOrFail).toBeRight();
     const createdZettel = getZettelOrFail.getRight();
     expect(createdZettel.toDTO().title).toBe("new zettel");
+  });
 
-    //   save(entity: Zettel): Promise<number> {
-    //     throw new Error("Method not implemented.");
-    //   }
+  it("update", async (done) => {
+    const now = new Date();
+    const zettel = (await repo.findById(existedZettel.id)).getRight();
+
+    zettel.updateContent("new content content", "plain");
+    let result: any = repo.save(zettel);
+
+    expect(result).toBeRight();
+    expect(
+      Math.abs(zettel.toDTO().updatedAt.getTime() - now.getTime())
+    ).toBeLessThan(1000);
+
+    result = await repo.findById(existedZettel.id);
+    expect(result).toBeRight();
+
+    const updatedZettel: Zettel = result.getRight();
+    const newDto = updatedZettel.toDTO();
+    expect(updatedZettel.equals(zettel)).toBe(true);
+    expect(newDto.content).toBe("new content content");
+    expect(newDto.contentType).toBe("plain");
+
+    done();
   });
 });
 //   findByTag(tag: string): Promise<Zettel[]> {
