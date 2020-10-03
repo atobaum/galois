@@ -11,8 +11,8 @@ dotenv.config({
 });
 
 export default {
-  clientHost: env.CLIENT_HOST,
-  serverHost: env.SERVER_HOST,
+  clientHost: env.CLIENT_HOST || "",
+  serverHost: env.SERVER_HOST || "",
   port: parseInt(env.PORT!) || 4000,
   mongodbURI: env.MONGODB_URI,
   postgresql: {
