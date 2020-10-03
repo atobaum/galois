@@ -39,9 +39,9 @@ describe("TypeormUserRepository", () => {
   it("create an user with social account", async (done) => {
     const socialAccount = new SocialAccount("google", "123");
     const user = User.create({
-      email: "asdf",
+      email: "qwe@test.com",
       thumbnail: null,
-      username: "adfs",
+      username: "qweqwe",
       socialAccounts: [socialAccount],
     });
     const id = await repo.save(user);
