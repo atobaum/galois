@@ -66,13 +66,25 @@ export const zettelTypeDefs = gql`
 `;
 
 export const zettelResolvers = {
+  Zettel: {
+    contentType: (parent: { contentType: string }) => {
+      switch (parent.contentType) {
+        case "markdown":
+          return "MARKDOWN";
+        case "plain":
+          return "PLAIN";
+        default:
+          return "ERROR";
+      }
+    },
+  },
   Query: {
     zettels: async (
       parent: any,
       { limit = 20, cursor }: { limit?: number; cursor?: number },
       ctx: any
     ): Promise<Collection<ZettelDTO> | null> => {
-      if (!ctx.user) return null;
+      if (!ctx.user) throw new AuthenticationError("Login First");
       const result = await services.zettel.findZettels(
         { limit, cursor },
         ctx.user.id
