@@ -5,6 +5,7 @@ import ZettelORM from "../../typeorm/ZettelORM";
 import TagORM from "../../typeorm/TagORM";
 import { Collection } from "../../graphql/zettelSchema";
 import Either from "../../lib/Either";
+import Tag from "./entity/Tag";
 
 export default class TypeormZettelRepository implements IZettelRepository {
   async findAll(args: {
@@ -104,6 +105,7 @@ export default class TypeormZettelRepository implements IZettelRepository {
     const repo = getRepository(ZettelORM);
     let orm = await repo.findOne(zettel.id, {
       where: { deletedAt: null },
+      relations: ["tags"],
     });
 
     if (!orm) return Either.left(`Zettel of id ${zettel.id} is not exist`);
@@ -113,8 +115,10 @@ export default class TypeormZettelRepository implements IZettelRepository {
     for (const change of changes) {
       switch (change[0]) {
         case "ADD_TAG":
+          orm.tags.push(await TagORM.findOrCreate(change[1].name));
           break;
         case "REMOVE_TAG":
+          orm.tags = orm.tags.filter((t) => !change[1].equals(new Tag(t.name)));
           break;
         case "UPDATE_TITLE":
           orm.title = dto.title;
@@ -136,8 +140,6 @@ export default class TypeormZettelRepository implements IZettelRepository {
 
     zettel.completeUpdate(orm.updatedAt);
     return Either.right(zettel.id);
-    //  ["ADD_TAG", Tag]
-    //  ["REMOVE_TAG", Tag]
   }
 
   async delete(zettelId: number): Promise<any> {

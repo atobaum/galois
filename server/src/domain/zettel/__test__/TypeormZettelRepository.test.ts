@@ -61,7 +61,6 @@ describe("TypeormZettelRepository", () => {
   it("update content", async (done) => {
     const zettel = (await repo.findById(existedZettel.id)).getRight();
     const updatedAt = zettel.toDTO().updatedAt;
-    await new Promise((res) => setTimeout(res, 300));
 
     zettel.updateContent("new content content", "plain");
     let result: any = await repo.save(zettel);
@@ -77,6 +76,33 @@ describe("TypeormZettelRepository", () => {
     expect(updatedZettel.equals(zettel)).toBe(true);
     expect(newDto.content).toBe("new content content");
     expect(newDto.contentType).toBe("plain");
+
+    done();
+  });
+
+  it("update tags", async (done) => {
+    const zettel = (await repo.findById(existedZettel.id)).getRight();
+    const updatedAt = zettel.toDTO().updatedAt;
+
+    zettel.addTag("newt1");
+    zettel.removeTag("t1");
+    zettel.addTag("newt2");
+    let result: any = await repo.save(zettel);
+
+    expect(result).toBeRight();
+    expect(zettel.toDTO().tags).toContain("newt1");
+    expect(zettel.toDTO().tags).not.toContain("t1");
+    expect(zettel.toDTO().tags).toContain("newt2");
+
+    result = await repo.findById(existedZettel.id);
+    expect(result).toBeRight();
+
+    const updatedZettel: Zettel = result.getRight();
+    const newDto = updatedZettel.toDTO();
+    expect(updatedZettel.equals(zettel)).toBe(true);
+    expect(newDto.tags).toContain("newt1");
+    expect(newDto.tags).not.toContain("t1");
+    expect(newDto.tags).toContain("newt2");
 
     done();
   });
