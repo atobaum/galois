@@ -15,21 +15,23 @@ type CreateZettelRequestDTO = {
   tags: string[];
 };
 
+type UpdateZettelRequestDTO = Partial<CreateZettelRequestDTO> & { id: number };
+
 export default class ZettelService {
   private zettelRepo: IZettelRepository;
   constructor(zettelRepo: IZettelRepository) {
     this.zettelRepo = zettelRepo;
   }
 
-  getZettelById(
-    args: { id: number; version?: number },
+  async getZettelById(
+    zettelId: number,
     userId: number
-  ): Promise<Zettel> {
-    throw new Error("NOT_IMPLEMENTED");
-  }
-
-  getZettelByUUID(uuid: string, userId: number): Promise<Zettel> {
-    throw new Error("NOT_IMPLEMENTED");
+  ): Promise<Either<any, Zettel>> {
+    const zettel = await this.zettelRepo.findById(zettelId);
+    return zettel.flatMap((z) => {
+      if (z.getUserId() === userId) return Either.right(z);
+      else return Either.left("NOT_AUTHORIZED");
+    });
   }
 
   findZettelByTag(tag: string, userId: number): Promise<Collection<Zettel>> {
@@ -48,10 +50,6 @@ export default class ZettelService {
       data: c.data.map((z) => z.toDTO()),
       nextCursor: c.nextCursor,
     }));
-  }
-
-  getRevisions(id: number, userId: number): Promise<Zettel> {
-    throw new Error("NOT_IMPLEMENTED");
   }
 
   async createZettel(
@@ -74,17 +72,40 @@ export default class ZettelService {
     return await this.zettelRepo.findById(id.getRight());
   }
 
-  createRevision(
-    args: {
-      id: number;
-      title: string;
-      tags: string[];
-      content: string;
-      contentType: ContentType;
-    },
+  async updateZettel(
+    args: UpdateZettelRequestDTO,
     userId: number
   ): Promise<Either<any, Zettel>> {
-    throw new Error("NOT_IMPLEMENTED");
+    const zettelOrFail = await this.zettelRepo.findById(args.id);
+    if (zettelOrFail.isLeft || zettelOrFail.getRight().getUserId() !== userId)
+      return Either.left("NOT_AUTHORIZED");
+    const zettel = zettelOrFail.getRight();
+
+    if (args.title !== undefined) {
+      zettel.updateTitle(args.title);
+    }
+
+    if (args.content) {
+      if (args.contentType) {
+        zettel.updateContent(args.content, args.contentType);
+      }
+      zettel.updateContent(args.content);
+    }
+
+    if (args.tags) {
+      const dto = zettel.toDTO();
+      for (const newTag of args.tags) {
+        if (!dto.tags.find((t) => t === newTag)) zettel.addTag(newTag);
+      }
+
+      for (const oldTag of dto.tags) {
+        if (!args.tags.find((t) => t === oldTag)) zettel.removeTag(oldTag);
+      }
+    }
+
+    const result = await this.zettelRepo.save(zettel);
+    if (result.isLeft) return result as Either<any, any>;
+    return this.getZettelById(result.getRight(), userId);
   }
 
   updateTitle(
@@ -102,10 +123,6 @@ export default class ZettelService {
   }
 
   removeZettel(id: number, userId: number): Promise<boolean> {
-    throw new Error("NOT_IMPLEMENTED");
-  }
-
-  removeRevision(uuid: string, userId: number): Promise<boolean> {
     throw new Error("NOT_IMPLEMENTED");
   }
 }
