@@ -34,13 +34,10 @@ export default class UserService {
     const id = await this.userRepo.save(user);
     if (!id) throw new Error("Fail to save user");
 
-    const refreshJWT = await refreshToken.generateJWT();
-    const accessJWT = await user.generateAccessToken();
-
-    return {
-      refreshToken: refreshJWT,
-      accessToken: accessJWT,
-    };
+    return await this.login(
+      args.socialAccount.provider,
+      args.socialAccount.socialId
+    );
   }
 
   async login(
@@ -55,14 +52,15 @@ export default class UserService {
     });
     if (user.isLeft) return null;
 
-    const id = await this.userRepo.save(user.getRight());
-    if (id.isLeft) throw new Error("Fail to save user");
+    // const id = await this.userRepo.save(user.getRight());
+    // if (id.isLeft) throw new Error("Fail to save user");
 
-    const refreshJWT = await refreshToken.generateJWT();
+    // const refreshJWT = await refreshToken.generateJWT();
     const accessJWT = await user.getRight().generateAccessToken();
 
     return {
-      refreshToken: refreshJWT,
+      // refreshToken: refreshJWT,
+      refreshToken: "123",
       accessToken: accessJWT,
     };
   }
