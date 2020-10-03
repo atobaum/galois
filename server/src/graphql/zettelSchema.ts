@@ -38,8 +38,13 @@ export const zettelTypeDefs = gql`
     MARKDOWN
   }
 
+  type ZettelCollection {
+    nextCursor: Int
+    data: [Zettel]
+  }
+
   extend type Query {
-    zettels: [Zettel]
+    zettels: ZettelCollection
     zettel(id: Int, uuid: String): Zettel
   }
 
@@ -75,15 +80,14 @@ export const zettelResolvers = {
       ctx: any
     ): Promise<Collection<ZettelDTO> | null> => {
       if (!ctx.user) return null;
-      const zettelCollection = await services.zettel.findZettels(
+      const result = await services.zettel.findZettels(
         { limit, cursor },
         ctx.user.id
       );
-      return {
-        ...zettelCollection,
-        data: zettelCollection.data.map((z) => z.toDTO()),
-      };
+      if (result.isLeft) return null;
+      else return result.getRight();
     },
+
     zettel: async (
       parent: any,
       { id, uuid }: { id?: number; uuid?: string },
@@ -107,17 +111,20 @@ export const zettelResolvers = {
       {
         title,
         content,
-        contentType = "plain",
+        contentType: givenContentType,
         tags,
       }: {
         title?: string;
         content: string;
-        contentType: ContentType;
+        contentType: "MARKDONW" | "PLAIN";
         tags: string[];
       },
       ctx: any
-    ): Promise<ZettelDTO> => {
+    ): Promise<ZettelDTO | null> => {
       if (!ctx.user) throw new AuthenticationError("Login First");
+      let contentType: ContentType;
+      if (givenContentType === "MARKDONW") contentType = "md";
+      else contentType = "plain";
 
       const zettel = await services.zettel.createZettel(
         {
@@ -128,7 +135,8 @@ export const zettelResolvers = {
         },
         ctx.user.id
       );
-      return zettel.toDTO();
+      if (zettel.isLeft) return null;
+      else return zettel.getRight().toDTO();
     },
     deleteZettel: async (
       parent: any,
