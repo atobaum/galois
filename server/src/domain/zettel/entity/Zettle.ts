@@ -132,7 +132,7 @@ export default class Zettel extends AggregateRoot<ZettelChange> {
       return Either.left("Zettel.create: id, updatedAt error");
 
     if (!updatedAt) updatedAt = createdAt;
-    if (createdAt > updatedAt)
+    if (createdAt.getTime() > updatedAt.getTime() + 1000)
       return Either.left("createdAt must be before updatedAt");
 
     const tagEntities = tags.map((t) => new Tag(t));
