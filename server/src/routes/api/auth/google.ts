@@ -18,7 +18,7 @@ const router = new Router();
 router.get("/redirect", async (ctx) => {
   const query = {
     client_id: authConfig.clientId,
-    redirect_uri: config.host + "/api/auth/google/callback",
+    redirect_uri: config.serverHost + "/api/auth/google/callback", //server
     response_type: "code",
     scope: "profile email openid",
     access_type: "online",
@@ -31,12 +31,19 @@ router.get("/redirect", async (ctx) => {
 
 router.get("/callback", async (ctx) => {
   const { code } = ctx.query;
+  if (!code) {
+    ctx.body = {
+      error: "Fail to retrieve code",
+    };
+    return;
+  }
+
   const response = await axios
     .post("https://oauth2.googleapis.com/token", {
       client_id: authConfig.clientId,
       client_secret: authConfig.clientSecret,
       grant_type: "authorization_code",
-      redirect_uri: config.host + "/api/auth/google/callback",
+      redirect_uri: config.serverHost + "/api/auth/google/callback", //server
       code,
     })
     .catch((e) => {
@@ -67,9 +74,11 @@ router.get("/callback", async (ctx) => {
       throw new Error("가입 오류");
     }
     ctx.redirect(
-      `/login_callback#access_token=${encodeURIComponent(
-        authTokens.accessToken
-      )}&refresh_token=${encodeURIComponent(authTokens.refreshToken)}`
+      config.clientHost +
+        `/login_callback#access_token=${encodeURIComponent(
+          // client
+          authTokens.accessToken
+        )}&refresh_token=${encodeURIComponent(authTokens.refreshToken)}`
     );
   }
 });
