@@ -1,5 +1,5 @@
-import { Epic, ofType } from "redux-observable";
-import { of, timer } from "rxjs";
+import { Epic } from "redux-observable";
+import { timer } from "rxjs";
 import { delayWhen, filter, mapTo } from "rxjs/operators";
 
 const SHOW_TOAST = "toast/SHOW_TOAST" as const;
