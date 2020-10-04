@@ -1,5 +1,5 @@
 import koa from "koa";
-import { decodeToken, AccessTokenData } from "../lib/token";
+import { decodeToken } from "../lib/token";
 export default async function jwtMiddleware(
   ctx: koa.Context,
   next: () => Promise<any>
@@ -12,7 +12,9 @@ export default async function jwtMiddleware(
 
   if (accessToken) {
     try {
-      const accessTokenData = await decodeToken<AccessTokenData>(accessToken);
+      const accessTokenData = await decodeToken<{ id: number; sub: string }>(
+        accessToken
+      );
       if (accessTokenData.sub !== "access_token") {
         ctx.status = 401;
         ctx.body = { error: "Invalid access token" };

@@ -1,4 +1,5 @@
 import Either from "../Either";
+import "@src/test/custom-matcher";
 
 describe("Either monad", () => {
   it("either left or right", () => {
@@ -7,6 +8,22 @@ describe("Either monad", () => {
 
     expect(e1.isRight && !e1.isLeft).toBe(true);
     expect(!e2.isRight && e2.isLeft).toBe(true);
+  });
+
+  it("getLeft", () => {
+    const e1 = Either.right(1);
+    const e2 = Either.left(2);
+
+    expect(() => e1.getLeft()).toThrow();
+    expect(e2.getLeft()).toBe(2);
+  });
+
+  it("getRight", () => {
+    const e1 = Either.right(1);
+    const e2 = Either.left(2);
+
+    expect(e1.getRight()).toBe(1);
+    expect(() => e2.getRight()).toThrow();
   });
 
   it("Left.map returns self", () => {
@@ -93,5 +110,15 @@ describe("Either monad", () => {
 
     const result = Either.combine([right1, right2]);
     expect(result.isRight).toBe(true);
+  });
+
+  it("fromNullable from null", () => {
+    const e = Either.fromNullable(null);
+    expect(e).toBeLeft();
+  });
+
+  it("fromNullable from not null", () => {
+    const e = Either.fromNullable(123);
+    expect(e).toBeRight();
   });
 });
