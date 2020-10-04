@@ -1,4 +1,4 @@
-import { Zettel } from "../models/Zettel";
+import { Zettel } from "../../models/Zettel";
 
 const CREATE_ZETTEL = "zettel/CREATE_ZETTEL" as const;
 const DELETE_ZETTEL = "zettel/DELETE_ZETTEL" as const;

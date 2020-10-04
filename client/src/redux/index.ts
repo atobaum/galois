@@ -1,17 +1,6 @@
-import { combineReducers, createStore, compose } from "redux";
+import { createStore, compose } from "redux";
 import { createEpicMiddleware } from "redux-observable";
-import coreReducer from "./coreReducer";
-import editorReducer from "./editorReducer";
-import rootEpic from "./epics";
-import modalReducer from "./modalReducer";
-import zettelReducer from "./zettelReducer";
-
-const rootReducer = combineReducers({
-  core: coreReducer,
-  modal: modalReducer,
-  zettel: zettelReducer,
-  editor: editorReducer,
-});
+import { rootEpic, rootReducer } from "./modules/root";
 
 export type RootState = ReturnType<typeof rootReducer>;
 
