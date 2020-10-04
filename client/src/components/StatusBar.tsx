@@ -41,6 +41,7 @@ const StatusBar: React.FC = () => {
               <img
                 style={{ width: "2rem", height: "2rem", borderRadius: "50%" }}
                 src={user.thumbnail}
+                alt={user.username}
               />
             )}
             {user.username}
