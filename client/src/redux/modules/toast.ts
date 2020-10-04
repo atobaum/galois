@@ -1,6 +1,6 @@
 import { Epic } from "redux-observable";
 import { timer } from "rxjs";
-import { delayWhen, filter, mapTo } from "rxjs/operators";
+import { debounce, filter, mapTo } from "rxjs/operators";
 
 const SHOW_TOAST = "toast/SHOW_TOAST" as const;
 const CLOSE_TOAST = "toast/CLOSE_TOAST" as const;
@@ -36,12 +36,12 @@ export const toastReducer = (
   }
 };
 
-export const toastEpic: Epic<ToastAction> = ($action) =>
+export const toastEpic: Epic<ToastAction> = ($action, _, { scheduler }) =>
   $action.pipe(
     filter(
       (action) =>
         action.type === "toast/SHOW_TOAST" && action.payload.time !== undefined
     ),
-    delayWhen((action: any) => timer(action.payload.time)),
+    debounce((action: any) => timer(action.payload.time)),
     mapTo({ type: CLOSE_TOAST })
   );

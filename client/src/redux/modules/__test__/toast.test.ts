@@ -1,6 +1,10 @@
 import { ActionsObservable } from "redux-observable";
 import { closeToast, showToast, toastEpic, toastReducer } from "../toast";
-import { fakeSchedulers } from "rxjs-marbles/jest";
+import { TestScheduler } from "rxjs/testing";
+
+const testScheduler = new TestScheduler((actual, expected) => {
+  expect(actual).toEqual(expected);
+});
 
 describe("toast reducer", () => {
   it("init", () => {
@@ -34,18 +38,19 @@ describe("toast epic", () => {
     expect(spy).not.toBeCalled();
   });
 
-  it(
-    "타이머 설정",
-    fakeSchedulers((advance) => {
-      const showAction$ = ActionsObservable.of(showToast("test", 400));
+  it("타이머 설정", () => {
+    testScheduler.run(({ cold, expectObservable }) => {
+      const values = {
+        a: showToast("msg", 2),
+        b: closeAction,
+      };
+      const source = cold("--aa----a----a--|", values);
+      const expected = "   -----b----b----b|";
 
-      const spy = jest.fn();
-      toastEpic(showAction$, {} as any, {}).subscribe(spy);
-      expect(spy).not.toBeCalled();
-      advance(300);
-      expect(spy).not.toBeCalled();
-      advance(200);
-      expect(spy).toBeCalledWith(closeAction);
-    })
-  );
+      expectObservable(
+        // toastEpic(source as any, {} as any, { scheduler: testScheduler })
+        toastEpic(source as any, {} as any, {})
+      ).toBe(expected, values);
+    });
+  });
 });
