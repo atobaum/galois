@@ -36,7 +36,7 @@ export const toastReducer = (
   }
 };
 
-export const toastEpic: Epic<ToastAction> = ($action, _, { scheduler }) =>
+export const toastEpic: Epic<ToastAction> = ($action) =>
   $action.pipe(
     filter(
       (action) =>

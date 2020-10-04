@@ -7,9 +7,7 @@ import { Zettel } from "../../models/Zettel";
 
 describe("<ZettelCard />", () => {
   const zettel: Zettel = {
-    uuid: "ad8f2j",
     id: 123,
-    version: 3,
     title: "제목",
     content: `
 ## 소제목
