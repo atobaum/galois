@@ -4,8 +4,6 @@ export const getZettels = async (): Promise<Zettel[]> => {
   return [
     {
       id: 1,
-      uuid: "uuid1",
-      version: 1,
       createdAt: new Date(),
       content: "test1",
       tags: ["inbox", "tag1"],
@@ -13,8 +11,6 @@ export const getZettels = async (): Promise<Zettel[]> => {
     },
     {
       id: 2,
-      uuid: "uuid2",
-      version: 2,
       createdAt: new Date(),
       content: "test2",
       tags: ["tag2"],
@@ -22,8 +18,6 @@ export const getZettels = async (): Promise<Zettel[]> => {
     },
     {
       id: 3,
-      uuid: "uuid3",
-      version: 3,
       createdAt: new Date(),
       content: "test3",
       tags: ["tag3"],
@@ -31,8 +25,6 @@ export const getZettels = async (): Promise<Zettel[]> => {
     },
     {
       id: 4,
-      uuid: "uuid4",
-      version: 4,
       createdAt: new Date(),
       content: "test4",
       tags: ["tag4", "inbox"],
