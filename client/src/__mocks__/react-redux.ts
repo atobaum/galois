@@ -1,4 +1,4 @@
-import rootReducer, { RootState } from "../reducers";
+import rootReducer, { RootState } from "../redux";
 
 export const initZettels = [
   {

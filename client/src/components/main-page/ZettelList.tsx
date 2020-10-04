@@ -4,9 +4,9 @@ import React from "react";
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
 import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "../../reducers";
+import { RootState } from "../../redux";
 import ZettelListItem from "./ZettelListItem";
-import { setViewer } from "../../reducers/editorReducer";
+import { setViewer } from "../../redux/editorReducer";
 
 const ZettelListCss = css`
   display: flex;

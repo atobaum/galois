@@ -2,12 +2,12 @@ import React, { useRef } from "react";
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
 import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "../../reducers";
+import { RootState } from "../../redux";
 import ZettelViewer from "./ZettelViewer";
 import ZettelEditor from "./ZettelEditor";
 import { createZettel } from "../../api/zettelApi";
-import { addZetel, updateZettelAction } from "../../reducers/zettelReducer";
-import { setViewer, startEdit } from "../../reducers/editorReducer";
+import { addZetel, updateZettelAction } from "../../redux/zettelReducer";
+import { setViewer, startEdit } from "../../redux/editorReducer";
 import { useMutation } from "@apollo/client";
 import { updateZettelQuery } from "../../api/zettelQuery";
 

@@ -4,21 +4,11 @@ import App from "./App";
 // import * as serviceWorker from "./serviceWorker";
 import "./style.css";
 
-import { createStore } from "redux";
 import { Provider } from "react-redux";
-import rootReducer from "./reducers";
 import { BrowserRouter } from "react-router-dom";
 import { ApolloProvider } from "@apollo/client";
 import apolloClient from "./lib/apolloClient";
-
-let store = null;
-const reduxDevTool =
-  (window as any).__REDUX_DEVTOOLS_EXTENSION__ &&
-  (window as any).__REDUX_DEVTOOLS_EXTENSION__();
-
-if (process.env.NODE_ENV === "development")
-  store = createStore(rootReducer, reduxDevTool);
-else store = createStore(rootReducer);
+import store from "./redux";
 
 ReactDOM.render(
   <React.StrictMode>

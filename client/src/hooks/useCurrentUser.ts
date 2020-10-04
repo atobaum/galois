@@ -1,6 +1,6 @@
 import { gql, useLazyQuery } from "@apollo/client";
 import { useDispatch, useSelector } from "react-redux";
-import { setUser } from "../reducers/coreReducer";
+import { setUser } from "../redux/coreReducer";
 
 export default function useCurrentUser() {
   // redux store => localStorage => graphql

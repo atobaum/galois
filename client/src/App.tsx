@@ -4,7 +4,7 @@ import { Switch, Route } from "react-router-dom";
 import MainPage from "./pages/MainPage";
 import ZettelViewPage from "./pages/ZettelViewPage";
 import { useDispatch } from "react-redux";
-import { addZetel } from "./reducers/zettelReducer";
+import { addZetel } from "./redux/zettelReducer";
 import { getZettels } from "./api/zettelApi";
 import LoginCallbackPage from "./pages/LoginCallbackPage";
 import useCurrentUser from "./hooks/useCurrentUser";
