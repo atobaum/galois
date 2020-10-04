@@ -8,6 +8,7 @@ import { addZetel } from "./redux/modules/zettelReducer";
 import { getZettels } from "./api/zettelApi";
 import LoginCallbackPage from "./pages/LoginCallbackPage";
 import useCurrentUser from "./hooks/useCurrentUser";
+import Toast from "./components/Toast";
 
 function App() {
   const dispatch = useDispatch();
@@ -28,6 +29,7 @@ function App() {
         <Route path="/login_callback" component={LoginCallbackPage} />
         <Route path="/" component={MainPage} />
       </Switch>
+      <Toast />
     </div>
   );
 }
