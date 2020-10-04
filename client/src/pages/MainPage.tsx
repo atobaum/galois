@@ -6,7 +6,6 @@ import { jsx, css } from "@emotion/core";
 import StatusBar from "../components/StatusBar";
 import GNB from "../components/GNB";
 import ZettelList from "../components/main-page/ZettelList";
-import { useDispatch } from "react-redux";
 import ZettelViewerPanel from "../components/main-page/ZettelViewerPanel";
 
 const MainPageCss = css`
@@ -39,7 +38,6 @@ const MainPageCss = css`
 `;
 
 function MainPage() {
-  const dispatch = useDispatch();
   return (
     <div css={MainPageCss}>
       <GNB />

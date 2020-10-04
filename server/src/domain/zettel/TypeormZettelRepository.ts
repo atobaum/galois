@@ -5,6 +5,7 @@ import ZettelORM from "../../typeorm/ZettelORM";
 import TagORM from "../../typeorm/TagORM";
 import { Collection } from "../../graphql/zettelSchema";
 import Either from "../../lib/Either";
+import Tag from "./entity/Tag";
 
 export default class TypeormZettelRepository implements IZettelRepository {
   async findAll(args: {
@@ -98,7 +99,47 @@ export default class TypeormZettelRepository implements IZettelRepository {
   }
 
   private async updateZettel(zettel: Zettel): Promise<Either<any, number>> {
-    throw new Error("Method not implemented.");
+    const changes = zettel.getChanges();
+    if (changes.length == 0) return Either.right(zettel.id);
+
+    const repo = getRepository(ZettelORM);
+    let orm = await repo.findOne(zettel.id, {
+      where: { deletedAt: null },
+      relations: ["tags"],
+    });
+
+    if (!orm) return Either.left(`Zettel of id ${zettel.id} is not exist`);
+
+    const dto = zettel.toDTO();
+
+    for (const change of changes) {
+      switch (change[0]) {
+        case "ADD_TAG":
+          orm.tags.push(await TagORM.findOrCreate(change[1].name));
+          break;
+        case "REMOVE_TAG":
+          orm.tags = orm.tags.filter((t) => !change[1].equals(new Tag(t.name)));
+          break;
+        case "UPDATE_TITLE":
+          orm.title = dto.title;
+          break;
+        case "UPDATE_CONTENT":
+          orm.content = dto.content;
+          orm.contentType = dto.contentType;
+          break;
+        default:
+          Either.left("Unsupported change type: " + change[0]);
+      }
+    }
+
+    try {
+      orm = await repo.save(orm);
+    } catch (e) {
+      return Either.left("Error while saving: " + e);
+    }
+
+    zettel.completeUpdate(orm.updatedAt);
+    return Either.right(zettel.id);
   }
 
   async delete(zettelId: number): Promise<any> {

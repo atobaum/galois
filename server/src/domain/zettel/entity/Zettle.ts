@@ -39,11 +39,17 @@ export default class Zettel extends AggregateRoot<ZettelChange> {
     this.updatedAt = args.updatedAt;
   }
 
+  // call after saved
+  public completeUpdate(updatedAt: Date) {
+    this.updatedAt = updatedAt;
+    this.clearChanges();
+  }
+
   public getUserId(): number {
     return this.userId;
   }
 
-  public updateTitle(newTitle: string): Either<any, Zettel> {
+  public updateTitle(newTitle: string | null): Either<any, Zettel> {
     if (!this.changes.find((change) => change[0] === "UPDATE_TITLE"))
       this.addChange(["UPDATE_TITLE", this.title]);
 
@@ -94,11 +100,6 @@ export default class Zettel extends AggregateRoot<ZettelChange> {
 
     this.content = content;
     if (contentType) this.contentType = contentType;
-
-    return Either.right(this);
-    // 이미 수정했는지 확인
-
-    // save Change
 
     return Either.right(this);
   }

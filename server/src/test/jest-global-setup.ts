@@ -22,6 +22,6 @@ export default async () => {
   );
 
   const zettel = initState.zettel;
-  const insertZettelQuery = `insert into zettel  (id, title, content, content_type, fk_user_id) values (${zettel.id}, '${zettel.title}', '${zettel.content}', '${zettel.contentType}', ${existedUser.id});`;
+  const insertZettelQuery = `insert into zettel  (id, title, content, content_type, fk_user_id, created_at, updated_at) values (${zettel.id}, '${zettel.title}', '${zettel.content}', '${zettel.contentType}', ${existedUser.id}, '${zettel.createdAt}', '${zettel.createdAt}');`;
   await manager.query(insertZettelQuery);
 };

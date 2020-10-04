@@ -1,6 +1,5 @@
 import { AuthenticationError, gql } from "apollo-server-koa";
 import { ContentType } from "../domain/zettel/entity/Revision";
-import Zettel from "../domain/zettel/entity/Zettle";
 import { services } from "../services";
 
 export type Collection<T> = {
@@ -10,7 +9,6 @@ export type Collection<T> = {
 
 export type ZettelDTO = {
   id?: number;
-  uuid?: string;
   title: string | null;
   content: string;
   contentType: ContentType;
@@ -22,7 +20,6 @@ export type ZettelDTO = {
 export const zettelTypeDefs = gql`
   type Zettel {
     id: Int!
-    uuid: String!
     title: String
     content: String!
     contentType: ContentType!
@@ -43,7 +40,7 @@ export const zettelTypeDefs = gql`
 
   extend type Query {
     zettels: ZettelCollection
-    zettel(id: Int, uuid: String): Zettel
+    zettel(id: Int): Zettel
   }
 
   extend type Mutation {
@@ -69,11 +66,12 @@ export const zettelResolvers = {
   Zettel: {
     contentType: (parent: { contentType: string }) => {
       switch (parent.contentType) {
-        case "markdown":
+        case "md":
           return "MARKDOWN";
         case "plain":
           return "PLAIN";
         default:
+          console.log(parent.contentType);
           return "ERROR";
       }
     },
@@ -95,19 +93,15 @@ export const zettelResolvers = {
 
     zettel: async (
       parent: any,
-      { id, uuid }: { id?: number; uuid?: string },
+      { id }: { id: number },
       ctx: any
     ): Promise<ZettelDTO | null> => {
       if (!ctx.user) throw new AuthenticationError("Login First");
-      if (!(id || uuid)) return null;
-      let zettel: Zettel | null = null;
-      if (uuid)
-        zettel = await services.zettel.getZettelByUUID(uuid, ctx.user.id);
-      else if (id)
-        zettel = await services.zettel.getZettelById({ id }, ctx.user.id);
+      if (!id) return null;
+      const zettel = await services.zettel.getZettelById(id, ctx.user.id);
+      if (zettel.isLeft) return null;
 
-      if (zettel) return zettel.toDTO();
-      else return null;
+      return zettel.getRight().toDTO();
     },
   },
   Mutation: {
@@ -140,6 +134,24 @@ export const zettelResolvers = {
         },
         ctx.user.id
       );
+      if (zettel.isLeft) return null;
+      else return zettel.getRight().toDTO();
+    },
+    updateZettel: async (parent: any, args: any, ctx: any) => {
+      if (!ctx.user) throw new AuthenticationError("Login First");
+      if (args.contentType) {
+        switch (args.contentType) {
+          case "MARKDOWN":
+            args.contentType = "md";
+            break;
+          case "PLAIN":
+            args.contentType = "plain";
+            break;
+          default:
+            throw new Error("UNSUPPORTED content type: " + args.contentType);
+        }
+      }
+      const zettel = await services.zettel.updateZettel(args, ctx.user.id);
       if (zettel.isLeft) return null;
       else return zettel.getRight().toDTO();
     },

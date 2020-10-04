@@ -16,6 +16,7 @@ export default {
     content: "testcontent",
     contentType: "md",
     title: "testtitle",
+    createdAt: "2020-08-08T12:00:00Z",
     // tags: ["t1", "t2"],
     userId: 86898,
   },
