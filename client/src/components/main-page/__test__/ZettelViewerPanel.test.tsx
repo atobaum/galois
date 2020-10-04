@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 
 import { initZettels } from "../../../__mocks__/react-redux";
 import ZettelViewerPanel from "../ZettelViewerPanel";
-import { setViewer } from "../../../redux/editorReducer";
+import { setViewer } from "../../../redux/modules/editorReducer";
 
 jest.mock("react-redux");
 

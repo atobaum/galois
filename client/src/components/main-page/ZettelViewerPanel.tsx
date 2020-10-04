@@ -6,8 +6,11 @@ import { RootState } from "../../redux";
 import ZettelViewer from "./ZettelViewer";
 import ZettelEditor from "./ZettelEditor";
 import { createZettel } from "../../api/zettelApi";
-import { addZetel, updateZettelAction } from "../../redux/zettelReducer";
-import { setViewer, startEdit } from "../../redux/editorReducer";
+import {
+  addZetel,
+  updateZettelAction,
+} from "../../redux/modules/zettelReducer";
+import { setViewer, startEdit } from "../../redux/modules/editorReducer";
 import { useMutation } from "@apollo/client";
 import { updateZettelQuery } from "../../api/zettelQuery";
 
