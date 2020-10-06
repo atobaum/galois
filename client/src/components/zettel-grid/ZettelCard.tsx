@@ -5,9 +5,9 @@ import { useMemo } from "react";
 import parseMarkdown from "../../lib/markdownParser";
 
 export const ZettelCardCss = css`
-  width: 300px;
-  height: 200px;
+  height: 180px;
   border: 1px solid black;
+  padding: 0.3rem;
   h3 {
     font-size: 1.25rem;
   }
@@ -44,7 +44,11 @@ function ZettelCard({ id, content, title, tags, onClick }: ZettelCardProps) {
         className="zettel-content"
         dangerouslySetInnerHTML={{ __html: parsedContent.contents as string }}
       ></div>
-      <div>{tags && tags.map((tag) => <Tag name={tag} key={tag} />)}</div>
+      <div>
+        {tags.map((tag) => (
+          <Tag name={tag} key={tag} />
+        ))}
+      </div>
     </div>
   );
 }
