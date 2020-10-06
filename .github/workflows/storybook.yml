@@ -51,9 +51,8 @@ jobs:
           yarn build-storybook -o ./storybook-build
 
       - name: Upload to storybook branch
-        uses: ad-m/github-push-action@master
+        uses: peaceiris/actions-gh-pages@v3
         with:
+          publish_branch: storybook
+          publish_dir: ./client/storybook-build
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: storybook
-          force: true
-          directory: ./client/storybook-build
