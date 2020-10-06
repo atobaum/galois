@@ -8,6 +8,7 @@ import LoginCallbackPage from "./pages/LoginCallbackPage";
 import useCurrentUser from "./hooks/useCurrentUser";
 import Toast from "./components/core/Toast";
 import { setZettelsToGrid } from "./redux/modules/zettel-grid";
+import ZettelPage from "./pages/ZettelPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -24,6 +25,7 @@ function App() {
   return (
     <div className="App">
       <Switch>
+        <Route path="/zettel/:id" component={ZettelPage} />
         <Route path="/login_callback" component={LoginCallbackPage} />
         <Route path="/" component={MainPage} />
       </Switch>
