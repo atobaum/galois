@@ -2,12 +2,13 @@ import React, { useEffect } from "react";
 import "./App.css";
 import { Switch, Route } from "react-router-dom";
 import MainPage from "./pages/MainPage";
-import ZettelViewPage from "./pages/ZettelViewPage";
 import { useDispatch } from "react-redux";
-import { addZetel } from "./reducers/zettelReducer";
 import { getZettels } from "./api/zettelApi";
 import LoginCallbackPage from "./pages/LoginCallbackPage";
 import useCurrentUser from "./hooks/useCurrentUser";
+import Toast from "./components/core/Toast";
+import { setZettelsToGrid } from "./redux/modules/zettel-grid";
+import ZettelPage from "./pages/ZettelPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -16,7 +17,7 @@ function App() {
   useEffect(() => {
     if (user)
       getZettels().then((data) => {
-        data.forEach((z) => dispatch(addZetel(z)));
+        dispatch(setZettelsToGrid(data));
       });
     // eslint-disable-next-line
   }, []);
@@ -24,10 +25,11 @@ function App() {
   return (
     <div className="App">
       <Switch>
-        <Route path="/zettel/:id" component={ZettelViewPage} />
+        <Route path="/zettel/:id" component={ZettelPage} />
         <Route path="/login_callback" component={LoginCallbackPage} />
         <Route path="/" component={MainPage} />
       </Switch>
+      <Toast />
     </div>
   );
 }

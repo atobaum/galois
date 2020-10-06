@@ -2,9 +2,9 @@ import React from "react";
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
 import { Link } from "react-router-dom";
-import useCurrentUser from "../hooks/useCurrentUser";
+import useCurrentUser from "../../hooks/useCurrentUser";
 import { useDispatch } from "react-redux";
-import { startEdit } from "../reducers/editorReducer";
+import { startEdit } from "../../redux/modules/editorReducer";
 
 const StatusBarCss = css`
   display: flex;

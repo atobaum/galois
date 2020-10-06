@@ -1,5 +1,3 @@
-import { Zettel } from "../models/Zettel";
-
 const SET_VIEWER = "editor/SET_VIEWER" as const;
 const START_EDIT = "editor/START_EDIT" as const;
 

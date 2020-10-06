@@ -2,14 +2,12 @@ import React from "react";
 import { render, fireEvent } from "@testing-library/react";
 import { MemoryRouter, Router } from "react-router-dom";
 import { createMemoryHistory } from "history";
-import ZettelCard from "../ZettelCard";
+import ZettelCard from "../zettel-grid/ZettelCard";
 import { Zettel } from "../../models/Zettel";
 
 describe("<ZettelCard />", () => {
   const zettel: Zettel = {
-    uuid: "ad8f2j",
     id: 123,
-    version: 3,
     title: "제목",
     content: `
 ## 소제목
@@ -17,12 +15,13 @@ describe("<ZettelCard />", () => {
 `,
     tags: ["태그1", "태그2"],
     createdAt: new Date(),
+    updatedAt: new Date(),
   };
 
   it("renders props properly", () => {
     const { getByText } = render(
       <MemoryRouter>
-        <ZettelCard {...zettel} onDelete={() => {}} />
+        <ZettelCard {...zettel} />
       </MemoryRouter>
     );
     // getByText("ad8f2j");
@@ -33,36 +32,5 @@ describe("<ZettelCard />", () => {
     getByText("list1");
     getByText("#태그1");
     getByText("#태그2");
-  });
-
-  it("routes", () => {
-    const history = createMemoryHistory();
-    const { getByText } = render(
-      <Router history={history}>
-        <ZettelCard {...zettel} onDelete={() => {}} />
-      </Router>
-    );
-
-    const detailButton = getByText("More");
-    fireEvent.click(detailButton);
-    expect(history.location.pathname).toBe(`/zettel/${zettel.id}`);
-
-    const tag = getByText("#태그1");
-    fireEvent.click(tag);
-    expect(history.location.pathname).toBe(`/tag/태그1`);
-  });
-
-  it("can be deleted", () => {
-    window.confirm = () => true;
-    const onDelete = jest.fn();
-    const { getByText } = render(
-      <MemoryRouter>
-        <ZettelCard {...zettel} onDelete={onDelete} />
-      </MemoryRouter>
-    );
-
-    const deleteButton = getByText("Delete");
-    fireEvent.click(deleteButton);
-    expect(onDelete).toBeCalledWith(zettel.id);
   });
 });

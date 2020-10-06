@@ -1,6 +1,5 @@
 import { gql } from "@apollo/client";
 import apolloClient from "../lib/apolloClient";
-import { Zettel } from "../models/Zettel";
 
 export const getZettel = async (id: number | string): Promise<Zettel> => {
   const data = await apolloClient.query({
@@ -63,7 +62,7 @@ export const getZettels = async (): Promise<Zettel[]> => {
 };
 
 export const createZettel = async (
-  createZettelDTO: Pick<Zettel, "title" | "content" | "tags">
+  createZettelDTO: Omit<Zettel, "id" | "createdAt" | "updatedAt">
 ): Promise<Zettel> => {
   const data = await apolloClient.mutate({
     mutation: gql`

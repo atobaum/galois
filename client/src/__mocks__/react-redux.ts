@@ -1,4 +1,5 @@
-import rootReducer, { RootState } from "../reducers";
+import { RootState } from "../redux";
+import { rootReducer } from "../redux/modules/root";
 
 export const initZettels = [
   {
@@ -12,6 +13,7 @@ export const initZettels = [
 `,
     tags: ["태그1", "태그2"],
     createdAt: new Date("2020"),
+    updatedAt: new Date(),
   },
   {
     uuid: "2asdfxvzc",
@@ -24,6 +26,7 @@ export const initZettels = [
 `,
     tags: [],
     createdAt: new Date(),
+    updatedAt: new Date(),
   },
 ];
 

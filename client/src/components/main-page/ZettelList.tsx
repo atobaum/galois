@@ -4,9 +4,9 @@ import React from "react";
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
 import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "../../reducers";
+import { RootState } from "../../redux";
 import ZettelListItem from "./ZettelListItem";
-import { setViewer } from "../../reducers/editorReducer";
+import { setViewer } from "../../redux/modules/editorReducer";
 
 const ZettelListCss = css`
   display: flex;
@@ -20,7 +20,7 @@ function ZettelList(props: ZettelListProps) {
   const dispatch = useDispatch();
   return (
     <div css={ZettelListCss} className="zettel-list">
-      {zettels.map((note) => (
+      {zettels.map((note: any) => (
         <ZettelListItem
           key={note.id}
           {...note}
