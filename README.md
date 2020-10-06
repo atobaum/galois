@@ -17,7 +17,6 @@ Atomic interconnected note taking service inspired by [Wiki](https://en.wikipedi
 - typescript
 - koa
 - JWT
-- OAuth
 - typeorm
 - postgresql
 
@@ -25,6 +24,7 @@ Atomic interconnected note taking service inspired by [Wiki](https://en.wikipedi
 
 - react w/ typescript
 - redux
+- redux-observable
 
 # 환경설정
 
