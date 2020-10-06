@@ -63,7 +63,7 @@ export const getZettels = async (): Promise<Zettel[]> => {
 };
 
 export const createZettel = async (
-  createZettelDTO: Pick<Zettel, "title" | "content" | "tags">
+  createZettelDTO: Omit<Zettel, "id" | "createdAt" | "updatedAt">
 ): Promise<Zettel> => {
   const data = await apolloClient.mutate({
     mutation: gql`

@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { jsx, css } from "@emotion/core";
 import { Zettel } from "../models/Zettel";
 import { getZettel } from "../api/zettelApi";
-import ZettelCard from "../components/ZettelCard";
+import ZettelCard from "../components/zettel-grid/ZettelCard";
 
 const ZettelViewPageCss = css`
   max-width: 1280px;
