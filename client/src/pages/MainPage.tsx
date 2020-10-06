@@ -4,46 +4,39 @@ import React from "react";
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
 import StatusBar from "../components/StatusBar";
-import GNB from "../components/GNB";
-import ZettelList from "../components/main-page/ZettelList";
-import ZettelViewerPanel from "../components/main-page/ZettelViewerPanel";
+import ZettelGrid from "../components/zettel-grid/ZettelGrid";
+import SmallEditor from "../components/SmallEditor";
 
 const MainPageCss = css`
-  height: 100vh;
+  min-height: 100vh;
   width: 100vw;
   margin: 0;
-  display: grid;
-  grid-template-columns: 100px 1fr 1fr;
-  grid-template-rows: 60px 1fr 1fr;
-  grid-template-areas:
-    "gnb status-bar status-bar"
-    "gnb zettel-list zettel-view"
-    "gnb zettel-list meta";
 
-  .status-bar {
-    grid-area: status-bar;
-  }
+  .centered-layout {
+    border-right: 1px solid gray;
+    border-left: 1px solid gray;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: auto;
 
-  .gnb {
-    grid-area: gnb;
-  }
+    @media (max-width: 760px) {
+      width: 100%;
+    }
 
-  .zettel-list {
-    grid-area: zettel-list;
-  }
-
-  .zettel-view {
-    grid-area: zettel-view;
+    width: 760px;
   }
 `;
 
 function MainPage() {
   return (
     <div css={MainPageCss}>
-      <GNB />
       <StatusBar />
-      <ZettelViewerPanel />
-      <ZettelList />
+      <div className="centered-layout">
+        <SmallEditor />
+        <ZettelGrid />
+      </div>
     </div>
   );
 }
