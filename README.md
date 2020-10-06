@@ -4,6 +4,8 @@ Atomic interconnected note taking service inspired by [Wiki](https://en.wikipedi
 ![Server CI](https://github.com/atobaum/galois/workflows/Server%20CI/badge.svg)
 [![codecov](https://codecov.io/gh/atobaum/galois/branch/develop/graph/badge.svg)](https://codecov.io/gh/atobaum/galois)
 
+[Storybook](https://atobaum.github.io/galois/)을 구경할 수 있어요.
+
 # Feature
 
 - 태그
