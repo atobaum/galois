@@ -2,8 +2,8 @@ import React from "react";
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
 import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "../redux";
-import { closeToast } from "../redux/modules/toast";
+import { RootState } from "../../redux";
+import { closeToast } from "../../redux/modules/toast";
 
 const ToastCss = css`
   position: fixed;

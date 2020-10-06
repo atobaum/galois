@@ -3,7 +3,7 @@ import React, { useMemo } from "react";
 import { jsx, css } from "@emotion/core";
 import { ZettelCardCss } from "./ZettelCard";
 import parseMarkdown from "../../lib/markdownParser";
-import Tag from "../Tag";
+import Tag from "../common/Tag";
 
 const PendingZettelCardCss = css`
   ${ZettelCardCss}

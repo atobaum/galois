@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
-import TagList from "./TagList";
+import TagList from "../common/TagList";
 import { useDispatch } from "react-redux";
-import { createZettelAction } from "../redux/modules/zettel-grid";
+import { createZettelAction } from "../../redux/modules/zettel-grid";
 
 const SmallEditorCss = css`
   width: 100%;

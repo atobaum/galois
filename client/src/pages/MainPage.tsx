@@ -3,9 +3,9 @@ import React from "react";
 
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
-import StatusBar from "../components/StatusBar";
+import StatusBar from "../components/core/StatusBar";
 import ZettelGrid from "../components/zettel-grid/ZettelGrid";
-import SmallEditor from "../components/SmallEditor";
+import SmallEditor from "../components/main-page/SmallEditor";
 
 const MainPageCss = css`
   min-height: 100vh;

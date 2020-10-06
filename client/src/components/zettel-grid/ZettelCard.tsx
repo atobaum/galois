@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
-import Tag from "../Tag";
+import Tag from "../common/Tag";
 import { useMemo } from "react";
 import parseMarkdown from "../../lib/markdownParser";
 
