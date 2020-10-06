@@ -1,3 +1,6 @@
+import { Epic, ofType } from "redux-observable";
+import { from, of } from "rxjs";
+import { catchError, map, mergeMap } from "rxjs/operators";
 import { Zettel } from "../../models/Zettel";
 
 const SET_ZETTLES = "zettel-grid/SET_ZETTELS" as const;
@@ -6,7 +9,7 @@ const CREATE_ZETTEL = "zettel-grid/CREATE_ZETTEL" as const;
 const SAVE_SUCCESS = "zettel-grid/SAVE_SUCCESS" as const;
 const SAVE_FAILURE = "zettel-grid/SAVE_FAILUER" as const;
 
-type NewZettel = Omit<Zettel, "id">;
+type NewZettel = Omit<Zettel, "id" | "createdAt" | "updatedAt">;
 
 type PendingZettel = {
   loading: boolean;
@@ -92,3 +95,26 @@ export const zettelGridReducer = (
       return state;
   }
 };
+
+export const zettelGridEpic: Epic<ZettelGridAction> = (
+  $action,
+  $store,
+  { createZettel }: { createZettel: (newZettle: NewZettel) => Promise<Zettel> }
+) =>
+  $action.pipe(
+    ofType(CREATE_ZETTEL),
+    mergeMap((action) =>
+      from(
+        createZettel(action.payload as NewZettel)
+          .then((res) => ({
+            oldZettel: action.payload as NewZettel,
+            newZettel: res,
+          }))
+          .catch((e) => {
+            throw action.payload;
+          })
+      )
+    ),
+    map((payload) => saveSuccessed(payload.oldZettel, payload.newZettel)),
+    catchError((e) => of(saveFailed(e)))
+  );

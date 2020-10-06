@@ -1,3 +1,4 @@
+import { ActionsObservable } from "redux-observable";
 import {
   zettelGridReducer,
   createZettelAction,
@@ -5,20 +6,20 @@ import {
   saveFailed,
   setZettelsToGrid,
   appendZettelsToGrid,
+  zettelGridEpic,
 } from "../zettel-grid";
+
 describe("zettelGridReducer", () => {
   const newZettel1 = {
     title: "title",
     content: "content",
     tags: ["t1", "t2"],
-    createdAt: new Date("2020-08-08"),
   };
 
   const newZettel2 = {
     title: "title",
     content: "content",
     tags: ["t1", "t2"],
-    createdAt: new Date("2020-08-08"),
   };
 
   const zettels1 = [
@@ -28,6 +29,7 @@ describe("zettelGridReducer", () => {
       content: "content",
       tags: ["t1", "t2"],
       createdAt: new Date("2020-08-08"),
+      updatedAt: new Date("2020-08-08"),
     },
     {
       id: 2,
@@ -35,6 +37,7 @@ describe("zettelGridReducer", () => {
       content: "content",
       tags: ["t1", "t2"],
       createdAt: new Date("2020-08-08"),
+      updatedAt: new Date("2020-08-08"),
     },
   ];
 
@@ -45,6 +48,7 @@ describe("zettelGridReducer", () => {
       content: "content",
       tags: ["t1", "t2"],
       createdAt: new Date("2020-08-08"),
+      updatedAt: new Date("2020-08-08"),
     },
     {
       id: 4,
@@ -52,6 +56,7 @@ describe("zettelGridReducer", () => {
       content: "content",
       tags: ["t1", "t2"],
       createdAt: new Date("2020-08-08"),
+      updatedAt: new Date("2020-08-08"),
     },
   ];
 
@@ -98,7 +103,12 @@ describe("zettelGridReducer", () => {
     state = zettelGridReducer(state, createZettelAction(newZettel2));
 
     //when
-    const savedZettel = { ...newZettel1, id: 3 };
+    const savedZettel = {
+      ...newZettel1,
+      id: 3,
+      createdAt: new Date("2020-09-09"),
+      updatedAt: new Date("2020-10-03"),
+    };
     state = zettelGridReducer(state, saveSuccessed(newZettel1, savedZettel));
 
     //then
@@ -120,5 +130,51 @@ describe("zettelGridReducer", () => {
       { loading: false, zettel: newZettel1 },
     ]);
     expect(state.zettels).toEqual([]);
+  });
+});
+
+describe("zettelGridEpic", () => {
+  const newZettel1 = {
+    title: "title",
+    content: "content",
+    tags: ["t1", "t2"],
+  };
+
+  it("성공 시", async (done) => {
+    const createZettel = jest.fn();
+    createZettel.mockResolvedValue({
+      ...newZettel1,
+      id: 2,
+      createdAt: new Date("2020-08-08"),
+      updatedAt: new Date("2020-08-08"),
+    });
+
+    const result = await zettelGridEpic(
+      ActionsObservable.of(createZettelAction(newZettel1)),
+      null as any,
+      { createZettel }
+    ).toPromise();
+
+    expect(result.type).toBe("zettel-grid/SAVE_SUCCESS");
+    expect((result.payload as any).oldZettel).toBe(newZettel1);
+    expect((result.payload as any).newZettel).toMatchObject(newZettel1);
+
+    done();
+  });
+
+  it("실패 시", async (done) => {
+    const createZettel = jest.fn();
+    createZettel.mockRejectedValue({});
+
+    const result = await zettelGridEpic(
+      ActionsObservable.of(createZettelAction(newZettel1)),
+      null as any,
+      { createZettel }
+    ).toPromise();
+
+    expect(result.type).toBe("zettel-grid/SAVE_FAILUER");
+    expect(result.payload).toBe(newZettel1);
+
+    done();
   });
 });
