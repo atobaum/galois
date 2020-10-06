@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import "./App.css";
 import { Switch, Route } from "react-router-dom";
 import MainPage from "./pages/MainPage";
-import ZettelViewPage from "./pages/ZettelViewPage";
 import { useDispatch } from "react-redux";
 import { addZetel } from "./redux/modules/zettelReducer";
 import { getZettels } from "./api/zettelApi";
@@ -25,7 +24,6 @@ function App() {
   return (
     <div className="App">
       <Switch>
-        <Route path="/zettel/:id" component={ZettelViewPage} />
         <Route path="/login_callback" component={LoginCallbackPage} />
         <Route path="/" component={MainPage} />
       </Switch>
