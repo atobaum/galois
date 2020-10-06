@@ -1,15 +1,12 @@
 import { Epic, ofType } from "redux-observable";
 import { from, of } from "rxjs";
 import { catchError, map, mergeMap } from "rxjs/operators";
-import { Zettel } from "../../models/Zettel";
 
 const SET_ZETTLES = "zettel-grid/SET_ZETTELS" as const;
 const APPEND_ZETTLES = "zettel-grid/APPEND_ZETTELS" as const;
 const CREATE_ZETTEL = "zettel-grid/CREATE_ZETTEL" as const;
 const SAVE_SUCCESS = "zettel-grid/SAVE_SUCCESS" as const;
 const SAVE_FAILURE = "zettel-grid/SAVE_FAILUER" as const;
-
-type NewZettel = Omit<Zettel, "id" | "createdAt" | "updatedAt">;
 
 type PendingZettel = {
   loading: boolean;

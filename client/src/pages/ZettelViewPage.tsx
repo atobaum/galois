@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
-import { Zettel } from "../models/Zettel";
 import { getZettel } from "../api/zettelApi";
 import ZettelCard from "../components/zettel-grid/ZettelCard";
 

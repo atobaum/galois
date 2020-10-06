@@ -1,7 +1,6 @@
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
 import Tag from "../Tag";
-import { Zettel } from "../../models/Zettel";
 import { useMemo } from "react";
 import parseMarkdown from "../../lib/markdownParser";
 

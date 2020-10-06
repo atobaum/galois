@@ -1,6 +1,5 @@
 import { gql } from "@apollo/client";
 import apolloClient from "../lib/apolloClient";
-import { Zettel } from "../models/Zettel";
 
 export const getZettel = async (id: number | string): Promise<Zettel> => {
   const data = await apolloClient.query({
