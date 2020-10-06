@@ -1,8 +1,8 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
-import Toast from "../Toast";
-import { useDispatch } from "../../__mocks__/react-redux";
+import { useDispatch } from "react-redux";
 import { closeToast } from "../../redux/modules/toast";
+import Toast from "../core/Toast";
 
 jest.mock("react-redux");
 

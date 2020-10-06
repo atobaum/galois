@@ -1,8 +1,8 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
-import StatusBar from "../StatusBar";
 import { MemoryRouter } from "react-router-dom";
-import { useDispatch } from "../../__mocks__/react-redux";
+import { useDispatch } from "react-redux";
+import StatusBar from "../core/StatusBar";
 
 jest.mock("../../hooks/useCurrentUser");
 jest.mock("react-redux");
