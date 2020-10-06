@@ -5,8 +5,9 @@ import modalReducer from "./modalReducer";
 import zettelReducer from "./zettelReducer";
 import editorReducer from "./editorReducer";
 import { toastEpic, toastReducer } from "./toast";
+import { zettelGridEpic, zettelGridReducer } from "./zettel-grid";
 
-export const rootEpic = combineEpics(toastEpic);
+export const rootEpic = combineEpics(toastEpic, zettelGridEpic);
 
 export const rootReducer = combineReducers({
   core: coreReducer,
@@ -14,4 +15,5 @@ export const rootReducer = combineReducers({
   zettel: zettelReducer,
   editor: editorReducer,
   toast: toastReducer,
+  zettelGrid: zettelGridReducer,
 });
