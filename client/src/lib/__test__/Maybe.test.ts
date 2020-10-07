@@ -16,7 +16,7 @@ describe("Maybe", () => {
 
     expect(nothing.isNothing).toBe(true);
 
-    expect(nothing.getJust).toThrow();
+    expect(() => nothing.getJust()).toThrow();
     expect(nothing.getValue()).toBe(undefined);
   });
 
