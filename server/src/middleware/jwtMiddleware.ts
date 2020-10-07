@@ -1,39 +1,42 @@
-import koa from "koa";
+import { Context } from "koa";
 import { decodeToken } from "../lib/token";
 
-export default async function jwtMiddleware(
-  ctx: koa.Context,
-  next: () => Promise<any>
-) {
-  let accessToken = ctx.cookies.get("access_token");
+function setResponse(ctx: Context, status: number, errorCode: string): void {
+  ctx.status = status;
+  ctx.body = { code: errorCode };
+}
+
+function getAccessToken(ctx: Context): string | undefined {
   const { authorization } = ctx.request.header;
-  if (!accessToken && authorization) accessToken = authorization.split(" ")[1];
+  if (authorization) return authorization.split(" ")[1];
 
-  if (accessToken) {
-    try {
-      const accessTokenData = await decodeToken<{ id: number; sub: string }>(
-        accessToken
-      );
-      if (accessTokenData.sub !== "access_token") {
-        ctx.status = 401;
-        ctx.body = { error: "Invalid access token" };
-        return;
+  return ctx.cookies.get("access_token");
+}
+
+export default function jwtMiddleware(ctx: Context, next: any) {
+  const accessToken = getAccessToken(ctx);
+  if (!accessToken) return next();
+
+  return decodeToken<{ id: number; sub: string }>(accessToken, {
+    subject: "access_token",
+  })
+    .then((data) => {
+      ctx.state.user = { id: data.id };
+      return next();
+    })
+    .catch((e) => {
+      switch (e.name) {
+        case "TokenExpiredError":
+          setResponse(ctx, 401, "EXPIRED_ACCESS_TOKEN");
+          break;
+        case "JsonWebTokenError":
+          setResponse(ctx, 401, "INVALID_TOKEN");
+          break;
+        case "JsonWebTokenError":
+          // NotBeforeError is not handled
+          break;
+        default:
+          throw e;
       }
-      ctx.state.user = { id: accessTokenData.id };
-    } catch (e) {
-      if (e.name === "TokenExpiredError") {
-        ctx.status = 401;
-        ctx.body = { code: "EXPIRED_ACCESS_TOKEN" };
-        return;
-      } else if (e.name === "JsonWebTokenError") {
-        // when jwt malformed, invalid signature/audience/issuer,...
-        // see https://github.com/auth0/node-jsonwebtoken#readme
-        ctx.status = 401;
-        ctx.body = { code: "INVALID_TOKEN" };
-        return;
-      } else next();
-    }
-  }
-
-  return next();
+    });
 }
