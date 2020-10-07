@@ -46,7 +46,7 @@ const ZettelGrid: React.FC = () => {
         <PendingZettelCard key={idx} loading={z.loading} zettel={z.zettel} />
       ))}
       {zettels.map((z) => (
-        <ZettelCard key={z.id} {...z} onClick={onClickZettel} />
+        <ZettelCard key={z.id} zettel={z} onClick={onClickZettel} />
       ))}
     </div>
   );
