@@ -1,5 +1,6 @@
 import koa from "koa";
 import { decodeToken } from "../lib/token";
+
 export default async function jwtMiddleware(
   ctx: koa.Context,
   next: () => Promise<any>
@@ -7,8 +8,6 @@ export default async function jwtMiddleware(
   let accessToken = ctx.cookies.get("access_token");
   const { authorization } = ctx.request.header;
   if (!accessToken && authorization) accessToken = authorization.split(" ")[1];
-
-  // const refreshToken = ctx.cookies.get("refresh_token");
 
   if (accessToken) {
     try {
@@ -23,56 +22,18 @@ export default async function jwtMiddleware(
       ctx.state.user = { id: accessTokenData.id };
     } catch (e) {
       if (e.name === "TokenExpiredError") {
-        accessToken = undefined;
-      } else {
-        throw e;
-      }
+        ctx.status = 401;
+        ctx.body = { code: "EXPIRED_ACCESS_TOKEN" };
+        return;
+      } else if (e.name === "JsonWebTokenError") {
+        // when jwt malformed, invalid signature/audience/issuer,...
+        // see https://github.com/auth0/node-jsonwebtoken#readme
+        ctx.status = 401;
+        ctx.body = { code: "INVALID_TOKEN" };
+        return;
+      } else next();
     }
   }
 
-  // if (!accessToken && refreshToken) {
-  //   try {
-  //     const refreshTokenData = await decodeToken<RefreshTokenData>(
-  //       refreshToken
-  //     );
-  //     if (refreshTokenData.sub !== "refresh_token") {
-  //       ctx.status = 401;
-  //       ctx.body = { error: "Invalid refresh token" };
-  //       return;
-  //     }
-
-  //     //validity check in db
-  //     const refreshTokenDb = await getRepository(RefreshToken).findOne({
-  //       where: { id: refreshTokenData.token_id },
-  //       relations: ["user"],
-  //     });
-
-  //     if (refreshTokenDb === undefined) {
-  //       ctx.status = 500;
-  //       ctx.body = { error: "Inconsistand DB: refresh token" };
-  //       return;
-  //     }
-
-  //     if (refreshTokenDb.disabled) {
-  //       ctx.status = 401;
-  //       ctx.body = { error: "Disabled refresh token" };
-  //       return;
-  //     }
-
-  //     const diff = refreshTokenData.exp * 1000 - new Date().getTime();
-  //     let tokens = null;
-  //     if (diff < 2 * 24 * 60 * 60 * 1000) {
-  //       tokens = await refreshTokenDb.user.generateAuthTokens();
-  //     } else {
-  //       tokens = {
-  //         accessToken: await refreshTokenDb.user.generateAccessToken(),
-  //       };
-  //     }
-  //     setTokens(ctx, tokens);
-  //   } catch (e) {
-  //     // if (e.name !== "TokenExpiredError") // Logging
-  //     clearTokens(ctx);
-  //   }
-  // }
   return next();
 }
