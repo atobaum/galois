@@ -1,9 +1,7 @@
 import React from "react";
-import { render, fireEvent } from "@testing-library/react";
-import { MemoryRouter, Router } from "react-router-dom";
-import { createMemoryHistory } from "history";
+import { render } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import ZettelCard from "../zettel-grid/ZettelCard";
-import { Zettel } from "../../models/Zettel";
 
 describe("<ZettelCard />", () => {
   const zettel: Zettel = {
@@ -21,7 +19,7 @@ describe("<ZettelCard />", () => {
   it("renders props properly", () => {
     const { getByText } = render(
       <MemoryRouter>
-        <ZettelCard {...zettel} />
+        <ZettelCard zettel={zettel} />
       </MemoryRouter>
     );
     // getByText("ad8f2j");
