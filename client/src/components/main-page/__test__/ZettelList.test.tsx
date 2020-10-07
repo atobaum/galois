@@ -1,7 +1,7 @@
 import { fireEvent, render } from "@testing-library/react";
 import React from "react";
 import { useSelector } from "react-redux";
-import ZettelList from "../ZettelList";
+import ZettelList from "../../zettel-page/ZettelList";
 
 import { initZettels } from "../../../__mocks__/react-redux";
 
