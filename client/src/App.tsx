@@ -15,12 +15,21 @@ function App() {
   const user = useCurrentUser();
 
   useEffect(() => {
+    // To dispatch redux action in apolloClient if error occurred.
+    const dispatchHandler = (evt: any) => {
+      dispatch(evt.detail);
+    };
+    window.addEventListener("dispatch-redux", dispatchHandler);
+
     if (user)
       getZettels().then((data) => {
         dispatch(setZettelsToGrid(data));
       });
-    // eslint-disable-next-line
-  }, []);
+
+    return () => {
+      window.removeEventListener("dispatch-redux", dispatchHandler);
+    };
+  }, [dispatch, user]);
 
   return (
     <div className="App">
