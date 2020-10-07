@@ -1,4 +1,4 @@
-import jwt, { SignOptions } from "jsonwebtoken";
+import jwt, { SignOptions, VerifyOptions } from "jsonwebtoken";
 import config from "../config";
 
 export function generateToken<T>(
@@ -14,10 +14,13 @@ export function generateToken<T>(
   });
 }
 
-export function decodeToken<T>(token: string): Promise<T> {
+export function decodeToken<T>(
+  token: string,
+  options: VerifyOptions = {}
+): Promise<T> {
   if (!config.jwt.secret) throw new Error("Missing JWT_SECRET");
   return new Promise((resolve, rejecct) => {
-    jwt.verify(token, config.jwt.secret!, (err: any, decoded: any) => {
+    jwt.verify(token, config.jwt.secret!, options, (err: any, decoded: any) => {
       if (err) rejecct(err);
       else resolve(decoded as T);
     });

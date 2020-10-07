@@ -3,24 +3,24 @@ import "./App.css";
 import { Switch, Route } from "react-router-dom";
 import MainPage from "./pages/MainPage";
 import { useDispatch } from "react-redux";
-import { getZettels } from "./api/zettelApi";
 import LoginCallbackPage from "./pages/LoginCallbackPage";
-import useCurrentUser from "./hooks/useCurrentUser";
 import Toast from "./components/core/Toast";
-import { setZettelsToGrid } from "./redux/modules/zettel-grid";
 import ZettelPage from "./pages/ZettelPage";
 
 function App() {
   const dispatch = useDispatch();
-  const user = useCurrentUser();
 
   useEffect(() => {
-    if (user)
-      getZettels().then((data) => {
-        dispatch(setZettelsToGrid(data));
-      });
-    // eslint-disable-next-line
-  }, []);
+    // To dispatch redux action in apolloClient if error occurred.
+    const dispatchHandler = (evt: any) => {
+      dispatch(evt.detail);
+    };
+    window.addEventListener("dispatch-redux", dispatchHandler);
+
+    return () => {
+      window.removeEventListener("dispatch-redux", dispatchHandler);
+    };
+  }, [dispatch]);
 
   return (
     <div className="App">

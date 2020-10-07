@@ -1,11 +1,14 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../redux";
 import PendingZettelCard from "./PendingZettelCard";
 import ZettelCard from "./ZettelCard";
 import { useHistory } from "react-router-dom";
+import { getZettels } from "../../api/zettelApi";
+import { setZettelsToGrid } from "../../redux/modules/zettel-grid";
+import useCurrentUser from "../../hooks/useCurrentUser";
 
 const ZettelGridCss = css`
   display: grid;
@@ -16,10 +19,19 @@ const ZettelGridCss = css`
 
 // container
 const ZettelGrid: React.FC = () => {
+  const history = useHistory();
+  const user = useCurrentUser();
+  const dispatch = useDispatch();
   const { pendings, zettels } = useSelector(
     (state: RootState) => state.zettelGrid
   );
-  const history = useHistory();
+
+  useEffect(() => {
+    if (user)
+      getZettels().then((data) => {
+        dispatch(setZettelsToGrid(data));
+      });
+  }, [dispatch, user]);
 
   const onClickZettel = useCallback(
     (id) => {
@@ -34,7 +46,7 @@ const ZettelGrid: React.FC = () => {
         <PendingZettelCard key={idx} loading={z.loading} zettel={z.zettel} />
       ))}
       {zettels.map((z) => (
-        <ZettelCard key={z.id} {...z} onClick={onClickZettel} />
+        <ZettelCard key={z.id} zettel={z} onClick={onClickZettel} />
       ))}
     </div>
   );

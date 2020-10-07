@@ -1,54 +1,11 @@
 import { gql } from "@apollo/client";
 import apolloClient from "../lib/apolloClient";
-
-export const getZettel = async (id: number | string): Promise<Zettel> => {
-  const data = await apolloClient.query({
-    query: gql`
-      query GetZettle($id: Int, $uuid: String) {
-        zettel(id: $id, uuid: $uuid) {
-          id
-          uuid
-          version
-          title
-          content
-          tags
-          createdAt
-          user {
-            username
-          }
-        }
-      }
-    `,
-    variables: {
-      id: typeof id === "number" ? id : undefined,
-      uuid: typeof id === "string" ? id : undefined,
-    },
-  });
-
-  const z = data.data.zettel;
-  if (z) z.createdAt = new Date(z.createdAt);
-  return z;
-};
+import { createZettelMutation, getZettelsQuery } from "./zettelQuery";
 
 export const getZettels = async (): Promise<Zettel[]> => {
   const data = await apolloClient
     .query({
-      query: gql`
-        query GetZettels {
-          zettels {
-            nextCursor
-            data {
-              id
-              title
-              content
-              contentType
-              tags
-              createdAt
-              updatedAt
-            }
-          }
-        }
-      `,
+      query: getZettelsQuery,
     })
     .catch((e) => console.log(e));
   // TODO error handling
@@ -65,27 +22,7 @@ export const createZettel = async (
   createZettelDTO: Omit<Zettel, "id" | "createdAt" | "updatedAt">
 ): Promise<Zettel> => {
   const data = await apolloClient.mutate({
-    mutation: gql`
-      mutation CreateZettel(
-        $title: String
-        $content: String!
-        $tags: [String]!
-      ) {
-        createZettel(
-          title: $title
-          content: $content
-          tags: $tags
-          contentType: MARKDOWN
-        ) {
-          id
-          title
-          content
-          contentType
-          tags
-          createdAt
-        }
-      }
-    `,
+    mutation: createZettelMutation,
     variables: createZettelDTO,
   });
 

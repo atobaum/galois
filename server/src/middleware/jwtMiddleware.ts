@@ -1,78 +1,42 @@
-import koa from "koa";
+import { Context } from "koa";
 import { decodeToken } from "../lib/token";
-export default async function jwtMiddleware(
-  ctx: koa.Context,
-  next: () => Promise<any>
-) {
-  let accessToken = ctx.cookies.get("access_token");
+
+function setResponse(ctx: Context, status: number, errorCode: string): void {
+  ctx.status = status;
+  ctx.body = { code: errorCode };
+}
+
+function getAccessToken(ctx: Context): string | undefined {
   const { authorization } = ctx.request.header;
-  if (!accessToken && authorization) accessToken = authorization.split(" ")[1];
+  if (authorization) return authorization.split(" ")[1];
 
-  // const refreshToken = ctx.cookies.get("refresh_token");
+  return ctx.cookies.get("access_token");
+}
 
-  if (accessToken) {
-    try {
-      const accessTokenData = await decodeToken<{ id: number; sub: string }>(
-        accessToken
-      );
-      if (accessTokenData.sub !== "access_token") {
-        ctx.status = 401;
-        ctx.body = { error: "Invalid access token" };
-        return;
+export default function jwtMiddleware(ctx: Context, next: any) {
+  const accessToken = getAccessToken(ctx);
+  if (!accessToken) return next();
+
+  return decodeToken<{ id: number; sub: string }>(accessToken, {
+    subject: "access_token",
+  })
+    .then((data) => {
+      ctx.state.user = { id: data.id };
+      return next();
+    })
+    .catch((e) => {
+      switch (e.name) {
+        case "TokenExpiredError":
+          setResponse(ctx, 401, "EXPIRED_ACCESS_TOKEN");
+          break;
+        case "JsonWebTokenError":
+          setResponse(ctx, 401, "INVALID_TOKEN");
+          break;
+        case "JsonWebTokenError":
+          // NotBeforeError is not handled
+          break;
+        default:
+          throw e;
       }
-      ctx.state.user = { id: accessTokenData.id };
-    } catch (e) {
-      if (e.name === "TokenExpiredError") {
-        accessToken = undefined;
-      } else {
-        throw e;
-      }
-    }
-  }
-
-  // if (!accessToken && refreshToken) {
-  //   try {
-  //     const refreshTokenData = await decodeToken<RefreshTokenData>(
-  //       refreshToken
-  //     );
-  //     if (refreshTokenData.sub !== "refresh_token") {
-  //       ctx.status = 401;
-  //       ctx.body = { error: "Invalid refresh token" };
-  //       return;
-  //     }
-
-  //     //validity check in db
-  //     const refreshTokenDb = await getRepository(RefreshToken).findOne({
-  //       where: { id: refreshTokenData.token_id },
-  //       relations: ["user"],
-  //     });
-
-  //     if (refreshTokenDb === undefined) {
-  //       ctx.status = 500;
-  //       ctx.body = { error: "Inconsistand DB: refresh token" };
-  //       return;
-  //     }
-
-  //     if (refreshTokenDb.disabled) {
-  //       ctx.status = 401;
-  //       ctx.body = { error: "Disabled refresh token" };
-  //       return;
-  //     }
-
-  //     const diff = refreshTokenData.exp * 1000 - new Date().getTime();
-  //     let tokens = null;
-  //     if (diff < 2 * 24 * 60 * 60 * 1000) {
-  //       tokens = await refreshTokenDb.user.generateAuthTokens();
-  //     } else {
-  //       tokens = {
-  //         accessToken: await refreshTokenDb.user.generateAccessToken(),
-  //       };
-  //     }
-  //     setTokens(ctx, tokens);
-  //   } catch (e) {
-  //     // if (e.name !== "TokenExpiredError") // Logging
-  //     clearTokens(ctx);
-  //   }
-  // }
-  return next();
+    });
 }

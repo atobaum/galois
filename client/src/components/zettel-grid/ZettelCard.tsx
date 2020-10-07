@@ -27,11 +27,15 @@ export const ZettelCardCss = css`
   }
 `;
 
-type ZettelCardProps = Zettel & {
+type ZettelCardProps = {
   onClick?: (id: number) => void;
+  zettel: Zettel;
 };
 
-function ZettelCard({ id, content, title, tags, onClick }: ZettelCardProps) {
+function ZettelCard({
+  zettel: { id, content, title, tags },
+  onClick,
+}: ZettelCardProps) {
   const parsedContent = useMemo(() => {
     return parseMarkdown(content);
   }, [content]);

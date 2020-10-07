@@ -6,7 +6,10 @@ import parseMarkdown from "../../lib/markdownParser";
 
 const ZettelListItemCss = css`
   height: 200px;
+  margin: 0.8rem;
   border: 1px solid black;
+  border-radius: 0.8rem;
+  padding: 1rem;
   h3 {
     font-size: 1.25rem;
   }
@@ -26,25 +29,20 @@ const ZettelListItemCss = css`
   }
 `;
 
-type ZettelListItemProps = Zettel & {
-  onClick: (id: number) => void;
-  onTagClick: (name: string) => void;
-};
+type ZettelListItemProps = Zettel & {};
 function ZettelListItem({
   id,
   content,
   title,
   tags,
   createdAt,
-  onClick,
-  onTagClick,
 }: ZettelListItemProps) {
   const parsedContent = useMemo(() => {
     return parseMarkdown(content);
   }, [content]);
 
   return (
-    <div css={ZettelListItemCss} onClick={() => onClick(id)}>
+    <div css={ZettelListItemCss}>
       <div>{id}</div>
       <h3>{title}</h3>
       <div
@@ -54,19 +52,7 @@ function ZettelListItem({
       <div>
         날짜 {createdAt.getMonth() + 1}월 {createdAt.getDate()}일
       </div>
-      <div>
-        {tags &&
-          tags.map((tag) => (
-            <Tag
-              key={tag}
-              onClick={(evt) => {
-                evt.stopPropagation();
-                onTagClick(tag);
-              }}
-              name={tag}
-            />
-          ))}
-      </div>
+      <div>{tags && tags.map((tag) => <Tag key={tag} name={tag} />)}</div>
     </div>
   );
 }

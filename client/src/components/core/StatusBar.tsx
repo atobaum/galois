@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import useCurrentUser from "../../hooks/useCurrentUser";
 import { useDispatch } from "react-redux";
 import { startEdit } from "../../redux/modules/editorReducer";
+import logout from "../../lib/logout";
 
 const StatusBarCss = css`
   display: flex;
@@ -48,16 +49,7 @@ const StatusBar: React.FC = () => {
           </span>
         )}
         {user ? (
-          <button
-            onClick={() => {
-              window.localStorage.removeItem("access_token");
-              window.localStorage.removeItem("refresh_token");
-              window.localStorage.removeItem("user");
-              window.location.reload();
-            }}
-          >
-            Logout
-          </button>
+          <button onClick={logout}>Logout</button>
         ) : (
           <a
             href={
