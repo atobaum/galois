@@ -36,5 +36,17 @@ const link = errorLink.concat(httpLink);
 
 export default new ApolloClient({
   link,
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    typePolicies: {
+      Zettel: {
+        fields: {
+          tags: {
+            merge(existing = [], incoming: any[]) {
+              return incoming;
+            },
+          },
+        },
+      },
+    },
+  }),
 });
