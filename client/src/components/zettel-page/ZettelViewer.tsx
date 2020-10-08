@@ -4,6 +4,7 @@ import { jsx, css } from "@emotion/core";
 import ZettelCard from "../zettel-grid/ZettelCard";
 import { useHistory } from "react-router-dom";
 import BigZettelEditor from "./BigZettelEditor";
+import { updateZettel } from "../../api/zettelApi";
 
 const ZettelViewerCss = css`
   height: 100%;
@@ -30,7 +31,13 @@ const ZettelViewer: React.FC<{ zettel: Zettel | undefined }> = ({ zettel }) => {
 
       {zettel &&
         (editing ? (
-          <BigZettelEditor zettel={zettel} onEdit={console.log} />
+          <BigZettelEditor
+            zettel={zettel}
+            onEdit={(data) => {
+              setEditing(false);
+              updateZettel({ ...zettel, ...data });
+            }}
+          />
         ) : (
           <ZettelCard zettel={zettel} />
         ))}
