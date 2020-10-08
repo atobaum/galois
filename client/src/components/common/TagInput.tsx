@@ -28,7 +28,7 @@ const TagInput: React.FC<{
     if (evt.key === "Enter" || evt.which === 13) {
       evt.preventDefault();
       const tag = input.trim();
-      if (tag.length > 0) onChange([...tags, tag]);
+      if (tag.length > 0 && !tags.includes(tag)) onChange([...tags, tag]);
       setInput("");
     }
   };
