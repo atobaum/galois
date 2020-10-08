@@ -30,7 +30,7 @@ function ZettelList(props: ZettelListProps) {
       getZettels().then((data) => {
         setZettels(data);
       });
-  }, [, user]);
+  }, [user]);
 
   return (
     <div css={ZettelListCss} className="zettel-list">
