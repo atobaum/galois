@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
 import Tag from "../common/Tag";
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import parseMarkdown from "../../lib/markdownParser";
 
 export const ZettelCardCss = css`
@@ -24,6 +24,10 @@ export const ZettelCardCss = css`
     ul {
       list-style: disc;
     }
+
+    a {
+      cursor: default;
+    }
   }
 `;
 
@@ -36,15 +40,26 @@ function ZettelCard({
   zettel: { id, content, title, tags },
   onClick,
 }: ZettelCardProps) {
+  const dom = useRef<any>();
   const parsedContent = useMemo(() => {
     return parseMarkdown(content);
   }, [content]);
+
+  useEffect(() => {
+    const links: any[] = dom.current.querySelectorAll(".internal-link");
+    links.forEach((link) =>
+      link.addEventListener("click", (e: Event) => {
+        e.preventDefault();
+      })
+    );
+  }, []);
 
   return (
     <div css={ZettelCardCss} onClick={() => onClick && onClick(id)}>
       <div>{id}</div>
       <h3>{title}</h3>
       <div
+        ref={dom}
         className="zettel-content"
         dangerouslySetInnerHTML={{ __html: parsedContent.contents as string }}
       ></div>

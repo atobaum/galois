@@ -1,6 +1,10 @@
 import { gql } from "@apollo/client";
 import apolloClient from "../lib/apolloClient";
-import { createZettelMutation, getZettelsQuery } from "./zettelQuery";
+import {
+  createZettelMutation,
+  getZettelsQuery,
+  updateZettelQuery,
+} from "./zettelQuery";
 
 export const getZettels = async (): Promise<Zettel[]> => {
   const data = await apolloClient
@@ -19,7 +23,7 @@ export const getZettels = async (): Promise<Zettel[]> => {
 };
 
 export const createZettel = async (
-  createZettelDTO: Omit<Zettel, "id" | "createdAt" | "updatedAt">
+  createZettelDTO: NewZettel
 ): Promise<Zettel> => {
   const data = await apolloClient.mutate({
     mutation: createZettelMutation,
@@ -27,7 +31,24 @@ export const createZettel = async (
   });
 
   const z = data.data.createZettel;
-  if (z) z.createdAt = new Date(z.createdAt);
+  if (z) {
+    z.createdAt = new Date(z.createdAt);
+    z.updatedAt = new Date(z.updatedAt);
+  }
+  return z;
+};
+
+export const updateZettel = async (zettel: Zettel) => {
+  const data = await apolloClient.mutate({
+    mutation: updateZettelQuery,
+    variables: zettel,
+  });
+
+  const z = data.data.updateZettel;
+  if (z) {
+    z.createdAt = new Date(z.createdAt);
+    z.updatedAt = new Date(z.updatedAt);
+  }
   return z;
 };
 

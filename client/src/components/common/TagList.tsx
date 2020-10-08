@@ -5,6 +5,7 @@ import Tag from "./Tag";
 
 const TagListCss = css`
   display: flex;
+  align-items: center;
   span + span {
     margin-left: 10px;
   }
