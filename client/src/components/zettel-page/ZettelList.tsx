@@ -35,7 +35,16 @@ function ZettelList(props: ZettelListProps) {
   return (
     <div css={ZettelListCss} className="zettel-list">
       {zettels.map((zettel) => (
-        <Link key={zettel.id} to={"/zettel/" + zettel.id}>
+        <Link
+          key={zettel.id}
+          to={"/zettel/" + zettel.id}
+          onDragStart={(e) => {
+            e.dataTransfer.setData(
+              "text/plain",
+              `[[${zettel.id}${zettel.title ? "|" + zettel.title : ""}]]`
+            );
+          }}
+        >
           <ZettelListItem {...zettel} />
         </Link>
       ))}
