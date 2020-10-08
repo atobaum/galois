@@ -4,6 +4,7 @@ import { jsx, css } from "@emotion/core";
 import TagList from "../common/TagList";
 import { useDispatch } from "react-redux";
 import { createZettelAction } from "../../redux/modules/zettel-grid";
+import useTagInput from "../../hooks/useTagInput";
 
 const SmallEditorCss = css`
   width: 100%;
@@ -21,8 +22,13 @@ type SmallEditorProps = {};
 const SmallEditor: React.FC<SmallEditorProps> = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [tags, setTags] = useState<string[]>([]);
-  const [tagInput, setTagInput] = useState("");
+  const {
+    tags,
+    addTag,
+    removeTag,
+    tagInputValue,
+    setTagInputValue,
+  } = useTagInput();
   const dispatch = useDispatch();
 
   const handleTagOnKeypress: React.KeyboardEventHandler<HTMLInputElement> = (
@@ -30,10 +36,7 @@ const SmallEditor: React.FC<SmallEditorProps> = () => {
   ) => {
     if (evt.key === "Enter" || evt.which === 13) {
       evt.preventDefault();
-      const tag = tagInput.trim();
-      if (tag.length === 0) return;
-      setTags([...tags, tag]);
-      setTagInput("");
+      addTag();
     }
   };
   return (
@@ -67,13 +70,10 @@ const SmallEditor: React.FC<SmallEditorProps> = () => {
         />
         <div>
           <div className="flex">
-            <TagList
-              tags={tags}
-              onTagClick={(name) => setTags(tags.filter((tag) => tag !== name))}
-            />
+            <TagList tags={tags} onTagClick={removeTag} />
             <input
-              value={tagInput}
-              onChange={(e) => setTagInput(e.target.value)}
+              value={tagInputValue}
+              onChange={(e) => setTagInputValue(e.target.value)}
               onKeyPress={handleTagOnKeypress}
               placeholder="Type tag..."
             />
