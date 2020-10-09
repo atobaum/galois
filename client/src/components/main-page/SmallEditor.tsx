@@ -4,6 +4,7 @@ import { jsx, css } from "@emotion/core";
 import { useDispatch } from "react-redux";
 import { createZettelAction } from "../../redux/modules/zettel-grid";
 import TagInput from "../common/TagInput";
+import { Button, Container, TextField } from "@material-ui/core";
 
 const SmallEditorCss = css`
   width: 100%;
@@ -25,7 +26,7 @@ const SmallEditor: React.FC<SmallEditorProps> = () => {
   const dispatch = useDispatch();
 
   return (
-    <div css={SmallEditorCss}>
+    <Container css={SmallEditorCss}>
       <form
         onSubmit={(evt) => {
           evt.preventDefault();
@@ -41,24 +42,26 @@ const SmallEditor: React.FC<SmallEditorProps> = () => {
           setContent("");
         }}
       >
-        <input
-          placeholder="Type title..."
+        <TextField
+          label="Title"
           onChange={(e) => setTitle(e.target.value)}
           value={title}
         />
-        <textarea
-          autoFocus
+        <TextField
+          label="Content"
+          multiline
+          rowsMax={5}
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          placeholder="Type content..."
-          rows={4}
         />
         <div>
           <TagInput tags={tags} onChange={setTags} />
-          <button>Submit</button>
+          <Button variant="contained" color="primary">
+            Submit
+          </Button>
         </div>
       </form>
-    </div>
+    </Container>
   );
 };
 

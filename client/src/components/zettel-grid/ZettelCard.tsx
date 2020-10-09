@@ -3,16 +3,19 @@ import { jsx, css } from "@emotion/core";
 import Tag from "../common/Tag";
 import { useEffect, useMemo, useRef } from "react";
 import parseMarkdown from "../../lib/markdownParser";
+import { Card, CardContent } from "@material-ui/core";
 
 export const ZettelCardCss = css`
-  height: 180px;
+  /* height: 180px;
   border: 1px solid black;
-  padding: 0.3rem;
+  padding: 0.3rem; */
   h3 {
     font-size: 1.25rem;
   }
 
   .zettel-content {
+    max-height: 10rem;
+    overflow: hidden;
     ol,
     ul {
       margin: 0 1rem;
@@ -55,20 +58,27 @@ function ZettelCard({
   }, []);
 
   return (
-    <div css={ZettelCardCss} onClick={() => onClick && onClick(id)}>
-      <div>{id}</div>
-      <h3>{title}</h3>
-      <div
+    <Card
+      variant="outlined"
+      onClick={() => onClick && onClick(id)}
+      css={ZettelCardCss}
+    >
+      <CardContent>
+        {id}
+
+        <h3>{title}</h3>
+      </CardContent>
+      <CardContent
         ref={dom}
         className="zettel-content"
         dangerouslySetInnerHTML={{ __html: parsedContent.contents as string }}
-      ></div>
-      <div>
+      ></CardContent>
+      <CardContent>
         {tags.map((tag) => (
           <Tag name={tag} key={tag} />
         ))}
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 }
 

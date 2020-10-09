@@ -12,7 +12,7 @@ import useCurrentUser from "../../hooks/useCurrentUser";
 
 const ZettelGridCss = css`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(180px, 500px));
   width: 100%;
   grid-gap: 0.7rem;
 `;
