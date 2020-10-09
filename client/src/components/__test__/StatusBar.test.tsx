@@ -3,6 +3,7 @@ import { render, fireEvent } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import StatusBar from "../core/StatusBar";
+import { setTitle } from "../../redux/modules/coreReducer";
 
 jest.mock("../../hooks/useCurrentUser");
 jest.mock("react-redux");
@@ -17,19 +18,15 @@ describe("<StatusBar />", () => {
     );
   });
 
-  it("새 제텔 만들기 버튼", () => {
+  it("renders title", () => {
+    dispatch(setTitle("test--title"));
+
     const { getByText } = render(
       <MemoryRouter>
         <StatusBar />
       </MemoryRouter>
     );
 
-    const newBtn = getByText("New");
-
-    fireEvent.click(newBtn);
-    expect(dispatch).toHaveBeenLastCalledWith({
-      type: "editor/START_EDIT",
-      payload: null,
-    });
+    getByText("test--title");
   });
 });

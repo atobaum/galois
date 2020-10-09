@@ -3,19 +3,23 @@ import { Link } from "react-router-dom";
 import useCurrentUser from "../../hooks/useCurrentUser";
 import logout from "../../lib/logout";
 import { AppBar, Icon, Toolbar, Typography } from "@material-ui/core";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux";
 
 const StatusBar: React.FC = () => {
   const user = useCurrentUser();
+  const title = useSelector((state: RootState) => state.core.title);
 
   return (
     <AppBar position="sticky">
       <Toolbar>
-        <div>
-          <Link to="/">
-            <Icon>home</Icon>
-          </Link>
-        </div>
-        <Typography style={{ flexGrow: 1 }}>title</Typography>
+        <Link to="/">
+          <Icon>home</Icon>
+        </Link>
+        <Link to="/projects">
+          <Icon>apps</Icon>
+        </Link>
+        <Typography style={{ flexGrow: 1 }}>{title}</Typography>
         <div>
           {user && (
             <span>
