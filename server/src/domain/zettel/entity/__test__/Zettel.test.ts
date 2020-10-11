@@ -137,6 +137,5 @@ describe("Zettel", () => {
       contentType: newZettelData.contentType,
       tags: ["t1", "t2"],
     });
-    expect(z.toDTO().number).toBeTruthy();
   });
 });

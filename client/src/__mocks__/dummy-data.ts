@@ -1,7 +1,9 @@
 export const mockedZettel: Zettel = {
   id: "135a8491-4336-4876-92be-3739686359c5",
   number: 10,
-  content: "content",
+  content: `content
+  - list
+  - list`,
   createdAt: new Date("2020-08-08"),
   updatedAt: new Date("2020-10-05"),
   tags: ["tag1", "tag2"],
