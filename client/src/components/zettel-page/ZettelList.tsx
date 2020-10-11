@@ -37,7 +37,7 @@ function ZettelList(props: ZettelListProps) {
       {zettels.map((zettel) => (
         <Link
           key={zettel.id}
-          to={"/zettel/" + zettel.id}
+          to={"/zettel/" + zettel.number}
           onDragStart={(e) => {
             e.dataTransfer.setData(
               "text/plain",

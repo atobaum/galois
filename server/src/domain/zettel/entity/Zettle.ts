@@ -10,7 +10,8 @@ export type ZettelChange =
   | ["UPDATE_TITLE", string | null]
   | ["UPDATE_CONTENT", { content: string; contentType: ContentType }];
 
-export default class Zettel extends AggregateRoot<ZettelChange> {
+export default class Zettel extends AggregateRoot<ZettelChange, string> {
+  private number?: number;
   private title: string | null;
   private content: string;
   private contentType: ContentType;
@@ -20,7 +21,8 @@ export default class Zettel extends AggregateRoot<ZettelChange> {
   private updatedAt: Date;
 
   private constructor(args: {
-    id?: number;
+    id?: string;
+    number?: number;
     title: string | null;
     content: string;
     contentType: ContentType;
@@ -30,6 +32,7 @@ export default class Zettel extends AggregateRoot<ZettelChange> {
     updatedAt: Date;
   }) {
     super(args.id);
+    this.number = args.number;
     this.title = args.title;
     this.content = args.content;
     this.contentType = args.contentType;
@@ -107,6 +110,7 @@ export default class Zettel extends AggregateRoot<ZettelChange> {
   public toDTO(): ZettelDTO {
     return {
       id: this._id,
+      number: this.number,
       title: this.title,
       content: this.content,
       contentType: this.contentType,
@@ -118,6 +122,7 @@ export default class Zettel extends AggregateRoot<ZettelChange> {
 
   public static create({
     id,
+    number,
     title,
     content,
     contentType,
@@ -127,6 +132,8 @@ export default class Zettel extends AggregateRoot<ZettelChange> {
     updatedAt,
   }: CreateZettelDTO): Either<any, Zettel> {
     // id 있으면 version. uuid도 있어야.
+    if ((id && !number) || (!id && number))
+      return Either.left("id and number must exist or be undefined");
     // 다 있거나 다 없거나
     const destiny = [id, updatedAt];
     if (!destiny.every((v) => v) && destiny.some((v) => v))
@@ -140,6 +147,7 @@ export default class Zettel extends AggregateRoot<ZettelChange> {
 
     const zettel = new Zettel({
       id: id,
+      number,
       title,
       userId,
       content,
@@ -153,7 +161,8 @@ export default class Zettel extends AggregateRoot<ZettelChange> {
 }
 
 type CreateZettelDTO = {
-  id?: number;
+  id?: string;
+  number?: number;
   title: string | null;
   userId: number;
   createdAt: Date;

@@ -2,14 +2,12 @@ import React, { useState } from "react";
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
 import TagList from "./TagList";
+import { Input } from "@material-ui/core";
 
 const TagInputCss = css`
   display: flex;
   .tag-input {
-    border: none;
-    padding: 0.2rem;
     margin-left: 1rem;
-    box-shadow: 0 0 3px 2px #e3e3e3;
   }
 
   & * {
@@ -40,12 +38,12 @@ const TagInput: React.FC<{
   return (
     <div css={TagInputCss}>
       <TagList tags={tags} onTagClick={onTagClick} />
-      <input
+      <Input
         className="tag-input"
+        placeholder="add tag..."
         value={input}
         onChange={(e) => setInput(e.target.value)}
         onKeyPress={handleTagOnKeypress}
-        placeholder="Type tag..."
       />
     </div>
   );

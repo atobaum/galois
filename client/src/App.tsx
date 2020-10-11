@@ -1,11 +1,14 @@
 import React, { useEffect } from "react";
-import "./App.css";
 import { Switch, Route } from "react-router-dom";
-import MainPage from "./pages/MainPage";
 import { useDispatch } from "react-redux";
-import LoginCallbackPage from "./pages/LoginCallbackPage";
 import Toast from "./components/core/Toast";
+import "./App.css";
+
+import MainPage from "./pages/MainPage";
+import ProjectListPage from "./pages/ProjectListPage";
+import ProjectPage from "./pages/ProjectPage";
 import ZettelPage from "./pages/ZettelPage";
+import LoginCallbackPage from "./pages/LoginCallbackPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -25,6 +28,8 @@ function App() {
   return (
     <div className="App">
       <Switch>
+        <Route path="/projects" component={ProjectListPage} />
+        <Route path="/project/:id" component={ProjectPage} />
         <Route path="/zettel/:id" component={ZettelPage} />
         <Route path="/login_callback" component={LoginCallbackPage} />
         <Route path="/" component={MainPage} />

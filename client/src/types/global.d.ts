@@ -3,7 +3,8 @@ export {};
 declare global {
   type ContentType = "markdown" | "plain";
   type Zettel = {
-    id: number;
+    id: string;
+    number: number;
     title: string | null;
     content: string;
     contentType?: ContentType;
@@ -12,5 +13,5 @@ declare global {
     updatedAt: Date;
   };
 
-  type NewZettel = Omit<Zettel, "id" | "createdAt" | "updatedAt">;
+  type NewZettel = Omit<Zettel, "id" | "number" | "createdAt" | "updatedAt">;
 }

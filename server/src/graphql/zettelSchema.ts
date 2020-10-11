@@ -8,7 +8,8 @@ export type Collection<T> = {
 };
 
 export type ZettelDTO = {
-  id?: number;
+  id?: string;
+  number?: number;
   title: string | null;
   content: string;
   contentType: ContentType;
@@ -19,7 +20,8 @@ export type ZettelDTO = {
 
 export const zettelTypeDefs = gql`
   type Zettel {
-    id: Int!
+    id: ID!
+    number: Int!
     title: String
     content: String!
     contentType: ContentType!
@@ -40,7 +42,7 @@ export const zettelTypeDefs = gql`
 
   extend type Query {
     zettels: ZettelCollection
-    zettel(id: Int): Zettel
+    zettel(number: Int): Zettel
   }
 
   extend type Mutation {
@@ -52,7 +54,7 @@ export const zettelTypeDefs = gql`
     ): Zettel
 
     updateZettel(
-      id: Int!
+      id: ID!
       title: String
       content: String
       contentType: ContentType
@@ -93,12 +95,15 @@ export const zettelResolvers = {
 
     zettel: async (
       parent: any,
-      { id }: { id: number },
+      { number }: { number: number },
       ctx: any
     ): Promise<ZettelDTO | null> => {
       if (!ctx.user) throw new AuthenticationError("Login First");
-      if (!id) return null;
-      const zettel = await services.zettel.getZettelById(id, ctx.user.id);
+      if (!number) return null;
+      const zettel = await services.zettel.getZettelByNumber(
+        number,
+        ctx.user.id
+      );
       if (zettel.isLeft) return null;
 
       return zettel.getRight().toDTO();

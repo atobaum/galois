@@ -1,42 +1,20 @@
 // eslint-disable-next-line
 import React from "react";
-
-/** @jsx jsx */
-import { jsx, css } from "@emotion/core";
 import StatusBar from "../components/core/StatusBar";
 import ZettelGrid from "../components/zettel-grid/ZettelGrid";
 import SmallEditor from "../components/main-page/SmallEditor";
-
-const MainPageCss = css`
-  min-height: 100vh;
-  width: 100vw;
-  margin: 0;
-
-  .centered-layout {
-    border-right: 1px solid gray;
-    border-left: 1px solid gray;
-    padding: 2rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: auto;
-
-    @media (max-width: 760px) {
-      width: 100%;
-    }
-
-    width: 760px;
-  }
-`;
+import { Container } from "@material-ui/core";
+import useSetTitle from "../hooks/useSetTitle";
 
 function MainPage() {
+  useSetTitle("Home");
   return (
-    <div css={MainPageCss}>
+    <div>
       <StatusBar />
-      <div className="centered-layout">
+      <Container>
         <SmallEditor />
         <ZettelGrid />
-      </div>
+      </Container>
     </div>
   );
 }

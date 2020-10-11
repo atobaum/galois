@@ -12,7 +12,7 @@ import useCurrentUser from "../../hooks/useCurrentUser";
 
 const ZettelGridCss = css`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(180px, 500px));
   width: 100%;
   grid-gap: 0.7rem;
 `;
@@ -34,8 +34,8 @@ const ZettelGrid: React.FC = () => {
   }, [dispatch, user]);
 
   const onClickZettel = useCallback(
-    (id) => {
-      history.push("/zettel/" + id);
+    (number) => {
+      history.push("/zettel/" + number);
     },
     [history]
   );

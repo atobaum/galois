@@ -18,13 +18,19 @@ describe("Zettel", () => {
     const z1 = Zettel.create(newZettelData);
     const z2 = Zettel.create({
       ...newZettelData,
-      id: 1,
+      id: "ee27cd72-5a65-4aa9-8442-698a042de470",
+      number: 1,
       updatedAt: validUpdatedAt,
     });
-    const z3 = Zettel.create({ ...newZettelData, id: 1 });
+    const z3 = Zettel.create({
+      ...newZettelData,
+      id: "7a163fa0-1578-431c-9f8b-315ac0268f50",
+      number: 2,
+    });
     const z4 = Zettel.create({
       ...newZettelData,
-      id: 1,
+      id: "87064b0a-b8a7-4235-a945-7d80f196cb2f",
+      number: 3,
       updatedAt: invalidUpdatedAt,
     });
 
