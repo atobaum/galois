@@ -10,14 +10,24 @@ import {
   ManyToOne,
   DeleteDateColumn,
   JoinColumn,
+  Index,
+  Generated,
 } from "typeorm";
 import TagORM from "./TagORM";
 import { ContentType } from "@src/domain/zettel/entity/Revision";
 
 @Entity({ name: "zettel" })
+@Index(["fk_user_id", "number"], { unique: true })
 export default class ZettelORM {
   @PrimaryGeneratedColumn()
   readonly id!: number;
+
+  @Column()
+  @Generated("uuid")
+  readonly uuid!: string;
+
+  @Column({ type: "integer", nullable: false })
+  number!: number;
 
   @Column({ type: "varchar", length: 255, nullable: true })
   title!: string | null;
@@ -41,6 +51,9 @@ export default class ZettelORM {
 
   @Column({ name: "is_public", default: false })
   isPublic!: boolean;
+
+  // @Column({ name: "project_id", nullable: true })
+  // projectId?: string;
 
   @CreateDateColumn({ type: "timestamptz", name: "created_at" })
   createdAt!: Date;

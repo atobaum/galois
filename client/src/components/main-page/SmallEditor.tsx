@@ -25,23 +25,23 @@ const SmallEditor: React.FC<SmallEditorProps> = () => {
   const [tags, setTags] = useState<string[]>([]);
   const dispatch = useDispatch();
 
+  const submitHandler = (evt: any) => {
+    evt.preventDefault();
+    if (content.trim().length === 0) return;
+    dispatch(
+      createZettelAction({
+        title,
+        content,
+        contentType: "markdown",
+        tags,
+      })
+    );
+    setContent("");
+  };
+
   return (
     <Container css={SmallEditorCss}>
-      <form
-        onSubmit={(evt) => {
-          evt.preventDefault();
-          if (content.trim().length === 0) return;
-          dispatch(
-            createZettelAction({
-              title,
-              content,
-              contentType: "markdown",
-              tags,
-            })
-          );
-          setContent("");
-        }}
-      >
+      <form>
         <TextField
           label="Title"
           onChange={(e) => setTitle(e.target.value)}
@@ -56,7 +56,7 @@ const SmallEditor: React.FC<SmallEditorProps> = () => {
         />
         <div>
           <TagInput tags={tags} onChange={setTags} />
-          <Button variant="contained" color="primary">
+          <Button variant="contained" color="primary" onClick={submitHandler}>
             Submit
           </Button>
         </div>

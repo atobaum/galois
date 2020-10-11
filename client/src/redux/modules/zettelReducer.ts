@@ -7,7 +7,7 @@ export const addZetel = (zettel: Zettel) => ({
   payload: zettel,
 });
 
-export const deleteZettelAction = (id: number) => ({
+export const deleteZettelAction = (id: string) => ({
   type: DELETE_ZETTEL,
   payload: id,
 });

@@ -27,7 +27,8 @@ export default class TypeormZettelRepository implements IZettelRepository {
 
     const temp = result.map((zettelORM) => {
       const zettel = Zettel.create({
-        id: zettelORM.id,
+        id: zettelORM.uuid,
+        number: zettelORM.number,
         title: zettelORM.title,
         userId: zettelORM.fk_user_id,
         content: zettelORM.content,
@@ -46,19 +47,49 @@ export default class TypeormZettelRepository implements IZettelRepository {
     throw new Error("Method not implemented.");
   }
 
-  async findById(id: number, option?: any): Promise<Either<any, Zettel>> {
+  async findById(id: string, option?: any): Promise<Either<any, Zettel>> {
     const repo = getRepository(ZettelORM);
     const result = await repo
       .createQueryBuilder("zettel")
       .leftJoinAndSelect("zettel.tags", "tags")
       .leftJoinAndSelect("zettel.user", "user")
       .andWhere("zettel.deletedAt IS NULL")
-      .andWhere("zettel.id=:id", { id })
+      .andWhere("zettel.uuid=:id", { id })
       .getOne();
 
     return Either.fromNullable(result).flatMap((orm) => {
       return Zettel.create({
-        id: orm.id,
+        id: orm.uuid,
+        number: orm.number,
+        title: orm.title,
+        userId: orm.user.id,
+        createdAt: orm.createdAt,
+        updatedAt: orm.updatedAt,
+        content: orm.content,
+        contentType: orm.contentType,
+        tags: orm.tags.map((t) => t.name),
+      });
+    });
+  }
+
+  async findByNumber(
+    number: number,
+    userId: number
+  ): Promise<Either<any, Zettel>> {
+    const repo = getRepository(ZettelORM);
+    const result = await repo
+      .createQueryBuilder("zettel")
+      .leftJoinAndSelect("zettel.tags", "tags")
+      .leftJoinAndSelect("zettel.user", "user")
+      .andWhere("zettel.deletedAt IS NULL")
+      .andWhere("zettel.fk_user_id=:userId", { userId })
+      .andWhere("zettel.number=:number", { number })
+      .getOne();
+
+    return Either.fromNullable(result).flatMap((orm) => {
+      return Zettel.create({
+        id: orm.uuid,
+        number: orm.number,
         title: orm.title,
         userId: orm.user.id,
         createdAt: orm.createdAt,
@@ -74,14 +105,28 @@ export default class TypeormZettelRepository implements IZettelRepository {
     throw new Error("Method not implemented.");
   }
 
-  save(zettel: Zettel): Promise<Either<any, number>> {
+  save(zettel: Zettel): Promise<Either<any, string>> {
     if (zettel.isNew()) return this.createZettel(zettel);
     else return this.updateZettel(zettel);
   }
 
-  private async createZettel(zettel: Zettel): Promise<Either<any, number>> {
+  private async createZettel(zettel: Zettel): Promise<Either<any, string>> {
+    const manager = getManager();
+    const repo = getRepository(ZettelORM);
+    const maxId =
+      ((
+        await repo.findOne({
+          where: {
+            fk_user_id: zettel.getUserId(),
+          },
+          order: { number: "DESC" },
+          select: ["number"],
+        })
+      )?.number || 0) + 1;
+
     const zettelORM = new ZettelORM();
     const dto = zettel.toDTO();
+    zettelORM.number = maxId;
     zettelORM.fk_user_id = zettel.getUserId();
     zettelORM.content = dto.content;
     zettelORM.contentType = dto.contentType;
@@ -92,19 +137,18 @@ export default class TypeormZettelRepository implements IZettelRepository {
     const tagsORM = await Promise.all(dto.tags.map(TagORM.findOrCreate));
     zettelORM.tags = tagsORM;
 
-    const manager = getManager();
     await manager.save(zettelORM);
 
-    return Either.right(zettelORM.id);
+    return Either.right(zettelORM.uuid);
   }
 
-  private async updateZettel(zettel: Zettel): Promise<Either<any, number>> {
+  private async updateZettel(zettel: Zettel): Promise<Either<any, string>> {
     const changes = zettel.getChanges();
     if (changes.length == 0) return Either.right(zettel.id);
 
     const repo = getRepository(ZettelORM);
-    let orm = await repo.findOne(zettel.id, {
-      where: { deletedAt: null },
+    let orm = await repo.findOne({
+      where: { uuid: zettel.id, deletedAt: null },
       relations: ["tags"],
     });
 
@@ -142,7 +186,7 @@ export default class TypeormZettelRepository implements IZettelRepository {
     return Either.right(zettel.id);
   }
 
-  async delete(zettelId: number): Promise<any> {
+  async delete(zettelId: string): Promise<any> {
     const zettelRepo = getRepository(ZettelORM);
     const result = await zettelRepo.softDelete(zettelId);
   }

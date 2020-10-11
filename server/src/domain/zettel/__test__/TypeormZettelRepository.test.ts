@@ -51,7 +51,6 @@ describe("TypeormZettelRepository", () => {
     expect(result).toBeRight();
 
     const id = result.getRight();
-    expect(id).toBeGreaterThan(0);
     const getZettelOrFail = await repo.findById(id);
     expect(getZettelOrFail).toBeRight();
     const createdZettel = getZettelOrFail.getRight();

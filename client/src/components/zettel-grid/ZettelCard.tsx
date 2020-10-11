@@ -35,12 +35,12 @@ export const ZettelCardCss = css`
 `;
 
 type ZettelCardProps = {
-  onClick?: (id: number) => void;
+  onClick?: (number: number) => void;
   zettel: Zettel;
 };
 
 function ZettelCard({
-  zettel: { id, content, title, tags },
+  zettel: { id, number, content, title, tags },
   onClick,
 }: ZettelCardProps) {
   const dom = useRef<any>();
@@ -60,11 +60,11 @@ function ZettelCard({
   return (
     <Card
       variant="outlined"
-      onClick={() => onClick && onClick(id)}
+      onClick={() => onClick && onClick(number)}
       css={ZettelCardCss}
     >
       <CardContent>
-        {id}
+        {number}
 
         <h3>{title}</h3>
       </CardContent>

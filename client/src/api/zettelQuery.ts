@@ -6,6 +6,7 @@ export const getZettelsQuery = gql`
       nextCursor
       data {
         id
+        number
         title
         content
         contentType
@@ -19,8 +20,9 @@ export const getZettelsQuery = gql`
 
 export const getZettelQuery = gql`
   query GetZettle($id: Int) {
-    zettel(id: $id) {
+    zettel(number: $id) {
       id
+      number
       title
       content
       contentType
@@ -39,6 +41,7 @@ export const createZettelMutation = gql`
       contentType: MARKDOWN
     ) {
       id
+      number
       title
       content
       contentType
@@ -50,7 +53,7 @@ export const createZettelMutation = gql`
 
 export const updateZettelQuery = gql`
   mutation UpdateZettel(
-    $id: Int!
+    $id: ID!
     $title: String
     $tags: [String]
     $content: String
@@ -64,6 +67,7 @@ export const updateZettelQuery = gql`
       contentType: $contentType
     ) {
       id
+      number
       title
       content
       contentType

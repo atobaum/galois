@@ -31,6 +31,7 @@ const ZettelListItemCss = css`
 
 type ZettelListItemProps = Zettel & {};
 function ZettelListItem({
+  number,
   id,
   content,
   title,
@@ -43,7 +44,7 @@ function ZettelListItem({
 
   return (
     <div css={ZettelListItemCss}>
-      <div>{id}</div>
+      <div>{number}</div>
       <h3>{title}</h3>
       <div
         className="zettel-content"

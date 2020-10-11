@@ -15,7 +15,9 @@ type CreateZettelRequestDTO = {
   tags: string[];
 };
 
-type UpdateZettelRequestDTO = Partial<CreateZettelRequestDTO> & { id: number };
+type UpdateZettelRequestDTO = Partial<CreateZettelRequestDTO> & {
+  id: string;
+};
 
 export default class ZettelService {
   private zettelRepo: IZettelRepository;
@@ -24,10 +26,21 @@ export default class ZettelService {
   }
 
   async getZettelById(
-    zettelId: number,
+    zettelId: string,
     userId: number
   ): Promise<Either<any, Zettel>> {
     const zettel = await this.zettelRepo.findById(zettelId);
+    return zettel.flatMap((z) => {
+      if (z.getUserId() === userId) return Either.right(z);
+      else return Either.left("NOT_AUTHORIZED");
+    });
+  }
+
+  async getZettelByNumber(
+    zettelNumber: number,
+    userId: number
+  ): Promise<Either<any, Zettel>> {
+    const zettel = await this.zettelRepo.findByNumber(zettelNumber, userId);
     return zettel.flatMap((z) => {
       if (z.getUserId() === userId) return Either.right(z);
       else return Either.left("NOT_AUTHORIZED");
@@ -76,7 +89,7 @@ export default class ZettelService {
     args: UpdateZettelRequestDTO,
     userId: number
   ): Promise<Either<any, Zettel>> {
-    const zettelOrFail = await this.zettelRepo.findById(args.id);
+    const zettelOrFail = await this.zettelRepo.findById(args.id, userId);
     if (zettelOrFail.isLeft || zettelOrFail.getRight().getUserId() !== userId)
       return Either.left("NOT_AUTHORIZED");
     const zettel = zettelOrFail.getRight();

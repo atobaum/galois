@@ -9,7 +9,7 @@ describe("ZettelListItem", () => {
 
     // render title, id, content, tags
     getByText("title");
-    getByText("1");
+    getByText("10");
     getByText("#tag1");
     getByText("#tag2");
 

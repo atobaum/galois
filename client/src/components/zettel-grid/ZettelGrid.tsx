@@ -34,8 +34,8 @@ const ZettelGrid: React.FC = () => {
   }, [dispatch, user]);
 
   const onClickZettel = useCallback(
-    (id) => {
-      history.push("/zettel/" + id);
+    (number) => {
+      history.push("/zettel/" + number);
     },
     [history]
   );
