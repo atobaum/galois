@@ -22,6 +22,7 @@ export default class ZettelORM {
   @PrimaryGeneratedColumn()
   readonly id!: number;
 
+  @Index()
   @Column()
   @Generated("uuid")
   readonly uuid!: string;
