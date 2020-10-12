@@ -132,3 +132,18 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+.internal-link {
+  text-decoration: none;
+  color: #555555;
+}
+
+.internal-link::before {
+  content: "[[";
+  margin-right: 0.2rem;
+}
+
+.internal-link::after {
+  content: "]]";
+  margin-left: 0.2rem;
+}

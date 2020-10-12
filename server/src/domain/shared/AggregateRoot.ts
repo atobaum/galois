@@ -15,4 +15,8 @@ export default abstract class AggregateRoot<
   protected addChange(change: C) {
     this.changes.push(change);
   }
+
+  public getChanges(): C[] {
+    return this.changes;
+  }
 }

@@ -2,10 +2,10 @@ import IZettelRepository from "./IZettelRepository";
 import Zettel from "./entity/Zettle";
 import { getManager, getRepository } from "typeorm";
 import ZettelORM from "../../typeorm/ZettelORM";
-import RevisionORM from "../../typeorm/RevisionORM";
 import TagORM from "../../typeorm/TagORM";
 import { Collection } from "../../graphql/zettelSchema";
 import Either from "../../lib/Either";
+import Tag from "./entity/Tag";
 
 export default class TypeormZettelRepository implements IZettelRepository {
   async findAll(args: {
@@ -16,8 +16,8 @@ export default class TypeormZettelRepository implements IZettelRepository {
     const query = getRepository(ZettelORM)
       .createQueryBuilder("zettel")
       .leftJoinAndSelect("zettel.tags", "tags")
-      .leftJoinAndSelect("zettel.revisions", "revision")
       .andWhere("zettel.fk_user_id=:user_id", { user_id: args.userId })
+      .orderBy({ number: "DESC" })
       .limit(args.limit);
 
     if (args.cursor) {
@@ -27,20 +27,16 @@ export default class TypeormZettelRepository implements IZettelRepository {
     const result = await query.getMany();
 
     const temp = result.map((zettelORM) => {
-      const revisionORM = zettelORM.revisions[0];
-
       const zettel = Zettel.create({
+        id: zettelORM.uuid,
+        number: zettelORM.number,
         title: zettelORM.title,
         userId: zettelORM.fk_user_id,
-        createdAt: zettelORM.createdAt,
-        uuid: revisionORM.uuid,
-        version: revisionORM.version,
-        revision: {
-          content: revisionORM.content,
-          type: revisionORM.type,
-        },
+        content: zettelORM.content,
+        contentType: zettelORM.contentType,
         tags: zettelORM.tags.map((t) => t.name),
-        id: zettelORM.id,
+        createdAt: zettelORM.createdAt,
+        updatedAt: zettelORM.updatedAt,
       });
       return zettel;
     });
@@ -52,29 +48,55 @@ export default class TypeormZettelRepository implements IZettelRepository {
     throw new Error("Method not implemented.");
   }
 
-  async findById(id: number, option?: any): Promise<Either<any, Zettel>> {
+  async findById(id: string, option?: any): Promise<Either<any, Zettel>> {
     const repo = getRepository(ZettelORM);
     const result = await repo
       .createQueryBuilder("zettel")
       .leftJoinAndSelect("zettel.tags", "tags")
-      .leftJoinAndSelect("zettel.revisions", "revision")
       .leftJoinAndSelect("zettel.user", "user")
       .andWhere("zettel.deletedAt IS NULL")
-      .andWhere("zettel.id=:id", { id })
+      .andWhere("zettel.uuid=:id", { id })
       .getOne();
+
     return Either.fromNullable(result).flatMap((orm) => {
-      const revision = orm.revisions[0];
       return Zettel.create({
-        id: orm.id,
-        version: revision.version,
-        uuid: revision.uuid,
+        id: orm.uuid,
+        number: orm.number,
         title: orm.title,
         userId: orm.user.id,
         createdAt: orm.createdAt,
-        revision: {
-          content: revision.content,
-          type: revision.type,
-        },
+        updatedAt: orm.updatedAt,
+        content: orm.content,
+        contentType: orm.contentType,
+        tags: orm.tags.map((t) => t.name),
+      });
+    });
+  }
+
+  async findByNumber(
+    number: number,
+    userId: number
+  ): Promise<Either<any, Zettel>> {
+    const repo = getRepository(ZettelORM);
+    const result = await repo
+      .createQueryBuilder("zettel")
+      .leftJoinAndSelect("zettel.tags", "tags")
+      .leftJoinAndSelect("zettel.user", "user")
+      .andWhere("zettel.deletedAt IS NULL")
+      .andWhere("zettel.fk_user_id=:userId", { userId })
+      .andWhere("zettel.number=:number", { number })
+      .getOne();
+
+    return Either.fromNullable(result).flatMap((orm) => {
+      return Zettel.create({
+        id: orm.uuid,
+        number: orm.number,
+        title: orm.title,
+        userId: orm.user.id,
+        createdAt: orm.createdAt,
+        updatedAt: orm.updatedAt,
+        content: orm.content,
+        contentType: orm.contentType,
         tags: orm.tags.map((t) => t.name),
       });
     });
@@ -84,45 +106,88 @@ export default class TypeormZettelRepository implements IZettelRepository {
     throw new Error("Method not implemented.");
   }
 
-  save(zettel: Zettel): Promise<Either<any, number>> {
+  save(zettel: Zettel): Promise<Either<any, string>> {
     if (zettel.isNew()) return this.createZettel(zettel);
     else return this.updateZettel(zettel);
   }
 
-  private async createZettel(zettel: Zettel): Promise<Either<any, number>> {
+  private async createZettel(zettel: Zettel): Promise<Either<any, string>> {
+    const manager = getManager();
+    const repo = getRepository(ZettelORM);
+    const maxId =
+      ((
+        await repo.findOne({
+          where: {
+            fk_user_id: zettel.getUserId(),
+          },
+          order: { number: "DESC" },
+          select: ["number"],
+        })
+      )?.number || 0) + 1;
+
     const zettelORM = new ZettelORM();
     const dto = zettel.toDTO();
-    zettelORM.fk_user_id = dto.user.id || 1;
+    zettelORM.number = maxId;
+    zettelORM.fk_user_id = zettel.getUserId();
+    zettelORM.content = dto.content;
+    zettelORM.contentType = dto.contentType;
     zettelORM.createdAt = dto.createdAt;
     zettelORM.title = dto.title;
-
-    const revisionORM = new RevisionORM();
-    revisionORM.version = 1;
-    revisionORM.content = dto.content;
-    revisionORM.createdAt = dto.createdAt;
-    revisionORM.type = dto.contentType;
 
     //tags
     const tagsORM = await Promise.all(dto.tags.map(TagORM.findOrCreate));
     zettelORM.tags = tagsORM;
 
-    const manager = getManager();
     await manager.save(zettelORM);
 
-    revisionORM.zettel_id = zettelORM.id;
-    await manager.save(revisionORM);
-
-    zettel.id = zettelORM.id;
-    zettel.getRevision().setUUID(revisionORM.uuid);
-
-    return Either.right(zettelORM.id);
+    return Either.right(zettelORM.uuid);
   }
 
-  private async updateZettel(zettel: Zettel): Promise<Either<any, number>> {
-    throw new Error("Method not implemented.");
+  private async updateZettel(zettel: Zettel): Promise<Either<any, string>> {
+    const changes = zettel.getChanges();
+    if (changes.length == 0) return Either.right(zettel.id);
+
+    const repo = getRepository(ZettelORM);
+    let orm = await repo.findOne({
+      where: { uuid: zettel.id, deletedAt: null },
+      relations: ["tags"],
+    });
+
+    if (!orm) return Either.left(`Zettel of id ${zettel.id} is not exist`);
+
+    const dto = zettel.toDTO();
+
+    for (const change of changes) {
+      switch (change[0]) {
+        case "ADD_TAG":
+          orm.tags.push(await TagORM.findOrCreate(change[1].name));
+          break;
+        case "REMOVE_TAG":
+          orm.tags = orm.tags.filter((t) => !change[1].equals(new Tag(t.name)));
+          break;
+        case "UPDATE_TITLE":
+          orm.title = dto.title;
+          break;
+        case "UPDATE_CONTENT":
+          orm.content = dto.content;
+          orm.contentType = dto.contentType;
+          break;
+        default:
+          Either.left("Unsupported change type: " + change[0]);
+      }
+    }
+
+    try {
+      orm = await repo.save(orm);
+    } catch (e) {
+      return Either.left("Error while saving: " + e);
+    }
+
+    zettel.completeUpdate(orm.updatedAt);
+    return Either.right(zettel.id);
   }
 
-  async delete(zettelId: number): Promise<any> {
+  async delete(zettelId: string): Promise<any> {
     const zettelRepo = getRepository(ZettelORM);
     const result = await zettelRepo.softDelete(zettelId);
   }

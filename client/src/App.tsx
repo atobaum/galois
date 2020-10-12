@@ -1,33 +1,40 @@
 import React, { useEffect } from "react";
-import "./App.css";
 import { Switch, Route } from "react-router-dom";
-import MainPage from "./pages/MainPage";
-import ZettelViewPage from "./pages/ZettelViewPage";
 import { useDispatch } from "react-redux";
-import { addZetel } from "./reducers/zettelReducer";
-import { getZettels } from "./api/zettelApi";
+import Toast from "./components/core/Toast";
+import "./App.css";
+
+import MainPage from "./pages/MainPage";
+import ProjectListPage from "./pages/ProjectListPage";
+import ProjectPage from "./pages/ProjectPage";
+import ZettelPage from "./pages/ZettelPage";
 import LoginCallbackPage from "./pages/LoginCallbackPage";
-import useCurrentUser from "./hooks/useCurrentUser";
 
 function App() {
   const dispatch = useDispatch();
-  const user = useCurrentUser();
 
   useEffect(() => {
-    if (user)
-      getZettels().then((data) => {
-        data.forEach((z) => dispatch(addZetel(z)));
-      });
-    // eslint-disable-next-line
-  }, []);
+    // To dispatch redux action in apolloClient if error occurred.
+    const dispatchHandler = (evt: any) => {
+      dispatch(evt.detail);
+    };
+    window.addEventListener("dispatch-redux", dispatchHandler);
+
+    return () => {
+      window.removeEventListener("dispatch-redux", dispatchHandler);
+    };
+  }, [dispatch]);
 
   return (
     <div className="App">
       <Switch>
-        <Route path="/zettel/:id" component={ZettelViewPage} />
+        <Route path="/projects" component={ProjectListPage} />
+        <Route path="/project/:id" component={ProjectPage} />
+        <Route path="/zettel/:id" component={ZettelPage} />
         <Route path="/login_callback" component={LoginCallbackPage} />
         <Route path="/" component={MainPage} />
       </Switch>
+      <Toast />
     </div>
   );
 }

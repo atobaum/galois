@@ -34,16 +34,13 @@ describe("TypeormZettelRepository", () => {
   });
 
   it("creates new zettel", async () => {
-    console.log(existedUser);
     const created = new Date("2020-08-08T12:03:02");
     const zettelOrFail = Zettel.create({
       title: "new zettel",
       userId: existedUser.id,
       createdAt: created,
-      revision: {
-        content: "enw zettel content",
-        type: "plain",
-      },
+      content: "enw zettel content",
+      contentType: "plain",
       tags: [],
     });
 
@@ -54,15 +51,59 @@ describe("TypeormZettelRepository", () => {
     expect(result).toBeRight();
 
     const id = result.getRight();
-    expect(id).toBeGreaterThan(0);
     const getZettelOrFail = await repo.findById(id);
     expect(getZettelOrFail).toBeRight();
     const createdZettel = getZettelOrFail.getRight();
     expect(createdZettel.toDTO().title).toBe("new zettel");
+  });
 
-    //   save(entity: Zettel): Promise<number> {
-    //     throw new Error("Method not implemented.");
-    //   }
+  it("update content", async (done) => {
+    const zettel = (await repo.findById(existedZettel.id)).getRight();
+    const updatedAt = zettel.toDTO().updatedAt;
+
+    zettel.updateContent("new content content", "plain");
+    let result: any = await repo.save(zettel);
+
+    expect(result).toBeRight();
+    expect(zettel.toDTO().updatedAt).not.toEqual(updatedAt);
+
+    result = await repo.findById(existedZettel.id);
+    expect(result).toBeRight();
+
+    const updatedZettel: Zettel = result.getRight();
+    const newDto = updatedZettel.toDTO();
+    expect(updatedZettel.equals(zettel)).toBe(true);
+    expect(newDto.content).toBe("new content content");
+    expect(newDto.contentType).toBe("plain");
+
+    done();
+  });
+
+  it("update tags", async (done) => {
+    const zettel = (await repo.findById(existedZettel.id)).getRight();
+    const updatedAt = zettel.toDTO().updatedAt;
+
+    zettel.addTag("newt1");
+    zettel.removeTag("t1");
+    zettel.addTag("newt2");
+    let result: any = await repo.save(zettel);
+
+    expect(result).toBeRight();
+    expect(zettel.toDTO().tags).toContain("newt1");
+    expect(zettel.toDTO().tags).not.toContain("t1");
+    expect(zettel.toDTO().tags).toContain("newt2");
+
+    result = await repo.findById(existedZettel.id);
+    expect(result).toBeRight();
+
+    const updatedZettel: Zettel = result.getRight();
+    const newDto = updatedZettel.toDTO();
+    expect(updatedZettel.equals(zettel)).toBe(true);
+    expect(newDto.tags).toContain("newt1");
+    expect(newDto.tags).not.toContain("t1");
+    expect(newDto.tags).toContain("newt2");
+
+    done();
   });
 });
 //   findByTag(tag: string): Promise<Zettel[]> {

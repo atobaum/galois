@@ -10,21 +10,34 @@ import {
   ManyToOne,
   DeleteDateColumn,
   JoinColumn,
-  OneToMany,
+  Index,
+  Generated,
 } from "typeorm";
 import TagORM from "./TagORM";
-import RevisionORM from "./RevisionORM";
+import { ContentType } from "@src/domain/zettel/entity/Revision";
 
 @Entity({ name: "zettel" })
+@Index(["fk_user_id", "number"], { unique: true })
 export default class ZettelORM {
   @PrimaryGeneratedColumn()
   readonly id!: number;
 
+  @Index()
+  @Column()
+  @Generated("uuid")
+  readonly uuid!: string;
+
+  @Column({ type: "integer", nullable: false })
+  number!: number;
+
   @Column({ type: "varchar", length: 255, nullable: true })
   title!: string | null;
 
-  @OneToMany((type) => RevisionORM, (revision) => revision.zettel)
-  revisions!: RevisionORM[];
+  @Column({ name: "content_type", type: "varchar", length: 16, default: "md" })
+  contentType!: ContentType;
+
+  @Column("text")
+  content!: string;
 
   @ManyToMany((type) => TagORM)
   @JoinTable({ name: "note_tags_tag" })
@@ -39,6 +52,9 @@ export default class ZettelORM {
 
   @Column({ name: "is_public", default: false })
   isPublic!: boolean;
+
+  // @Column({ name: "project_id", nullable: true })
+  // projectId?: string;
 
   @CreateDateColumn({ type: "timestamptz", name: "created_at" })
   createdAt!: Date;

@@ -1,59 +1,19 @@
 import { gql } from "@apollo/client";
 import apolloClient from "../lib/apolloClient";
-import { Zettel } from "../models/Zettel";
-
-export const getZettel = async (id: number | string): Promise<Zettel> => {
-  const data = await apolloClient.query({
-    query: gql`
-      query GetZettle($id: Int, $uuid: String) {
-        zettel(id: $id, uuid: $uuid) {
-          id
-          uuid
-          version
-          title
-          content
-          tags
-          createdAt
-          user {
-            username
-          }
-        }
-      }
-    `,
-    variables: {
-      id: typeof id === "number" ? id : undefined,
-      uuid: typeof id === "string" ? id : undefined,
-    },
-  });
-
-  const z = data.data.zettel;
-  if (z) z.createdAt = new Date(z.createdAt);
-  return z;
-};
+import {
+  createZettelMutation,
+  getZettelsQuery,
+  updateZettelQuery,
+} from "./zettelQuery";
 
 export const getZettels = async (): Promise<Zettel[]> => {
-  const data = await apolloClient.query({
-    query: gql`
-      query GetZettels {
-        zettels {
-          nextCursor
-          data {
-            id
-            version
-            uuid
-            title
-            content
-            user {
-              username
-            }
-            tags
-            createdAt
-          }
-        }
-      }
-    `,
-  });
+  const data = await apolloClient
+    .query({
+      query: getZettelsQuery,
+    })
+    .catch((e) => console.log(e));
   // TODO error handling
+  if (!data) return [];
   const collection = data.data.zettels;
   const zettels = collection.data || [];
   return zettels.map((z: any) => ({
@@ -63,39 +23,32 @@ export const getZettels = async (): Promise<Zettel[]> => {
 };
 
 export const createZettel = async (
-  createZettelDTO: Pick<Zettel, "title" | "content" | "tags">
+  createZettelDTO: NewZettel
 ): Promise<Zettel> => {
   const data = await apolloClient.mutate({
-    mutation: gql`
-      mutation CreateZettel(
-        $title: String
-        $content: String!
-        $tags: [String]!
-      ) {
-        createZettel(
-          title: $title
-          content: $content
-          tags: $tags
-          contentType: MARKDOWN
-        ) {
-          id
-          uuid
-          version
-          title
-          content
-          tags
-          createdAt
-          user {
-            username
-          }
-        }
-      }
-    `,
+    mutation: createZettelMutation,
     variables: createZettelDTO,
   });
 
   const z = data.data.createZettel;
-  if (z) z.createdAt = new Date(z.createdAt);
+  if (z) {
+    z.createdAt = new Date(z.createdAt);
+    z.updatedAt = new Date(z.updatedAt);
+  }
+  return z;
+};
+
+export const updateZettel = async (zettel: Zettel) => {
+  const data = await apolloClient.mutate({
+    mutation: updateZettelQuery,
+    variables: zettel,
+  });
+
+  const z = data.data.updateZettel;
+  if (z) {
+    z.createdAt = new Date(z.createdAt);
+    z.updatedAt = new Date(z.updatedAt);
+  }
   return z;
 };
 

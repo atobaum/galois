@@ -18,8 +18,9 @@ type CreateZettelDTO = {
   userId: number;
 };
 
-export default interface IZettelRepository extends IRepository<Zettel> {
+export default interface IZettelRepository extends IRepository<Zettel, string> {
   findByUUID(uuid: string): Promise<Either<any, Zettel>>;
+  findByNumber(number: number, userId: number): Promise<Either<any, Zettel>>;
   findAll(args: FindOption): Promise<Either<any, Collection<Zettel>>>;
   findByTag(tag: string): Promise<Either<any, Collection<Zettel>>>;
 }

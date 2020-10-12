@@ -1,8 +1,6 @@
 import { AuthenticationError, gql } from "apollo-server-koa";
 import { ContentType } from "../domain/zettel/entity/Revision";
-import Zettel from "../domain/zettel/entity/Zettle";
 import { services } from "../services";
-import { UserDTO } from "./userSchema";
 
 export type Collection<T> = {
   data: T[];
@@ -10,27 +8,26 @@ export type Collection<T> = {
 };
 
 export type ZettelDTO = {
-  id?: number;
-  version?: number;
-  uuid?: string;
+  id?: string;
+  number?: number;
   title: string | null;
   content: string;
   contentType: ContentType;
-  user: UserDTO;
   tags: string[];
   createdAt: Date;
+  updatedAt: Date;
 };
 
 export const zettelTypeDefs = gql`
   type Zettel {
-    id: Int!
-    version: Int!
-    uuid: String!
+    id: ID!
+    number: Int!
     title: String
-    content: String
-    user: User!
+    content: String!
+    contentType: ContentType!
     tags: [String]!
     createdAt: Date!
+    updatedAt: Date!
   }
 
   enum ContentType {
@@ -45,7 +42,7 @@ export const zettelTypeDefs = gql`
 
   extend type Query {
     zettels: ZettelCollection
-    zettel(id: Int, uuid: String): Zettel
+    zettel(number: Int): Zettel
   }
 
   extend type Mutation {
@@ -57,21 +54,29 @@ export const zettelTypeDefs = gql`
     ): Zettel
 
     updateZettel(
-      id: Int!
+      id: ID!
       title: String
       content: String
       contentType: ContentType
       tags: [String]
     ): Zettel
     deleteZettel(id: Int!): Boolean
-    # deleteZettelRevision(uuid: String!): Boolean
   }
 `;
 
 export const zettelResolvers = {
   Zettel: {
-    //TODO implement
-    user: () => ({}),
+    contentType: (parent: { contentType: string }) => {
+      switch (parent.contentType) {
+        case "md":
+          return "MARKDOWN";
+        case "plain":
+          return "PLAIN";
+        default:
+          console.log(parent.contentType);
+          return "ERROR";
+      }
+    },
   },
   Query: {
     zettels: async (
@@ -79,7 +84,7 @@ export const zettelResolvers = {
       { limit = 20, cursor }: { limit?: number; cursor?: number },
       ctx: any
     ): Promise<Collection<ZettelDTO> | null> => {
-      if (!ctx.user) return null;
+      if (!ctx.user) throw new AuthenticationError("Login First");
       const result = await services.zettel.findZettels(
         { limit, cursor },
         ctx.user.id
@@ -90,19 +95,18 @@ export const zettelResolvers = {
 
     zettel: async (
       parent: any,
-      { id, uuid }: { id?: number; uuid?: string },
+      { number }: { number: number },
       ctx: any
     ): Promise<ZettelDTO | null> => {
       if (!ctx.user) throw new AuthenticationError("Login First");
-      if (!(id || uuid)) return null;
-      let zettel: Zettel | null = null;
-      if (uuid)
-        zettel = await services.zettel.getZettelByUUID(uuid, ctx.user.id);
-      else if (id)
-        zettel = await services.zettel.getZettelById({ id }, ctx.user.id);
+      if (!number) return null;
+      const zettel = await services.zettel.getZettelByNumber(
+        number,
+        ctx.user.id
+      );
+      if (zettel.isLeft) return null;
 
-      if (zettel) return zettel.toDTO();
-      else return null;
+      return zettel.getRight().toDTO();
     },
   },
   Mutation: {
@@ -135,6 +139,24 @@ export const zettelResolvers = {
         },
         ctx.user.id
       );
+      if (zettel.isLeft) return null;
+      else return zettel.getRight().toDTO();
+    },
+    updateZettel: async (parent: any, args: any, ctx: any) => {
+      if (!ctx.user) throw new AuthenticationError("Login First");
+      if (args.contentType) {
+        switch (args.contentType) {
+          case "MARKDOWN":
+            args.contentType = "md";
+            break;
+          case "PLAIN":
+            args.contentType = "plain";
+            break;
+          default:
+            throw new Error("UNSUPPORTED content type: " + args.contentType);
+        }
+      }
+      const zettel = await services.zettel.updateZettel(args, ctx.user.id);
       if (zettel.isLeft) return null;
       else return zettel.getRight().toDTO();
     },

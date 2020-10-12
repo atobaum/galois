@@ -1,68 +1,28 @@
 import React from "react";
-import { render, fireEvent } from "@testing-library/react";
-import { MemoryRouter, Router } from "react-router-dom";
-import { createMemoryHistory } from "history";
-import ZettelCard from "../ZettelCard";
-import { Zettel } from "../../models/Zettel";
+import { render } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
+import ZettelCard from "../zettel-grid/ZettelCard";
+import { mockedZettel } from "../../__mocks__/dummy-data";
 
 describe("<ZettelCard />", () => {
-  const zettel: Zettel = {
-    uuid: "ad8f2j",
-    id: 123,
-    version: 3,
-    title: "제목",
-    content: `
-## 소제목
-- list1
-`,
-    tags: ["태그1", "태그2"],
-    createdAt: new Date(),
-  };
+  const zettel = mockedZettel;
 
   it("renders props properly", () => {
     const { getByText } = render(
       <MemoryRouter>
-        <ZettelCard {...zettel} onDelete={() => {}} />
-      </MemoryRouter>
-    );
-    // getByText("ad8f2j");
-    getByText("123");
-    // getByText("3");
-    getByText("제목");
-    getByText("소제목");
-    getByText("list1");
-    getByText("#태그1");
-    getByText("#태그2");
-  });
-
-  it("routes", () => {
-    const history = createMemoryHistory();
-    const { getByText } = render(
-      <Router history={history}>
-        <ZettelCard {...zettel} onDelete={() => {}} />
-      </Router>
-    );
-
-    const detailButton = getByText("More");
-    fireEvent.click(detailButton);
-    expect(history.location.pathname).toBe(`/zettel/${zettel.id}`);
-
-    const tag = getByText("#태그1");
-    fireEvent.click(tag);
-    expect(history.location.pathname).toBe(`/tag/태그1`);
-  });
-
-  it("can be deleted", () => {
-    window.confirm = () => true;
-    const onDelete = jest.fn();
-    const { getByText } = render(
-      <MemoryRouter>
-        <ZettelCard {...zettel} onDelete={onDelete} />
+        <ZettelCard zettel={zettel} />
       </MemoryRouter>
     );
 
-    const deleteButton = getByText("Delete");
-    fireEvent.click(deleteButton);
-    expect(onDelete).toBeCalledWith(zettel.id);
+    //number
+    getByText("10");
+    getByText("title");
+
+    //content
+    getByText("content");
+
+    //tags
+    getByText("#tag1");
+    getByText("#tag2");
   });
 });

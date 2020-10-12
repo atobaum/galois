@@ -1,9 +1,10 @@
-import rootReducer, { RootState } from "../reducers";
+import { RootState } from "../redux";
+import { rootReducer } from "../redux/modules/root";
 
 export const initZettels = [
   {
-    uuid: "1ad8f2j",
-    id: 123,
+    id: "70b02434-53be-4bf7-a25f-a44952362688",
+    number: 5,
     version: 3,
     title: "제목",
     content: `
@@ -12,10 +13,11 @@ export const initZettels = [
 `,
     tags: ["태그1", "태그2"],
     createdAt: new Date("2020"),
+    updatedAt: new Date(),
   },
   {
-    uuid: "2asdfxvzc",
-    id: 223,
+    id: "70b02434-53be-4bf7-a25f-a44952362688",
+    number: 6,
     version: 2,
     title: "두번째 제텔",
     content: `
@@ -24,6 +26,7 @@ export const initZettels = [
 `,
     tags: [],
     createdAt: new Date(),
+    updatedAt: new Date(),
   },
 ];
 

@@ -12,6 +12,8 @@ const parser = unified()
     hrefTemplate: (permalink: string) => {
       return `/zettel/${permalink}`;
     },
+    wikiLinkClassName: "internal-link",
+    aliasDivider: "|",
   });
 function parseMarkdown(src: string) {
   return parser.processSync(src);
