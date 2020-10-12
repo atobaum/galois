@@ -17,6 +17,7 @@ export default class TypeormZettelRepository implements IZettelRepository {
       .createQueryBuilder("zettel")
       .leftJoinAndSelect("zettel.tags", "tags")
       .andWhere("zettel.fk_user_id=:user_id", { user_id: args.userId })
+      .orderBy({ number: "DESC" })
       .limit(args.limit);
 
     if (args.cursor) {
