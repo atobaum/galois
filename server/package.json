@@ -42,7 +42,8 @@
     "koa-logger": "^3.2.1",
     "koa-router": "^9.0.1",
     "pg": "^8.2.1",
-    "typeorm": "0.2.28"
+    "typeorm": "0.2.28",
+    "winston": "^3.3.3"
   },
   "jest": {
     "transform": {
