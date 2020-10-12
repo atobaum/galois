@@ -47,32 +47,30 @@ router.get("/callback", async (ctx) => {
       code,
     })
     .catch((e) => {
-      ctx.body = {
-        error: "Fail to retrieve access_token",
-        status: e.response.status,
-      };
+      ctx.redirect(config.clientHost + `/login_callback`);
       return null;
     });
-  if (response) {
-    // const { access_token, expires_id, id_token } = response.data;
-    const { id_token } = response.data;
-    const openId = jwt.decode(id_token) as any;
-    const { email, sub, name, picture } = openId;
 
-    let authTokens = await services.user.login("google", sub + "");
-    if (!authTokens) {
-      authTokens = await services.user.join({
-        username: name,
-        socialAccount: { provider: "google", socialId: sub + "" },
-        thumbnail: picture,
-        email,
-      });
-    }
+  if (!response) return;
 
-    if (!authTokens) {
-      // TODO error
-      throw new Error("가입 오류");
-    }
+  // const { access_token, expires_id, id_token } = response.data;
+  const { id_token } = response.data;
+  const openId = jwt.decode(id_token) as any;
+  const { email, sub, name, picture } = openId;
+
+  let authTokens = await services.user.login("google", sub + "");
+  // if (!authTokens) {
+  //   authTokens = await services.user.join({
+  //     username: name,
+  //     socialAccount: { provider: "google", socialId: sub + "" },
+  //     thumbnail: picture,
+  //     email,
+  //   });
+  // }
+
+  if (!authTokens) {
+    ctx.redirect(config.clientHost + `/login_callback`);
+  } else {
     ctx.redirect(
       config.clientHost +
         `/login_callback#access_token=${encodeURIComponent(
