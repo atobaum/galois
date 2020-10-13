@@ -10,6 +10,7 @@ const parser = unified()
   .use(html)
   .use(wikiLinkPlugin, {
     hrefTemplate: (permalink: string) => {
+      permalink = permalink.replace(/_+$/, "");
       return `/zettel/${permalink}`;
     },
     wikiLinkClassName: "internal-link",
