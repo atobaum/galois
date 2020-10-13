@@ -9,8 +9,20 @@ const ZettelListItemCss = css`
   border: 1px solid black;
   border-radius: 0.8rem;
   padding: 1rem;
+  display: flex;
+  flex-direction: column;
   h3 {
     font-size: 1.25rem;
+  }
+
+  .zettel-number {
+    color: gray;
+    margin-right: 0.2rem;
+  }
+
+  .zettel-content {
+    flex-grow: 1;
+    overflow: hidden;
   }
 `;
 
@@ -25,8 +37,10 @@ function ZettelListItem({
 }: ZettelListItemProps) {
   return (
     <div css={ZettelListItemCss}>
-      <div>{number}</div>
-      <h3>{title}</h3>
+      <div className="flex">
+        <div className="zettel-number">{number}</div>
+        <h3>{title}</h3>
+      </div>
       <div className="zettel-content">
         <MarkdownViewer content={content} />
       </div>

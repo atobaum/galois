@@ -14,7 +14,6 @@ export const ZettelCardCss = css`
   }
 
   .zettel-content {
-    max-height: 10rem;
     overflow: hidden;
     a {
       cursor: default;
@@ -28,7 +27,7 @@ type ZettelCardProps = {
 };
 
 function ZettelCard({
-  zettel: { id, number, content, title, tags },
+  zettel: { number, content, title, tags },
   onClick,
 }: ZettelCardProps) {
   const dom = useRef<any>();
