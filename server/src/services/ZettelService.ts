@@ -1,5 +1,5 @@
-import IZettelRepository from "@src/domain/zettel/IZettelRepository";
 import Either from "../lib/Either";
+import IZettelRepository from "../domain/zettel/IZettelRepository";
 import Zettel, { ContentType } from "../domain/zettel/entity/Zettle";
 import { Collection, ZettelDTO } from "../graphql/zettelSchema";
 
