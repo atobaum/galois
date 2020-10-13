@@ -1,4 +1,4 @@
-import { decodeToken, generateToken } from "../token";
+import { decodeTokenAsync, generateTokenAsync } from "../token";
 import config from "../../config";
 
 const jwt =
@@ -19,12 +19,12 @@ describe("token", () => {
   it("checks jwt secret", () => {
     config.jwt.secret = "";
     jest.resetModules();
-    expect(() => generateToken("asdf")).toThrow();
-    expect(() => decodeToken("asdf")).toThrow();
+    expect(generateTokenAsync("asdf")).rejects.toThrow();
+    expect(decodeTokenAsync("asdf")).rejects.toThrow();
   });
 
   it("encodes token", async (done) => {
-    const token = await generateToken({
+    const token = await generateTokenAsync({
       a: 1,
       iat: 1601823952,
     });
@@ -34,7 +34,7 @@ describe("token", () => {
   });
 
   it("decodes token", async (done) => {
-    const data = await decodeToken(jwt);
+    const data = await decodeTokenAsync(jwt);
     expect(data).toMatchObject({ a: 1, iat: 1601823952 });
 
     done();

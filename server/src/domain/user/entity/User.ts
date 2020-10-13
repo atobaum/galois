@@ -1,3 +1,4 @@
+import Either from "@src/lib/Either";
 import { UserDTO } from "../../../graphql/userSchema";
 import { generateToken } from "../../../lib/token";
 import AggregateRoot from "../../shared/AggregateRoot";
@@ -58,15 +59,15 @@ export default class User extends AggregateRoot<any> {
     this.refreshTokens.push(token);
   }
 
-  public async generateAccessToken(): Promise<string> {
-    if (!this.id) throw new Error("Id is undefined");
-    return await generateToken(
+  public generateAccessToken(): Either<any, string> {
+    if (!this.id) return Either.left("Id is undefined");
+    return generateToken(
       { id: this.id },
       { expiresIn: "1h", subject: "access_token" }
     );
   }
 
-  public getDTO(): UserDTO {
+  public toDTO(): UserDTO {
     return {
       username: this.username,
       email: this.email,
@@ -74,10 +75,10 @@ export default class User extends AggregateRoot<any> {
     };
   }
 
-  static create(props: UserProps, id?: number): User {
+  static create(props: UserProps, id?: number): Either<any, User> {
     // props validation with joi
 
     const user = new User(props, id);
-    return user;
+    return Either.right(user);
   }
 }

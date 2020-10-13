@@ -1,9 +1,9 @@
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
 import Tag from "../common/Tag";
-import { useEffect, useMemo, useRef } from "react";
-import parseMarkdown from "../../lib/markdownParser";
+import { useEffect, useRef } from "react";
 import { Card, CardContent } from "@material-ui/core";
+import MarkdownViewer from "../common/MarkdownViewer";
 
 export const ZettelCardCss = css`
   /* height: 180px;
@@ -14,20 +14,7 @@ export const ZettelCardCss = css`
   }
 
   .zettel-content {
-    max-height: 10rem;
     overflow: hidden;
-    ol,
-    ul {
-      margin: 0 1rem;
-    }
-    ol {
-      list-style: decimal;
-    }
-
-    ul {
-      list-style: disc;
-    }
-
     a {
       cursor: default;
     }
@@ -40,13 +27,10 @@ type ZettelCardProps = {
 };
 
 function ZettelCard({
-  zettel: { id, number, content, title, tags },
+  zettel: { number, content, title, tags },
   onClick,
 }: ZettelCardProps) {
   const dom = useRef<any>();
-  const parsedContent = useMemo(() => {
-    return parseMarkdown(content);
-  }, [content]);
 
   useEffect(() => {
     const links: any[] = dom.current.querySelectorAll(".internal-link");
@@ -68,11 +52,9 @@ function ZettelCard({
 
         <h3>{title}</h3>
       </CardContent>
-      <CardContent
-        ref={dom}
-        className="zettel-content"
-        dangerouslySetInnerHTML={{ __html: parsedContent.contents as string }}
-      ></CardContent>
+      <CardContent ref={dom} className="zettel-content">
+        <MarkdownViewer content={content} />
+      </CardContent>
       <CardContent>
         {tags.map((tag) => (
           <Tag name={tag} key={tag} />

@@ -1,9 +1,9 @@
 import React from "react";
 import { Meta, Story } from "@storybook/react/types-6-0";
 import { action } from "@storybook/addon-actions";
-import ZettelGrid from "./ZettelGrid";
-import { mockedZettels } from "../../__mocks__/dummy-data";
+import { mockedZettels } from "../__mocks__/dummy-data";
 import { Provider } from "react-redux";
+import ZettelGrid from "../components/zettel-grid/ZettelGrid";
 
 const store = {
   getState: () => ({
@@ -14,6 +14,12 @@ const store = {
       })),
       zettels: mockedZettels,
     },
+    core: {
+      user: {
+        username: "testuser",
+        email: "testuser@test.com",
+      },
+    },
   }),
   dispatch: action("dispatch"),
   subscribe: () => {},
@@ -22,7 +28,7 @@ const store = {
 const withStore = (story: any) => <Provider store={store}>{story()}</Provider>;
 
 export default {
-  title: "ZettelGrid",
+  title: "Components|Viewer/ZettelGrid",
   component: ZettelGrid,
   decorators: [withStore],
 } as Meta;

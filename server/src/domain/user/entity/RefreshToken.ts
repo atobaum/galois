@@ -47,7 +47,7 @@ export default class RefreshToken extends Entity {
       {
         subject: "refresh_token",
       }
-    );
+    ).toPromise();
   }
 
   //returns remaining life in seconds
