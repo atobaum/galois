@@ -1,5 +1,5 @@
 import { Context } from "koa";
-import { decodeTokenAsync } from "../lib/token";
+import { decodeToken } from "../lib/token";
 
 function setResponse(ctx: Context, status: number, errorCode: string): void {
   ctx.status = status;
@@ -17,26 +17,25 @@ export default function jwtMiddleware(ctx: Context, next: any) {
   const accessToken = getAccessToken(ctx);
   if (!accessToken) return next();
 
-  return decodeTokenAsync<{ id: number; sub: string }>(accessToken, {
+  const dataOrFail = decodeToken<{ id: number; sub: string }>(accessToken, {
     subject: "access_token",
-  })
-    .then((data) => {
-      ctx.state.user = { id: data.id };
-      return next();
-    })
-    .catch((e) => {
-      switch (e.name) {
-        case "TokenExpiredError":
-          setResponse(ctx, 401, "EXPIRED_ACCESS_TOKEN");
-          break;
-        case "JsonWebTokenError":
-          setResponse(ctx, 401, "INVALID_TOKEN");
-          break;
-        case "JsonWebTokenError":
-          // NotBeforeError is not handled
-          break;
-        default:
-          throw e;
-      }
-    });
+  });
+  if (dataOrFail.isRight) {
+    ctx.state.user = { id: dataOrFail.getRight().id };
+    return next();
+  } else {
+    switch (dataOrFail.getLeft().name) {
+      case "TokenExpiredError":
+        setResponse(ctx, 401, "EXPIRED_ACCESS_TOKEN");
+        break;
+      case "JsonWebTokenError":
+        setResponse(ctx, 401, "INVALID_TOKEN");
+        break;
+      case "JsonWebTokenError":
+        // NotBeforeError is not handled
+        break;
+      default:
+        throw dataOrFail.getLeft();
+    }
+  }
 }
