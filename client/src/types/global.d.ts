@@ -14,5 +14,6 @@ declare global {
     updatedAt: Date;
   };
 
-  type NewZettel = Omit<Zettel, "id" | "number" | "createdAt" | "updatedAt">;
+  type NewZettel = Omit<Zettel, "id" | "number" | "createdAt" | "updatedAt"> &
+    Partial<Pick<Zettel, "id" | "number" | "createdAt" | "updatedAt">>;
 }

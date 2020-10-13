@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
 import parseMarkdown from "../../../lib/markdownParser";
