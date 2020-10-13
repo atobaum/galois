@@ -133,17 +133,21 @@ code {
     monospace;
 }
 
-.internal-link {
-  text-decoration: none;
-  color: #555555;
+.flex {
+  display: flex;
 }
 
-.internal-link::before {
-  content: "[[";
-  margin-right: 0.2rem;
+.flex-column {
+  display: flex;
+  flex-direction: column;
 }
 
-.internal-link::after {
-  content: "]]";
-  margin-left: 0.2rem;
+.flex-center {
+  display: flex;
+  justify-content: center;
+}
+
+.flex-spacebetween {
+  display: flex;
+  justify-content: space-between;
 }

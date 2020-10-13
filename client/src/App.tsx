@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { Switch, Route } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import Toast from "./components/core/Toast";
-import "./App.css";
 
 import MainPage from "./pages/MainPage";
 import ProjectListPage from "./pages/ProjectListPage";
