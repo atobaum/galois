@@ -1,5 +1,5 @@
+import { ContentType } from "../domain/zettel/entity/Zettle";
 import { AuthenticationError, gql } from "apollo-server-koa";
-import { ContentType } from "../domain/zettel/entity/Revision";
 import { services } from "../services";
 
 export type Collection<T> = {
@@ -65,19 +65,7 @@ export const zettelTypeDefs = gql`
 `;
 
 export const zettelResolvers = {
-  Zettel: {
-    contentType: (parent: { contentType: string }) => {
-      switch (parent.contentType) {
-        case "md":
-          return "MARKDOWN";
-        case "plain":
-          return "PLAIN";
-        default:
-          console.log(parent.contentType);
-          return "ERROR";
-      }
-    },
-  },
+  ContentType,
   Query: {
     zettels: async (
       parent: any,
@@ -115,20 +103,17 @@ export const zettelResolvers = {
       {
         title,
         content,
-        contentType: givenContentType,
+        contentType,
         tags,
       }: {
         title?: string;
         content: string;
-        contentType: "MARKDONW" | "PLAIN";
+        contentType: ContentType;
         tags: string[];
       },
       ctx: any
     ): Promise<ZettelDTO | null> => {
       if (!ctx.user) throw new AuthenticationError("Login First");
-      let contentType: ContentType;
-      if (givenContentType === "MARKDONW") contentType = "md";
-      else contentType = "plain";
 
       const zettel = await services.zettel.createZettel(
         {
@@ -144,18 +129,6 @@ export const zettelResolvers = {
     },
     updateZettel: async (parent: any, args: any, ctx: any) => {
       if (!ctx.user) throw new AuthenticationError("Login First");
-      if (args.contentType) {
-        switch (args.contentType) {
-          case "MARKDOWN":
-            args.contentType = "md";
-            break;
-          case "PLAIN":
-            args.contentType = "plain";
-            break;
-          default:
-            throw new Error("UNSUPPORTED content type: " + args.contentType);
-        }
-      }
       const zettel = await services.zettel.updateZettel(args, ctx.user.id);
       if (zettel.isLeft) return null;
       else return zettel.getRight().toDTO();

@@ -7,6 +7,7 @@ import useZettel from "../hooks/useZettel";
 import ZettelViewer from "../components/zettel-page/ZettelViewer";
 import ZettelList from "../components/zettel-page/ZettelList";
 import useSetTitle from "../hooks/useSetTitle";
+import Helmet from "react-helmet";
 
 const ZettelPageCss = css`
   height: 100vh;
@@ -29,6 +30,9 @@ const ZettelPage: React.FC = () => {
 
   return (
     <div css={ZettelPageCss}>
+      <Helmet>
+        <title>{(zettel && zettel.title) || "No" + id} - Galois</title>
+      </Helmet>
       <StatusBar />
       <div className="main-panel">
         <ZettelViewer zettel={zettel} />

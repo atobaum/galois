@@ -1,9 +1,9 @@
-import React, { useMemo } from "react";
+import React from "react";
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
-import parseMarkdown from "../../lib/markdownParser";
+import parseMarkdown from "../../../lib/markdownParser";
 
-const MarkdownViewerCss = css`
+const MarkdownRendererCss = css`
   h1,
   h2,
   h3,
@@ -81,17 +81,15 @@ const MarkdownViewerCss = css`
   }
 `;
 
-const MarkdownViewer: React.FC<{ content: string }> = ({ content }) => {
-  const renderedMarkdown = useMemo(() => {
-    return parseMarkdown(content);
-  }, [content]);
+const MarkdownRenderer: React.FC<{ content: string }> = ({ content }) => {
+  const renderedMarkdown = parseMarkdown(content);
 
   return (
     <article
-      css={MarkdownViewerCss}
+      css={MarkdownRendererCss}
       dangerouslySetInnerHTML={{ __html: renderedMarkdown.contents as string }}
     ></article>
   );
 };
 
-export default MarkdownViewer;
+export default MarkdownRenderer;

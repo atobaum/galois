@@ -2,11 +2,10 @@ import React, { useCallback, useEffect } from "react";
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
 import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "../../redux";
-import PendingZettelCard from "./PendingZettelCard";
-import ZettelCard from "./ZettelCard";
 import { useHistory } from "react-router-dom";
+import ZettelCard from "./ZettelCard";
 import { getZettels } from "../../api/zettelApi";
+import { RootState } from "../../redux";
 import { setZettelsToGrid } from "../../redux/modules/zettel-grid";
 import useCurrentUser from "../../hooks/useCurrentUser";
 
@@ -43,7 +42,7 @@ const ZettelGrid: React.FC = () => {
   return (
     <div css={ZettelGridCss}>
       {pendings.map((z, idx) => (
-        <PendingZettelCard key={idx} loading={z.loading} zettel={z.zettel} />
+        <ZettelCard key={idx} loading={z.loading} zettel={z.zettel} />
       ))}
       {zettels.map((z) => (
         <ZettelCard key={z.id} zettel={z} onClick={onClickZettel} />

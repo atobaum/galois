@@ -1,8 +1,12 @@
 import { ZettelDTO } from "../../../graphql/zettelSchema";
 import Either from "../../../lib/Either";
 import AggregateRoot from "../../shared/AggregateRoot";
-import { ContentType } from "./Revision";
 import Tag from "./Tag";
+
+export enum ContentType {
+  MARKDOWN = "md",
+  PLAIN = "plain",
+}
 
 export type ZettelChange =
   | ["ADD_TAG", Tag]

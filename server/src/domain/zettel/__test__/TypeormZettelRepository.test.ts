@@ -2,7 +2,7 @@ import postgrasqlLoader from "../../../loaders/postgresqlLoader";
 import initState from "../../../test/initState";
 import TypeormZettelRepository from "../TypeormZettelRepository";
 import "@src/test/custom-matcher";
-import Zettel from "../entity/Zettle";
+import Zettel, { ContentType } from "../entity/Zettle";
 
 const existedZettel = initState.zettel;
 const existedUser = initState.user;
@@ -40,7 +40,7 @@ describe("TypeormZettelRepository", () => {
       userId: existedUser.id,
       createdAt: created,
       content: "enw zettel content",
-      contentType: "plain",
+      contentType: ContentType.PLAIN,
       tags: [],
     });
 
@@ -61,7 +61,7 @@ describe("TypeormZettelRepository", () => {
     const zettel = (await repo.findById(existedZettel.id)).getRight();
     const updatedAt = zettel.toDTO().updatedAt;
 
-    zettel.updateContent("new content content", "plain");
+    zettel.updateContent("new content content", ContentType.PLAIN);
     let result: any = await repo.save(zettel);
 
     expect(result).toBeRight();

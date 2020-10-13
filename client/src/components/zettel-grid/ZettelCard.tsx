@@ -1,14 +1,12 @@
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
 import Tag from "../common/Tag";
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { Card, CardContent } from "@material-ui/core";
-import MarkdownViewer from "../common/MarkdownViewer";
+import ContentRenderer from "../common/content-renderer/ContentRenderer";
 
-export const ZettelCardCss = css`
-  /* height: 180px;
-  border: 1px solid black;
-  padding: 0.3rem; */
+const generateCss = (loading: boolean | undefined) => css`
+  position: relative;
   h3 {
     font-size: 1.25rem;
   }
@@ -19,16 +17,29 @@ export const ZettelCardCss = css`
       cursor: default;
     }
   }
+
+  ${loading === true
+    ? css`
+        .zettel-foreground {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          backdrop-filter: blur(0.7px);
+        }
+      `
+    : ""}
 `;
 
 type ZettelCardProps = {
   onClick?: (number: number) => void;
-  zettel: Zettel;
+  zettel: Zettel | NewZettel;
+  loading?: boolean; // true면 api call중, false면 실패, undefined면 저장 완료
 };
 
 function ZettelCard({
-  zettel: { number, content, title, tags },
+  zettel: { number, content, title, tags, contentType },
   onClick,
+  loading,
 }: ZettelCardProps) {
   const dom = useRef<any>();
 
@@ -40,20 +51,22 @@ function ZettelCard({
       })
     );
   }, []);
+  const Cardcss = useMemo(() => generateCss(loading), [loading]);
 
   return (
     <Card
       variant="outlined"
-      onClick={() => onClick && onClick(number)}
-      css={ZettelCardCss}
+      onClick={() => onClick && onClick(number || -1)}
+      css={Cardcss}
+      className={loading === undefined ? "" : "zettel-loading"}
     >
-      <CardContent>
-        {number}
-
+      <div className="zettel-foreground"></div>
+      <CardContent className="flex">
+        <div>{number ? number : loading ? "기달" : "실패"}</div>
         <h3>{title}</h3>
       </CardContent>
       <CardContent ref={dom} className="zettel-content">
-        <MarkdownViewer content={content} />
+        <ContentRenderer content={content} contentType={contentType} />
       </CardContent>
       <CardContent>
         {tags.map((tag) => (

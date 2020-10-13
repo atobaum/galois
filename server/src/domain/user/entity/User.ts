@@ -1,4 +1,4 @@
-import Either from "@src/lib/Either";
+import Either from "../../../lib/Either";
 import { UserDTO } from "../../../graphql/userSchema";
 import { generateToken } from "../../../lib/token";
 import AggregateRoot from "../../shared/AggregateRoot";
