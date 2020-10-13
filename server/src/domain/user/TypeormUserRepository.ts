@@ -88,10 +88,7 @@ export default class TypeormUserRepositoy implements IUserRepository {
     const socialAccounts = userData.socialAccounts?.map(
       (account) => new SocialAccount(account.provider, account.socialId)
     );
-    const user: User = User.create(
-      { ...userData, socialAccounts },
-      userData.id
-    );
-    return user;
+    const user = User.create({ ...userData, socialAccounts }, userData.id);
+    return user.getRight();
   }
 }

@@ -31,7 +31,9 @@ export default class UserService {
       socialAccounts: [socialAccount],
       refreshTokens: [refreshToken],
     });
-    const id = await this.userRepo.save(user);
+    if (user.isLeft) throw new Error("Fail to create user");
+
+    const id = await this.userRepo.save(user.getRight());
     if (!id) throw new Error("Fail to save user");
 
     return await this.login(

@@ -26,7 +26,7 @@ beforeEach(async (done) => {
     thumbnail: null,
     username: "test1",
     socialAccounts: [new SocialAccount("google", "128")],
-  });
+  }).getRight();
 
   await repo.save(oldUser);
   done();

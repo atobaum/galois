@@ -16,12 +16,14 @@ describe("User", () => {
 
   it("cannot generate access token of new user", () => {
     const user = User.create(userData);
-    expect(user.generateAccessToken()).toBeLeft();
+    expect(user.flatMap((u) => u.generateAccessToken())).toBeLeft();
   });
 
   it("generate accesstoken", async () => {
     const user = User.create({ ...userData }, 2);
-    const token = user.generateAccessToken();
+    expect(user).toBeRight();
+
+    const token = user.flatMap((u) => u.generateAccessToken());
     const tokenData = jwt.decode(token.getRight()) as any;
 
     expect(tokenData).toBeTruthy();
@@ -29,7 +31,7 @@ describe("User", () => {
   });
 
   it("getDTO", () => {
-    const user = User.create(userData);
+    const user = User.create(userData).getRight();
     expect(user.toDTO()).toEqual(userData);
   });
 });

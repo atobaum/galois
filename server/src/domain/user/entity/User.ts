@@ -75,10 +75,10 @@ export default class User extends AggregateRoot<any> {
     };
   }
 
-  static create(props: UserProps, id?: number): User {
+  static create(props: UserProps, id?: number): Either<any, User> {
     // props validation with joi
 
     const user = new User(props, id);
-    return user;
+    return Either.right(user);
   }
 }
