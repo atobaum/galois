@@ -6,6 +6,7 @@ import { createZettelAction } from "../../redux/modules/zettel-grid";
 import TagInput from "../common/TagInput";
 import { Button, Container, TextField } from "@material-ui/core";
 import ContentType from "../../types/content-type";
+import ContentTypeSelect from "../common/ContentTypeSelect";
 
 const SmallEditorCss = css`
   width: 100%;
@@ -58,6 +59,7 @@ const SmallEditor: React.FC<SmallEditorProps> = () => {
         />
         <div>
           <TagInput tags={tags} onChange={setTags} />
+          <ContentTypeSelect onChange={setType} contentType={type} />
           <Button variant="contained" color="primary" onClick={submitHandler}>
             Submit
           </Button>
