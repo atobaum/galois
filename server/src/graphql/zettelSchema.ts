@@ -66,19 +66,6 @@ export const zettelTypeDefs = gql`
 
 export const zettelResolvers = {
   ContentType,
-  Zettel: {
-    contentType: (parent: { contentType: string }) => {
-      switch (parent.contentType) {
-        case "md":
-          return "MARKDOWN";
-        case "plain":
-          return "PLAIN";
-        default:
-          console.log(parent.contentType);
-          return "ERROR";
-      }
-    },
-  },
   Query: {
     zettels: async (
       parent: any,
