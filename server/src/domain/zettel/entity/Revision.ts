@@ -1,8 +1,8 @@
 import Either from "../../../lib/Either";
 import { isUUID } from "../../../lib/utils";
 import Entity from "../../shared/Entity";
+import { ContentType } from "./Zettle";
 
-export type ContentType = "md" | "plain";
 type RevisionDTO = {
   uuid?: string;
   version: number;

@@ -1,10 +1,11 @@
-import Revision, { ContentType } from "../Revision";
+import Revision from "../Revision";
+import { ContentType } from "../Zettle";
 
 describe("Revision", () => {
   const newRevision = {
     content: "te",
     version: 1,
-    type: "md" as ContentType,
+    type: ContentType.MARKDOWN,
     createdAt: new Date("2020-08-08"),
   };
 

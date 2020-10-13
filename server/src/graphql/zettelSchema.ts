@@ -1,5 +1,5 @@
+import { ContentType } from "../domain/zettel/entity/Zettle";
 import { AuthenticationError, gql } from "apollo-server-koa";
-import { ContentType } from "../domain/zettel/entity/Revision";
 import { services } from "../services";
 
 export type Collection<T> = {
@@ -65,6 +65,7 @@ export const zettelTypeDefs = gql`
 `;
 
 export const zettelResolvers = {
+  ContentType,
   Zettel: {
     contentType: (parent: { contentType: string }) => {
       switch (parent.contentType) {
@@ -115,20 +116,17 @@ export const zettelResolvers = {
       {
         title,
         content,
-        contentType: givenContentType,
+        contentType,
         tags,
       }: {
         title?: string;
         content: string;
-        contentType: "MARKDONW" | "PLAIN";
+        contentType: ContentType;
         tags: string[];
       },
       ctx: any
     ): Promise<ZettelDTO | null> => {
       if (!ctx.user) throw new AuthenticationError("Login First");
-      let contentType: ContentType;
-      if (givenContentType === "MARKDONW") contentType = "md";
-      else contentType = "plain";
 
       const zettel = await services.zettel.createZettel(
         {

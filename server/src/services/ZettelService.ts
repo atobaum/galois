@@ -1,7 +1,6 @@
 import IZettelRepository from "@src/domain/zettel/IZettelRepository";
 import Either from "../lib/Either";
-import { ContentType } from "../domain/zettel/entity/Revision";
-import Zettel from "../domain/zettel/entity/Zettle";
+import Zettel, { ContentType } from "../domain/zettel/entity/Zettle";
 import { Collection, ZettelDTO } from "../graphql/zettelSchema";
 
 type FindZettelOption = {
