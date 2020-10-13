@@ -18,6 +18,7 @@ const BigZettelEditor: React.FC<{
   const [title, setTitle] = useState(zettel.title || "");
   const [tags, setTags] = useState(zettel.tags);
   const [content, setContent] = useState(zettel.content);
+  const [type, setType] = useState(zettel.contentType);
 
   return (
     <div css={BigZettelEditorCss}>
@@ -35,7 +36,7 @@ const BigZettelEditor: React.FC<{
             content,
             tags,
             title,
-            contentType: zettel.contentType,
+            contentType: type,
           });
         }}
       >

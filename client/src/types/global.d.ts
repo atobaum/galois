@@ -1,13 +1,14 @@
+import ContentType from "./content-type";
+
 export {};
 
 declare global {
-  type ContentType = "markdown" | "plain";
   type Zettel = {
     id: string;
     number: number;
     title: string | null;
     content: string;
-    contentType?: ContentType;
+    contentType: ContentType;
     tags: string[];
     createdAt: Date;
     updatedAt: Date;

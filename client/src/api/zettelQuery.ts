@@ -33,12 +33,17 @@ export const getZettelQuery = gql`
 `;
 
 export const createZettelMutation = gql`
-  mutation CreateZettel($title: String, $content: String!, $tags: [String]!) {
+  mutation CreateZettel(
+    $title: String
+    $content: String!
+    $tags: [String]!
+    $contentType: ContentType!
+  ) {
     createZettel(
       title: $title
       content: $content
       tags: $tags
-      contentType: MARKDOWN
+      contentType: $contentType
     ) {
       id
       number
@@ -57,7 +62,7 @@ export const updateZettelQuery = gql`
     $title: String
     $tags: [String]
     $content: String
-    $contentType: ContentType
+    $contentType: ContentType!
   ) {
     updateZettel(
       id: $id

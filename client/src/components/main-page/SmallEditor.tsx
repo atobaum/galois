@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 import { createZettelAction } from "../../redux/modules/zettel-grid";
 import TagInput from "../common/TagInput";
 import { Button, Container, TextField } from "@material-ui/core";
+import ContentType from "../../types/content-type";
 
 const SmallEditorCss = css`
   width: 100%;
@@ -22,6 +23,7 @@ type SmallEditorProps = {};
 const SmallEditor: React.FC<SmallEditorProps> = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [type, setType] = useState<ContentType>(ContentType.MARKDOWN);
   const [tags, setTags] = useState<string[]>([]);
   const dispatch = useDispatch();
 
@@ -32,7 +34,7 @@ const SmallEditor: React.FC<SmallEditorProps> = () => {
       createZettelAction({
         title,
         content,
-        contentType: "markdown",
+        contentType: type,
         tags,
       })
     );

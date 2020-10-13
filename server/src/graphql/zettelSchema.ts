@@ -129,18 +129,6 @@ export const zettelResolvers = {
     },
     updateZettel: async (parent: any, args: any, ctx: any) => {
       if (!ctx.user) throw new AuthenticationError("Login First");
-      if (args.contentType) {
-        switch (args.contentType) {
-          case "MARKDOWN":
-            args.contentType = "md";
-            break;
-          case "PLAIN":
-            args.contentType = "plain";
-            break;
-          default:
-            throw new Error("UNSUPPORTED content type: " + args.contentType);
-        }
-      }
       const zettel = await services.zettel.updateZettel(args, ctx.user.id);
       if (zettel.isLeft) return null;
       else return zettel.getRight().toDTO();
