@@ -6,7 +6,7 @@ import PlainRenderer from "./PlainRenderer";
 const ContentRenderer: React.FC<{
   content: string;
   contentType: ContentType;
-}> = ({ content, contentType }) => {
+}> = React.memo(({ content, contentType }) => {
   switch (contentType) {
     case ContentType.MARKDOWN:
       return <MarkdownRenderer content={content} />;
@@ -15,6 +15,6 @@ const ContentRenderer: React.FC<{
     default:
       return <div>{contentType} is not supported</div>;
   }
-};
+});
 
 export default ContentRenderer;

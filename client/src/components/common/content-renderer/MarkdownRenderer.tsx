@@ -82,9 +82,7 @@ const MarkdownRendererCss = css`
 `;
 
 const MarkdownRenderer: React.FC<{ content: string }> = ({ content }) => {
-  const renderedMarkdown = useMemo(() => {
-    return parseMarkdown(content);
-  }, [content]);
+  const renderedMarkdown = parseMarkdown(content);
 
   return (
     <article
