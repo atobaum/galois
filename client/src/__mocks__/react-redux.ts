@@ -1,5 +1,6 @@
 import { RootState } from "../redux";
 import { rootReducer } from "../redux/modules/root";
+import ContentType from "../types/content-type";
 
 export const initZettels = [
   {
@@ -11,6 +12,7 @@ export const initZettels = [
 ## 소제목
 - list1
 `,
+    contentType: ContentType.MARKDOWN,
     tags: ["태그1", "태그2"],
     createdAt: new Date("2020"),
     updatedAt: new Date(),
@@ -24,6 +26,7 @@ export const initZettels = [
 ## 두번째
 **bold**
 `,
+    contentType: ContentType.MARKDOWN,
     tags: [],
     createdAt: new Date(),
     updatedAt: new Date(),

@@ -121,4 +121,14 @@ describe("Either monad", () => {
     const e = Either.fromNullable(123);
     expect(e).toBeRight();
   });
+
+  it("toPromise resolves right value", () => {
+    const promise = Either.right(1).toPromise();
+    return expect(promise).resolves.toBe(1);
+  });
+
+  it("toPromise rejects left value", () => {
+    const promise = Either.left(1).toPromise();
+    return expect(promise).rejects.toBe(1);
+  });
 });

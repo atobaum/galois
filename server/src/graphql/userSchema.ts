@@ -25,7 +25,7 @@ export const userResolvers = {
       if (!ctx.user) return null;
       const user = await repositories.user.findById(ctx.user.id);
       if (user.isLeft) return null;
-      else return user.getRight().getDTO();
+      else return user.getRight().toDTO();
     },
   },
 };

@@ -24,11 +24,11 @@ describe("MemoryUserRepository", () => {
       thumbnail: null,
       username: "adfs",
     });
-    const id = await repo.save(user);
+    const id = await repo.save(user.getRight());
     const getUser = await repo.findById(id.getRight());
 
     expect(id).toBeTruthy();
-    expect(getUser.getRight().id).toBe(user.id);
+    expect(getUser.getRight().id).toBe(user.getRight().id);
     done();
   });
 });

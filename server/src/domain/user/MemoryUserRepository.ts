@@ -12,7 +12,7 @@ const initUsers: { [key: number]: User } = {
       socialAccounts: [new SocialAccount("google", "123")],
     },
     1
-  ),
+  ).getRight(),
   2: User.create(
     {
       email: "test2@test.com",
@@ -24,7 +24,7 @@ const initUsers: { [key: number]: User } = {
       ],
     },
     2
-  ),
+  ).getRight(),
 };
 
 export default class MemoryUserRepository implements IUserRepository {

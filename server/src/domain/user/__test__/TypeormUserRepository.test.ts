@@ -17,7 +17,7 @@ describe("TypeormUserRepository", () => {
   it("findById", async (done) => {
     const user = await repo.findById(existedUser.id);
     expect(user).toBeRight();
-    expect(user.getRight().getDTO()).toMatchObject({
+    expect(user.getRight().toDTO()).toMatchObject({
       username: existedUser.username,
       email: existedUser.email,
       thumbnail: existedUser.thumbnail,
@@ -44,13 +44,13 @@ describe("TypeormUserRepository", () => {
       username: "qweqwe",
       socialAccounts: [socialAccount],
     });
-    const id = await repo.save(user);
+    const id = await repo.save(user.getRight());
     const getUser = await repo.findById(id.getRight());
 
     expect(id).toBeTruthy();
     expect(getUser).toBeRight();
     expect(getUser.getRight().id).toBe(id.getRight());
-    expect(getUser.getRight().getDTO()).toMatchObject(user.getDTO());
+    expect(getUser.getRight().toDTO()).toMatchObject(user.getRight().toDTO());
     done();
   });
 });

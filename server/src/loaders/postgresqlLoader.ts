@@ -38,11 +38,9 @@ export default function postgrasqlLoader(): Promise<Connection> {
 
     createConnection(connectionOptions)
       .then((conn) => {
-        console.log("Database connected.");
         resolve(conn);
       })
       .catch((e) => {
-        console.log("Cannot connect database:");
         reject(e);
       });
   });

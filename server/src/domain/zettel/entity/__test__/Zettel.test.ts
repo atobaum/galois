@@ -1,5 +1,4 @@
-import { ContentType } from "../Revision";
-import Zettel from "../Zettle";
+import Zettel, { ContentType } from "../Zettle";
 import "@src/test/custom-matcher";
 
 describe("Zettel", () => {
@@ -8,7 +7,7 @@ describe("Zettel", () => {
     userId: 2,
     createdAt: new Date("2020-02-02"),
     content: "content1",
-    contentType: "md" as ContentType,
+    contentType: ContentType.MARKDOWN,
     tags: ["t1"] as string[],
   };
   const invalidUpdatedAt = new Date("2020-02-01");
@@ -42,8 +41,8 @@ describe("Zettel", () => {
 
   it("edit contents", () => {
     const z1 = Zettel.create(newZettelData).getRight();
-    let result = z1.updateContent("new content1", "plain");
-    result = z1.updateContent("new content2", "plain");
+    let result = z1.updateContent("new content1", ContentType.PLAIN);
+    result = z1.updateContent("new content2", ContentType.PLAIN);
 
     expect(result).toBeRight();
 

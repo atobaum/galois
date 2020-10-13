@@ -1,8 +1,7 @@
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
 import Tag from "../common/Tag";
-import { useMemo } from "react";
-import parseMarkdown from "../../lib/markdownParser";
+import ContentRenderer from "../common/content-renderer/ContentRenderer";
 
 const ZettelListItemCss = css`
   height: 200px;
@@ -10,22 +9,20 @@ const ZettelListItemCss = css`
   border: 1px solid black;
   border-radius: 0.8rem;
   padding: 1rem;
+  display: flex;
+  flex-direction: column;
   h3 {
     font-size: 1.25rem;
   }
 
-  .zettel-content {
-    ol,
-    ul {
-      margin: 0 1rem;
-    }
-    ol {
-      list-style: decimal;
-    }
+  .zettel-number {
+    color: gray;
+    margin-right: 0.2rem;
+  }
 
-    ul {
-      list-style: disc;
-    }
+  .zettel-content {
+    flex-grow: 1;
+    overflow: hidden;
   }
 `;
 
@@ -33,23 +30,21 @@ type ZettelListItemProps = Zettel & {};
 function ZettelListItem({
   number,
   id,
+  contentType,
   content,
   title,
   tags,
   createdAt,
 }: ZettelListItemProps) {
-  const parsedContent = useMemo(() => {
-    return parseMarkdown(content);
-  }, [content]);
-
   return (
     <div css={ZettelListItemCss}>
-      <div>{number}</div>
-      <h3>{title}</h3>
-      <div
-        className="zettel-content"
-        dangerouslySetInnerHTML={{ __html: parsedContent.contents as string }}
-      ></div>
+      <div className="flex">
+        <div className="zettel-number">{number}</div>
+        <h3>{title}</h3>
+      </div>
+      <div className="zettel-content">
+        <ContentRenderer content={content} contentType={contentType} />
+      </div>
       <div>
         날짜 {createdAt.getMonth() + 1}월 {createdAt.getDate()}일
       </div>

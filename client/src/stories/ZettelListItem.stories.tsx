@@ -1,9 +1,9 @@
 import React from "react";
 import { Meta, Story } from "@storybook/react/types-6-0";
-import ZettelListItem from "./ZettelListItem";
+import ZettelListItem from "../components/zettel-page/ZettelListItem";
 
 export default {
-  title: " ZettelListItem",
+  title: "Components|Basic/ZettelListItem",
   component: ZettelListItem,
 } as Meta;
 

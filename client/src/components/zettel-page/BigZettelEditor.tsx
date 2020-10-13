@@ -2,6 +2,8 @@ import React, { useState } from "react";
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
 import TagInput from "../common/TagInput";
+import ContentTypeSelect from "../common/ContentTypeSelect";
+import ContentType from "../../types/content-type";
 
 const BigZettelEditorCss = css`
   display: flex;
@@ -18,6 +20,7 @@ const BigZettelEditor: React.FC<{
   const [title, setTitle] = useState(zettel.title || "");
   const [tags, setTags] = useState(zettel.tags);
   const [content, setContent] = useState(zettel.content);
+  const [type, setType] = useState<ContentType>(zettel.contentType);
 
   return (
     <div css={BigZettelEditorCss}>
@@ -29,13 +32,14 @@ const BigZettelEditor: React.FC<{
         onChange={(e) => setContent(e.target.value)}
         value={content}
       ></textarea>
+      <ContentTypeSelect onChange={setType} contentType={type} />
       <button
         onClick={() => {
           onEdit({
             content,
             tags,
             title,
-            contentType: zettel.contentType,
+            contentType: type,
           });
         }}
       >
