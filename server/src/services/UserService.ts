@@ -56,12 +56,13 @@ export default class UserService {
     // if (id.isLeft) throw new Error("Fail to save user");
 
     // const refreshJWT = await refreshToken.generateJWT();
-    const accessJWT = await user.getRight().generateAccessToken();
+    const accessJWT = user.flatMap((user) => user.generateAccessToken());
 
+    if (accessJWT.isLeft) return null;
     return {
       // refreshToken: refreshJWT,
       refreshToken: "123",
-      accessToken: accessJWT,
+      accessToken: accessJWT.getRight(),
     };
   }
 
@@ -103,7 +104,9 @@ export default class UserService {
     }
 
     const refreshJWT = await refreshToken.generateJWT();
-    const accessJWT = await user.getRight().generateAccessToken();
+    const accessJWT = user
+      .flatMap((user) => user.generateAccessToken())
+      .getRight();
 
     return {
       refreshToken: refreshJWT,

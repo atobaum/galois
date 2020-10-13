@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import User from "../User";
+import "@src/test/custom-matcher";
 
 describe("User", () => {
   const userData = {
@@ -15,13 +16,13 @@ describe("User", () => {
 
   it("cannot generate access token of new user", () => {
     const user = User.create(userData);
-    return expect(user.generateAccessToken()).rejects.toThrow();
+    expect(user.generateAccessToken()).toBeLeft();
   });
 
   it("generate accesstoken", async () => {
     const user = User.create({ ...userData }, 2);
-    const token = await user.generateAccessToken();
-    const tokenData = jwt.decode(token) as any;
+    const token = user.generateAccessToken();
+    const tokenData = jwt.decode(token.getRight()) as any;
 
     expect(tokenData).toBeTruthy();
     expect(tokenData.id).toBe(2);
