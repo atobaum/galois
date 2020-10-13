@@ -5,7 +5,7 @@ import MarkdownViewer from "../MarkdownViewer";
 describe("MarkdownViewer", () => {
   const testMarkdown =
     "# header1\r\n## header2\r\n### header3\r\n\r\n[[ 1 | internal link ]]\r\n\r\n**bold**";
-  it("render markdown", () => {
+  it("internal link가 잘 나온다", () => {
     const { getByText } = render(<MarkdownViewer content={testMarkdown} />);
 
     getByText("header1");

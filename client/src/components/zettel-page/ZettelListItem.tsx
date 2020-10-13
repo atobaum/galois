@@ -1,8 +1,7 @@
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
 import Tag from "../common/Tag";
-import { useMemo } from "react";
-import parseMarkdown from "../../lib/markdownParser";
+import MarkdownViewer from "../common/MarkdownViewer";
 
 const ZettelListItemCss = css`
   height: 200px;
@@ -12,20 +11,6 @@ const ZettelListItemCss = css`
   padding: 1rem;
   h3 {
     font-size: 1.25rem;
-  }
-
-  .zettel-content {
-    ol,
-    ul {
-      margin: 0 1rem;
-    }
-    ol {
-      list-style: decimal;
-    }
-
-    ul {
-      list-style: disc;
-    }
   }
 `;
 
@@ -38,18 +23,13 @@ function ZettelListItem({
   tags,
   createdAt,
 }: ZettelListItemProps) {
-  const parsedContent = useMemo(() => {
-    return parseMarkdown(content);
-  }, [content]);
-
   return (
     <div css={ZettelListItemCss}>
       <div>{number}</div>
       <h3>{title}</h3>
-      <div
-        className="zettel-content"
-        dangerouslySetInnerHTML={{ __html: parsedContent.contents as string }}
-      ></div>
+      <div className="zettel-content">
+        <MarkdownViewer content={content} />
+      </div>
       <div>
         날짜 {createdAt.getMonth() + 1}월 {createdAt.getDate()}일
       </div>
