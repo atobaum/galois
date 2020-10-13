@@ -33,7 +33,7 @@ export default class TypeormUserRepositoy implements IUserRepository {
     const manager = getManager();
     if (user.isNew()) {
       const userOrm = new UserORM();
-      const userDTO = user.getDTO();
+      const userDTO = user.toDTO();
       userOrm.email = userDTO.email;
       userOrm.thumbnail = userDTO.thumbnail || null;
       userOrm.username = userDTO.username;
@@ -71,7 +71,7 @@ export default class TypeormUserRepositoy implements IUserRepository {
       // TODO UPDATE
       throw new Error("Not implemented: TypeOrmUserRepository.save");
       const userOrm = new UserORM(user.id!);
-      const userDTO = user.getDTO();
+      const userDTO = user.toDTO();
       userOrm.email = userDTO.email;
       userOrm.thumbnail = userDTO.thumbnail || null;
       userOrm.username = userDTO.username;

@@ -1,5 +1,5 @@
 import { UserDTO } from "../../../graphql/userSchema";
-import { generateToken } from "../../../lib/token";
+import { generateTokenAsync } from "../../../lib/token";
 import AggregateRoot from "../../shared/AggregateRoot";
 import RefreshToken from "./RefreshToken";
 import SocialAccount from "./SocialAccount";
@@ -60,13 +60,13 @@ export default class User extends AggregateRoot<any> {
 
   public async generateAccessToken(): Promise<string> {
     if (!this.id) throw new Error("Id is undefined");
-    return await generateToken(
+    return await generateTokenAsync(
       { id: this.id },
       { expiresIn: "1h", subject: "access_token" }
     );
   }
 
-  public getDTO(): UserDTO {
+  public toDTO(): UserDTO {
     return {
       username: this.username,
       email: this.email,

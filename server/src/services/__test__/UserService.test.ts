@@ -44,7 +44,7 @@ describe("UserService", () => {
       const id = accessTokenData.id;
 
       const user = await repo.findById(id);
-      expect(user.getRight().getDTO()).toEqual(
+      expect(user.getRight().toDTO()).toEqual(
         expect.objectContaining({
           username: newUserInfo.username,
           email: newUserInfo.email,

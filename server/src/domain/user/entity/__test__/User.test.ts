@@ -29,6 +29,6 @@ describe("User", () => {
 
   it("getDTO", () => {
     const user = User.create(userData);
-    expect(user.getDTO()).toEqual(userData);
+    expect(user.toDTO()).toEqual(userData);
   });
 });

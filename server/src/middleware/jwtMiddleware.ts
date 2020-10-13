@@ -1,5 +1,5 @@
 import { Context } from "koa";
-import { decodeToken } from "../lib/token";
+import { decodeTokenAsync } from "../lib/token";
 
 function setResponse(ctx: Context, status: number, errorCode: string): void {
   ctx.status = status;
@@ -17,7 +17,7 @@ export default function jwtMiddleware(ctx: Context, next: any) {
   const accessToken = getAccessToken(ctx);
   if (!accessToken) return next();
 
-  return decodeToken<{ id: number; sub: string }>(accessToken, {
+  return decodeTokenAsync<{ id: number; sub: string }>(accessToken, {
     subject: "access_token",
   })
     .then((data) => {

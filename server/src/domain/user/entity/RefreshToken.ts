@@ -1,5 +1,5 @@
 import Entity from "../../shared/Entity";
-import { generateToken } from "../../../lib/token";
+import { generateTokenAsync } from "../../../lib/token";
 
 const lifetime = 7 * 24 * 60 * 60; //7d
 export default class RefreshToken extends Entity {
@@ -38,7 +38,7 @@ export default class RefreshToken extends Entity {
 
   public generateJWT(): Promise<string> {
     if (!this.id) throw new Error("Cannot generate refresh token jwt");
-    return generateToken(
+    return generateTokenAsync(
       {
         id: this.id,
         iat: toNumericDate(this.createdAt),
