@@ -1,10 +1,10 @@
 import React from "react";
 import { Meta, Story } from "@storybook/react/types-6-0";
-import BigZettelEditor from "./BigZettelEditor";
 import { action } from "@storybook/addon-actions";
+import BigZettelEditor from "../components/zettel-page/BigZettelEditor";
 
 export default {
-  title: "component/BigZettelEditor",
+  title: "components|Editor/BigZettelEditor",
   component: BigZettelEditor,
 } as Meta;
 
