@@ -1,6 +1,7 @@
+import { getManager, getRepository } from "typeorm";
+import zettelNumberGenerator from "../../util/zettel-number-generator";
 import IZettelRepository from "./IZettelRepository";
 import Zettel from "./entity/Zettle";
-import { getManager, getRepository } from "typeorm";
 import ZettelORM from "../../typeorm/ZettelORM";
 import TagORM from "../../typeorm/TagORM";
 import { Collection } from "../../graphql/zettelSchema";
@@ -21,7 +22,7 @@ export default class TypeormZettelRepository implements IZettelRepository {
       .limit(args.limit);
 
     if (args.cursor) {
-      query.andWhere("zettel.id>:cursor", { cursor: args.cursor });
+      query.andWhere("zettel.number>:cursor", { cursor: args.cursor });
     }
 
     const result = await query.getMany();
@@ -114,20 +115,20 @@ export default class TypeormZettelRepository implements IZettelRepository {
   private async createZettel(zettel: Zettel): Promise<Either<any, string>> {
     const manager = getManager();
     const repo = getRepository(ZettelORM);
-    const maxId =
-      ((
-        await repo.findOne({
-          where: {
-            fk_user_id: zettel.getUserId(),
-          },
-          order: { number: "DESC" },
-          select: ["number"],
-        })
-      )?.number || 0) + 1;
+    const prevMaxNumber = (
+      await repo.findOne({
+        where: {
+          fk_user_id: zettel.getUserId(),
+        },
+        order: { number: "DESC" },
+        select: ["number"],
+      })
+    )?.number;
+    const newNumber = zettelNumberGenerator(prevMaxNumber);
 
     const zettelORM = new ZettelORM();
     const dto = zettel.toDTO();
-    zettelORM.number = maxId;
+    zettelORM.number = newNumber;
     zettelORM.fk_user_id = zettel.getUserId();
     zettelORM.content = dto.content;
     zettelORM.contentType = dto.contentType;
