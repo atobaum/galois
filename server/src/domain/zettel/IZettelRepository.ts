@@ -6,7 +6,7 @@ import Zettel from "./entity/Zettle";
 type FindOption = {
   userId: number;
   limit: number;
-  cursor?: number;
+  cursor?: string;
 };
 
 export default interface IZettelRepository extends IRepository<Zettel, string> {

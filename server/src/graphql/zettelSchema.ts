@@ -4,7 +4,7 @@ import { services } from "../services";
 
 export type Collection<T> = {
   data: T[];
-  nextCursor?: number;
+  nextCursor?: string;
 };
 
 export type ZettelDTO = {
@@ -36,12 +36,12 @@ export const zettelTypeDefs = gql`
   }
 
   type ZettelCollection {
-    nextCursor: Int
+    nextCursor: String
     data: [Zettel]
   }
 
   extend type Query {
-    zettels: ZettelCollection
+    zettels(limit: Int, cursor: String): ZettelCollection
     zettel(number: Int): Zettel
   }
 
@@ -69,7 +69,7 @@ export const zettelResolvers = {
   Query: {
     zettels: async (
       parent: any,
-      { limit = 20, cursor }: { limit?: number; cursor?: number },
+      { limit = 20, cursor }: { limit?: number; cursor?: string },
       ctx: any
     ): Promise<Collection<ZettelDTO> | null> => {
       if (!ctx.user) throw new AuthenticationError("Login First");
@@ -77,6 +77,7 @@ export const zettelResolvers = {
         { limit, cursor },
         ctx.user.id
       );
+
       if (result.isLeft) return null;
       else return result.getRight();
     },
