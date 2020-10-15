@@ -42,10 +42,9 @@ export default class TypeormZettelRepository implements IZettelRepository {
       return zettel;
     });
 
-    const nextCursor =
-      temp.length === args.limit
-        ? String(result[args.limit - 1].number)
-        : undefined;
+    const nextCursor = result.length
+      ? String(result[result.length - 1].number)
+      : args.cursor;
 
     return Either.right({
       data: temp.map((zettel) => zettel.getRight()),
