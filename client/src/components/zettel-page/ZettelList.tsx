@@ -41,7 +41,7 @@ function ZettelList(props: ZettelListProps) {
           onDragStart={(e) => {
             e.dataTransfer.setData(
               "text/plain",
-              `[[${zettel.id}${zettel.title ? "|" + zettel.title : ""}]]`
+              `[[${zettel.number}${zettel.title ? "|" + zettel.title : ""}]]`
             );
           }}
         >
