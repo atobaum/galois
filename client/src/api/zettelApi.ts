@@ -6,10 +6,15 @@ import {
   updateZettelQuery,
 } from "./zettelQuery";
 
-export const getZettels = async (): Promise<Zettel[]> => {
+export const getZettels = async (cursor?: string): Promise<Zettel[]> => {
+  console.warn("getZettels is deprecated");
   const data = await apolloClient
     .query({
       query: getZettelsQuery,
+      variables: {
+        limit: 10,
+        cursor,
+      },
     })
     .catch((e) => console.log(e));
   // TODO error handling
