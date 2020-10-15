@@ -4,7 +4,7 @@ import Zettel, { ContentType } from "../domain/zettel/entity/Zettle";
 import { Collection, ZettelDTO } from "../graphql/zettelSchema";
 
 type FindZettelOption = {
-  cursor?: number;
+  cursor?: string;
   limit: number;
 };
 type CreateZettelRequestDTO = {
@@ -56,6 +56,7 @@ export default class ZettelService {
   ): Promise<Either<any, Collection<ZettelDTO>>> {
     const collection = await this.zettelRepo.findAll({
       limit: option.limit,
+      cursor: option.cursor,
       userId,
     });
     return collection.map((c) => ({

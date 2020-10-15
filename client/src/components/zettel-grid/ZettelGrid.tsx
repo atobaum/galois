@@ -4,10 +4,9 @@ import { jsx, css } from "@emotion/core";
 import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import ZettelCard from "./ZettelCard";
-import { getZettels } from "../../api/zettelApi";
 import { RootState } from "../../redux";
 import { setZettelsToGrid } from "../../redux/modules/zettel-grid";
-import useCurrentUser from "../../hooks/useCurrentUser";
+import useZettels from "../../hooks/useZettels";
 
 const ZettelGridCss = css`
   display: grid;
@@ -19,18 +18,16 @@ const ZettelGridCss = css`
 // container
 const ZettelGrid: React.FC = () => {
   const history = useHistory();
-  const user = useCurrentUser();
   const dispatch = useDispatch();
   const { pendings, zettels } = useSelector(
     (state: RootState) => state.zettelGrid
   );
 
+  const { loading, done, fetchMore, zettels: data } = useZettels();
+
   useEffect(() => {
-    if (user)
-      getZettels().then((data) => {
-        dispatch(setZettelsToGrid(data));
-      });
-  }, [dispatch, user]);
+    if (data) dispatch(setZettelsToGrid(data));
+  }, [dispatch, data]);
 
   const onClickZettel = useCallback(
     (number) => {
@@ -47,6 +44,7 @@ const ZettelGrid: React.FC = () => {
       {zettels.map((z) => (
         <ZettelCard key={z.id} zettel={z} onClick={onClickZettel} />
       ))}
+      {!done && <button onClick={fetchMore}>fetch more</button>}
     </div>
   );
 };

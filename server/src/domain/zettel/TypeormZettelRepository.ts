@@ -12,7 +12,7 @@ export default class TypeormZettelRepository implements IZettelRepository {
   async findAll(args: {
     userId: number;
     limit: number;
-    cursor?: number;
+    cursor?: string;
   }): Promise<Either<any, Collection<Zettel>>> {
     const query = getRepository(ZettelORM)
       .createQueryBuilder("zettel")
@@ -22,7 +22,7 @@ export default class TypeormZettelRepository implements IZettelRepository {
       .limit(args.limit);
 
     if (args.cursor) {
-      query.andWhere("zettel.number>:cursor", { cursor: args.cursor });
+      query.andWhere("zettel.number<:cursor", { cursor: args.cursor });
     }
 
     const result = await query.getMany();
@@ -42,7 +42,14 @@ export default class TypeormZettelRepository implements IZettelRepository {
       return zettel;
     });
 
-    return Either.right({ data: temp.map((zettel) => zettel.getRight()) });
+    const nextCursor = result.length
+      ? String(result[result.length - 1].number)
+      : args.cursor;
+
+    return Either.right({
+      data: temp.map((zettel) => zettel.getRight()),
+      nextCursor,
+    });
   }
 
   findByTag(tag: string): Promise<Either<any, Collection<Zettel>>> {

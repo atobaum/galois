@@ -6,22 +6,6 @@ import {
   updateZettelQuery,
 } from "./zettelQuery";
 
-export const getZettels = async (): Promise<Zettel[]> => {
-  const data = await apolloClient
-    .query({
-      query: getZettelsQuery,
-    })
-    .catch((e) => console.log(e));
-  // TODO error handling
-  if (!data) return [];
-  const collection = data.data.zettels;
-  const zettels = collection.data || [];
-  return zettels.map((z: any) => ({
-    ...z,
-    createdAt: new Date(z.createdAt),
-  }));
-};
-
 export const createZettel = async (
   createZettelDTO: NewZettel
 ): Promise<Zettel> => {

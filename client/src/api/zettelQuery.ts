@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 export const getZettelsQuery = gql`
-  query GetZettels {
-    zettels {
+  query GetZettels($limit: Int, $cursor: String) {
+    zettels(limit: $limit, cursor: $cursor) {
       nextCursor
       data {
         id
