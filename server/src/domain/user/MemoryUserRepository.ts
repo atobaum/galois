@@ -45,17 +45,11 @@ export default class MemoryUserRepository implements IUserRepository {
       )
         user = this.db[id];
     }
-    if (user && user.refreshTokens) {
-      user.refreshTokens = user.refreshTokens.filter((rt) => !rt.isRevoked());
-    }
     return Either.fromNullable(user);
   }
 
   async findById(id: number, option?: any) {
     const user = this.db[id] || null;
-    if (user && user.refreshTokens) {
-      user.refreshTokens = user.refreshTokens.filter((rt) => !rt.isRevoked());
-    }
     return Either.right(user);
   }
   async save(entity: User) {
@@ -64,11 +58,6 @@ export default class MemoryUserRepository implements IUserRepository {
       this.nextId++;
     }
 
-    if (entity.refreshTokens) {
-      entity.refreshTokens.forEach((rt) => {
-        if (rt.isNew()) rt.id = ~~(Math.random() * 1000);
-      });
-    }
     this.db[entity.id] = entity;
     return Either.right(entity.id);
   }

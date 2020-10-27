@@ -6,6 +6,9 @@ import User from "../../domain/user/entity/User";
 import IUserRepository from "../../domain/user/IUserRepository";
 import MemoryUserRepository from "../../domain/user/MemoryUserRepository";
 import UserService from "../UserService";
+import IRefreshTokenRepository from "src/domain/refreshtoken/IRefreshTokenRepository";
+import RefreshToken from "../../domain/refreshtoken/entity/RefreshToken";
+import Either from "../../lib/Either";
 import "@src/test/custom-matcher";
 
 let repo: IUserRepository;
@@ -16,10 +19,26 @@ let newUserInfo = {
   username: "test1",
   socialAccount: { provider: "facebook" as SocialProvider, socialId: "9898" },
 };
+class mockedRefreshTokenRepo implements IRefreshTokenRepository {
+  refreshTokens: any[] = [];
+  findById(id: number, option?: any): Promise<Either<any, RefreshToken>> {
+    const token = this.refreshTokens[id - 1];
+    return Promise.resolve(Either.fromNullable(token));
+  }
+  async save(token: RefreshToken): Promise<Either<any, number>> {
+    if (!token.isNew()) return Either.right(token.id!);
+    token.id = this.refreshTokens.length + 1;
+    this.refreshTokens.push(token);
+    return Either.right(token.id);
+  }
+  delete(id: number): Promise<Either<any, any>> {
+    throw new Error("Method not implemented.");
+  }
+}
 
 beforeEach(async (done) => {
   repo = new MemoryUserRepository();
-  userService = new UserService(repo);
+  userService = new UserService(repo, new mockedRefreshTokenRepo());
 
   oldUser = User.create({
     email: "test1@test.com",
@@ -50,6 +69,7 @@ describe("UserService", () => {
           email: newUserInfo.email,
         })
       );
+      console.log(tokens);
 
       done();
     });
