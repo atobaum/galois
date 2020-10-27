@@ -8,6 +8,7 @@ import MemoryUserRepository from "../../domain/user/MemoryUserRepository";
 import UserService from "../UserService";
 import "@src/test/custom-matcher";
 import MemoryRefreshTokenRepository from "../../domain/refreshtoken/MemoryRefreshTokenRepository";
+import RefreshToken from "../../domain/refreshtoken/entity/RefreshToken";
 
 let repo: IUserRepository;
 let userService: UserService;
@@ -80,11 +81,10 @@ describe("UserService", () => {
       const tokens = await userService.login("google", "128");
       expect(tokens).toBeTruthy();
       const accessTokenData = jwt.decode(tokens!.accessToken) as any;
-      const refreshTokenData = jwt.decode(tokens!.refreshToken) as any;
 
       await new Promise((res) => setTimeout(res, 1000));
       const newTokens = await userService.refresh(
-        refreshTokenData.id,
+        tokens!.refreshToken,
         accessTokenData.id
       );
       expect(newTokens).toBeTruthy();
@@ -97,8 +97,16 @@ describe("UserService", () => {
       const tokens = await userService.login("google", "128");
       expect(tokens).toBeTruthy();
       const accessTokenData = jwt.decode(tokens!.accessToken) as any;
+      const refreshTokenJWT = RefreshToken.create(
+        1,
+        7098,
+        new Date()
+      ).generateJWT();
 
-      const newTokens = await userService.refresh(7098, accessTokenData.id);
+      const newTokens = await userService.refresh(
+        refreshTokenJWT.getRight(),
+        accessTokenData.id
+      );
       expect(newTokens).toBeNull();
       done();
     });

@@ -1,4 +1,6 @@
 import IRefreshTokenRepository from "src/domain/refreshtoken/IRefreshTokenRepository";
+import Either from "../lib/Either";
+import { decodeToken } from "../lib/token";
 import RefreshToken from "../domain/refreshtoken/entity/RefreshToken";
 import SocialAccount, {
   SocialProvider,
@@ -81,10 +83,22 @@ export default class UserService {
   }
 
   async refresh(
-    refreshTokenId: number,
+    refreshTokenJWT: string,
     userId: number
   ): Promise<AuthToken | null> {
-    const refreshToken = await this.refreshTokenRepo.findById(refreshTokenId);
+    const refreshTokenData = decodeToken<{ id: number; userId: number }>(
+      refreshTokenJWT,
+      { subject: "refresh_token" }
+    ).flatMap((data) =>
+      data.userId === userId
+        ? Either.right(data)
+        : Either.left(new Error("INVALID_USER"))
+    );
+    if (refreshTokenData.isLeft) return null;
+
+    const refreshToken = await this.refreshTokenRepo.findById(
+      refreshTokenData.getRight().id
+    );
 
     const user = await this.userRepo.findById(userId);
 
