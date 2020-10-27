@@ -33,8 +33,8 @@ export default class RefreshToken extends AggregateRoot<any> {
 
   public validateUser(userId: number): Either<any, RefreshToken> {
     return this.userId === userId
-      ? Either.left("INVALID_USER")
-      : Either.right(this);
+      ? Either.right(this)
+      : Either.left("INVALID_USER");
   }
 
   public static create(
@@ -73,6 +73,15 @@ export default class RefreshToken extends AggregateRoot<any> {
     return (
       lifetime - (toNumericDate(new Date()) - toNumericDate(this.createdAt))
     );
+  }
+
+  public toDTO() {
+    return {
+      id: this.id,
+      userId: this.userId,
+      createdAt: this.createdAt,
+      revokedAt: this.revokedAt,
+    };
   }
 
   public static generate(userId: number): RefreshToken {

@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import RefreshToken from "../RefreshToken";
+import "@src/test/custom-matcher";
 
 const sevenDaysInSecs = 7 * 24 * 60 * 60;
 
@@ -78,6 +79,12 @@ describe("RefreshToken", () => {
     expect(() => RefreshToken.create(1, 1, future)).toThrow();
     expect(() => RefreshToken.create(1, 1, time2, time1)).toThrow();
     expect(() => RefreshToken.create(1, 1, time1, future)).toThrow();
+  });
+
+  it("validate user", () => {
+    const token = RefreshToken.generate(213);
+
+    expect(token.validateUser(213)).toBeRight();
   });
 });
 
