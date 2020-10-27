@@ -4,7 +4,6 @@ import IUserRepository from "./IUserRepository";
 import User from "./entity/User";
 import SocialAccountORM from "../../typeorm/SocialAccountORM";
 import SocialAccount from "./entity/SocialAccount";
-import RefreshTokenORM from "../../typeorm/RefreshTokenORM";
 import Either from "../../lib/Either";
 
 export default class TypeormUserRepositoy implements IUserRepository {
@@ -50,21 +49,9 @@ export default class TypeormUserRepositoy implements IUserRepository {
         });
       }
 
-      let refreshTokensOrm: RefreshTokenORM[];
-      if (user.refreshTokens) {
-        refreshTokensOrm = user.refreshTokens.map((rt) => {
-          const rtorm = new RefreshTokenORM();
-          rtorm.createdAt = rt.createdAt;
-          rtorm.user = userOrm;
-          return rtorm;
-        });
-      }
-
       await manager.transaction(async (m) => {
         await m.save(userOrm);
         await Promise.all(userOrm.socialAccounts.map((sa) => m.save(sa)));
-        if (refreshTokensOrm)
-          await Promise.all(refreshTokensOrm.map((rt) => m.save(rt)));
       });
       return Either.right(userOrm.id!);
     } else {
