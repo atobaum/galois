@@ -44,6 +44,16 @@ export default class Either<L = any, R = any> {
     else return Promise.resolve(this.getRight());
   }
 
+  ifRight(fn: (v: R) => void): Either<L, R> {
+    if (this.isRight) fn(this.v as R);
+    return this;
+  }
+
+  ifLeft(fn: (v: L) => void): Either<L, R> {
+    if (this.isLeft) fn(this.v as L);
+    return this;
+  }
+
   static fromNullable<R>(v: R | null | undefined | ""): Either<any, R> {
     if (v) return Either.right(v);
     else return Either.left(v);
