@@ -21,7 +21,7 @@ export default class RefreshTokenORM {
   createdAt!: Date;
 
   @DeleteDateColumn({ type: "timestamptz", name: "revoked_at" })
-  revokedAt!: Date;
+  revokedAt?: Date;
 
   @ManyToOne((type) => UserORM, { onDelete: "CASCADE" })
   @JoinColumn({ name: "fk_user_id" })
