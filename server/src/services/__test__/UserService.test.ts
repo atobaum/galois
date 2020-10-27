@@ -75,35 +75,34 @@ describe("UserService", () => {
     });
   });
 
-  // describe("refresh", () => {
-  //   it("성공", async (done) => {
-  //     const tokens = await userService.login("google", "128");
-  //     expect(tokens).toBeTruthy();
-  //     const accessTokenData = jwt.decode(tokens!.accessToken) as any;
-  //     const refreshTokenData = jwt.decode(tokens!.refreshToken) as any;
+  describe("refresh", () => {
+    it("성공", async (done) => {
+      const tokens = await userService.login("google", "128");
+      expect(tokens).toBeTruthy();
+      const accessTokenData = jwt.decode(tokens!.accessToken) as any;
+      const refreshTokenData = jwt.decode(tokens!.refreshToken) as any;
 
-  //     await new Promise((res) => setTimeout(res, 2000));
+      await new Promise((res) => setTimeout(res, 1000));
+      const newTokens = await userService.refresh(
+        refreshTokenData.id,
+        accessTokenData.id
+      );
+      expect(newTokens).toBeTruthy();
+      expect(newTokens!.refreshToken).toBe(tokens!.refreshToken);
+      expect(newTokens!.accessToken).not.toBe(tokens!.accessToken);
+      done();
+    });
 
-  //     const newTokens = await userService.refresh(
-  //       refreshTokenData.id,
-  //       accessTokenData.id
-  //     );
-  //     expect(newTokens).toBeTruthy();
-  //     expect(newTokens!.refreshToken).toBe(tokens!.refreshToken);
-  //     expect(newTokens!.accessToken).not.toBe(tokens!.accessToken);
-  //     done();
-  //   });
+    it("실패", async (done) => {
+      const tokens = await userService.login("google", "128");
+      expect(tokens).toBeTruthy();
+      const accessTokenData = jwt.decode(tokens!.accessToken) as any;
 
-  //   it("실패", async (done) => {
-  //     const tokens = await userService.login("google", "128");
-  //     expect(tokens).toBeTruthy();
-  //     const accessTokenData = jwt.decode(tokens!.accessToken) as any;
-
-  //     const newTokens = await userService.refresh(7098, accessTokenData.id);
-  //     expect(newTokens).toBeNull();
-  //     done();
-  //   });
-  // });
+      const newTokens = await userService.refresh(7098, accessTokenData.id);
+      expect(newTokens).toBeNull();
+      done();
+    });
+  });
 
   // describe("logout", () => {
   //   it("성공", async (done) => {
