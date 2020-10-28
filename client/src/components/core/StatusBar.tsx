@@ -33,18 +33,7 @@ const StatusBar: React.FC = () => {
               {user.username}
             </span>
           )}
-          {user ? (
-            <button onClick={logout}>Logout</button>
-          ) : (
-            <a
-              href={
-                (process.env.REACT_APP_API_URL || "") +
-                "/api/auth/google/redirect"
-              }
-            >
-              Login
-            </a>
-          )}
+          {user ? <button onClick={logout}>Logout</button> : null}
           <div></div>
         </div>
       </Toolbar>

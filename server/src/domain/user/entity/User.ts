@@ -2,7 +2,6 @@ import Either from "../../../lib/Either";
 import { UserDTO } from "../../../graphql/userSchema";
 import { generateToken } from "../../../lib/token";
 import AggregateRoot from "../../shared/AggregateRoot";
-import RefreshToken from "./RefreshToken";
 import SocialAccount from "./SocialAccount";
 
 type UserProps = {
@@ -11,7 +10,6 @@ type UserProps = {
   thumbnail: string | null;
 
   socialAccounts?: SocialAccount[];
-  refreshTokens?: RefreshToken[];
 };
 
 export type AuthToken = {
@@ -25,7 +23,6 @@ export default class User extends AggregateRoot<any> {
   private thumbnail: string | null;
 
   socialAccounts: SocialAccount[] | null;
-  refreshTokens: RefreshToken[] | null;
 
   private constructor(props: UserProps, id?: number) {
     super(id);
@@ -34,7 +31,6 @@ export default class User extends AggregateRoot<any> {
     this.thumbnail = props.thumbnail;
 
     this.socialAccounts = props.socialAccounts || null;
-    this.refreshTokens = props.refreshTokens || null;
   }
 
   public setUsername(newUsername: string): void {
@@ -52,11 +48,6 @@ export default class User extends AggregateRoot<any> {
   public addSocialAccount(social: SocialAccount) {
     if (!this.socialAccounts) this.socialAccounts = [];
     this.socialAccounts.push(social);
-  }
-
-  public addRefreshToken(token: RefreshToken) {
-    if (!this.refreshTokens) this.refreshTokens = [];
-    this.refreshTokens.push(token);
   }
 
   public generateAccessToken(): Either<any, string> {

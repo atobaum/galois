@@ -22,7 +22,7 @@ type ZettelListProps = {};
 
 function ZettelList(props: ZettelListProps) {
   const [zettels, setZettels] = useState<Zettel[]>([]);
-  const { loading, done, fetchMore, zettels: data } = useZettels();
+  const { done, fetchMore, zettels: data } = useZettels();
 
   useEffect(() => {
     if (data) setZettels(data);
