@@ -28,6 +28,7 @@ function App() {
 
   useEffect(() => {
     if (!localStorage.getItem("refresh_token")) history.push("/login");
+    // eslint-disable-next-line
   }, []);
 
   return (

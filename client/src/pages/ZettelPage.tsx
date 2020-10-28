@@ -24,7 +24,7 @@ const ZettelPageCss = css`
 const ZettelPage: React.FC = () => {
   const params = useParams() as { id?: string };
   const id = parseInt(params.id || "");
-  const { zettel, loading } = useZettel(id);
+  const { zettel } = useZettel(id);
   const title = zettel ? (zettel.title ? zettel.title : id + "") : id + "";
   useSetTitle(title);
 

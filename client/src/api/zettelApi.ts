@@ -1,10 +1,6 @@
 import { gql } from "@apollo/client";
 import apolloClient from "../lib/apolloClient";
-import {
-  createZettelMutation,
-  getZettelsQuery,
-  updateZettelQuery,
-} from "./zettelQuery";
+import { createZettelMutation, updateZettelQuery } from "./zettelQuery";
 
 export const createZettel = async (
   createZettelDTO: NewZettel

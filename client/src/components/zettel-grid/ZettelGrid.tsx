@@ -23,7 +23,7 @@ const ZettelGrid: React.FC = () => {
     (state: RootState) => state.zettelGrid
   );
 
-  const { loading, done, fetchMore, zettels: data } = useZettels();
+  const { done, fetchMore, zettels: data } = useZettels();
 
   useEffect(() => {
     if (data) dispatch(setZettelsToGrid(data));
