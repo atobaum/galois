@@ -8,6 +8,7 @@ import { onError } from "@apollo/client/link/error";
 import { GraphQLError } from "graphql";
 import { refreshTokenMutation } from "../api/userQuery";
 import { showToast } from "../redux/modules/toast";
+import { setAuthTokensToLocalStorage } from "../utils";
 import logout from "./logout";
 
 function createHeaders() {
@@ -18,14 +19,13 @@ function createHeaders() {
   return headers;
 }
 
-const httpLink = new HttpLink({
-  uri: (process.env.REACT_APP_API_URL || "") + "/graphql",
-  headers: createHeaders(),
-});
+function checkExporedAccessTokenError(statusCode: number, errorCode: string) {
+  return statusCode === 401 && errorCode === "EXPIRED_ACCESS_TOKEN";
+}
 
-const checkUnauthenticatedError = (
+function checkUnauthenticatedError(
   graphqlErrors: readonly GraphQLError[] | undefined
-): boolean => {
+): boolean {
   if (
     graphqlErrors &&
     graphqlErrors[0] &&
@@ -33,23 +33,38 @@ const checkUnauthenticatedError = (
   )
     return true;
   return false;
-};
-
-function setTokensToLocalStorage(tokens: {
-  refreshToken: string;
-  accessToken: string;
-}) {
-  localStorage.setItem("refresh_token", tokens.refreshToken);
-  localStorage.setItem("access_token", tokens.accessToken);
 }
 
+const refreshTokens = (refreshToken: string | null): Promise<AuthTokens> => {
+  if (!refreshToken) return Promise.reject(new Error());
+
+  return client
+    .mutate({
+      mutation: refreshTokenMutation,
+      variables: { refreshToken },
+    })
+    .then((data) => {
+      if (!data || !data.data.refreshToken) throw new Error();
+      else return data.data.refreshToken;
+    });
+};
+
+function refreshTokensObservable(refreshToken: string | null) {
+  return fromPromise(
+    refreshTokens(refreshToken).catch(() => logout())
+  ).filter((v) => Boolean(v));
+}
+
+const httpLink = new HttpLink({
+  uri: (process.env.REACT_APP_API_URL || "") + "/graphql",
+  headers: createHeaders(),
+});
+
 const errorLink = onError(
-  ({ networkError, graphQLErrors, forward, operation }) => {
+  ({ networkError = {}, graphQLErrors, forward, operation }) => {
     if (!networkError && !checkUnauthenticatedError(graphQLErrors)) return;
 
-    const code = (networkError as any)?.statusCode;
-    const result = (networkError as any)?.result;
-
+    const { code, result } = networkError as any;
     if (code === 504) {
       // Dispatch redux action using dom event
       // Add event listener in App.tsx
@@ -59,49 +74,29 @@ const errorLink = onError(
 
       dispatchEvent(evt);
     } else if (
-      (code === 401 && result.code === "EXPIRED_ACCESS_TOKEN") ||
+      checkExporedAccessTokenError(code, result ? result.code : "") ||
       checkUnauthenticatedError(graphQLErrors)
     ) {
       localStorage.removeItem("access_token");
       const refreshToken = localStorage.getItem("refresh_token");
-      if (refreshToken) {
-        return fromPromise(
-          client
-            .mutate({
-              mutation: refreshTokenMutation,
-              variables: { refreshToken },
-            })
-            .then((data) => {
-              if (!data || !data.data.refreshToken) throw new Error();
-              else return data.data.refreshToken;
-            })
-            .catch(() => {
-              logout();
-            })
-        ).flatMap((tokens) => {
-          setTokensToLocalStorage(tokens);
-
-          operation.setContext(({ headers = {} }) => {
-            return {
-              headers: {
-                ...headers,
-                authorization: "Bearer " + tokens.accessToken,
-              },
-            };
-          });
-          return forward(operation);
+      return refreshTokensObservable(refreshToken).flatMap((tokens) => {
+        setAuthTokensToLocalStorage(tokens as AuthTokens);
+        operation.setContext(({ headers = {} }) => {
+          return {
+            headers: {
+              ...headers,
+              ...createHeaders(),
+            },
+          };
         });
-      } else {
-        logout();
-      }
+        return forward(operation);
+      });
     }
   }
 );
 
-const link = errorLink.concat(httpLink);
-
 const client = new ApolloClient({
-  link,
+  link: errorLink.concat(httpLink),
   cache: new InMemoryCache({
     typePolicies: {
       Zettel: {
