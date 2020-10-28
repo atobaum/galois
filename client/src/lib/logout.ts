@@ -1,6 +1,8 @@
 export default function logout() {
-  window.localStorage.removeItem("access_token");
-  window.localStorage.removeItem("refresh_token");
-  window.localStorage.removeItem("user");
-  window.location.reload();
+  const loggedIn = localStorage.getItem("refresh_token");
+  localStorage.removeItem("access_token");
+  localStorage.removeItem("refresh_token");
+  localStorage.removeItem("user");
+
+  if (loggedIn) window.location.reload();
 }

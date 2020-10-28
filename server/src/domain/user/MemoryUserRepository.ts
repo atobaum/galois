@@ -35,7 +35,10 @@ export default class MemoryUserRepository implements IUserRepository {
     this.nextId = 3;
   }
 
-  async findBySocialAccount(provider: string, socialId: string) {
+  async findBySocialAccount(
+    provider: string,
+    socialId: string
+  ): Promise<Either<any, User>> {
     let user = null;
     for (let id in this.db) {
       if (
@@ -45,18 +48,12 @@ export default class MemoryUserRepository implements IUserRepository {
       )
         user = this.db[id];
     }
-    if (user && user.refreshTokens) {
-      user.refreshTokens = user.refreshTokens.filter((rt) => !rt.isRevoked());
-    }
-    return Either.fromNullable(user);
+    return Either.fromNullable(user) as any;
   }
 
   async findById(id: number, option?: any) {
     const user = this.db[id] || null;
-    if (user && user.refreshTokens) {
-      user.refreshTokens = user.refreshTokens.filter((rt) => !rt.isRevoked());
-    }
-    return Either.right(user);
+    return Either.fromNullable(user);
   }
   async save(entity: User) {
     if (!entity.id) {
@@ -64,11 +61,6 @@ export default class MemoryUserRepository implements IUserRepository {
       this.nextId++;
     }
 
-    if (entity.refreshTokens) {
-      entity.refreshTokens.forEach((rt) => {
-        if (rt.isNew()) rt.id = ~~(Math.random() * 1000);
-      });
-    }
     this.db[entity.id] = entity;
     return Either.right(entity.id);
   }

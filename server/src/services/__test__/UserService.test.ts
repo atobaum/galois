@@ -7,6 +7,8 @@ import IUserRepository from "../../domain/user/IUserRepository";
 import MemoryUserRepository from "../../domain/user/MemoryUserRepository";
 import UserService from "../UserService";
 import "@src/test/custom-matcher";
+import MemoryRefreshTokenRepository from "../../domain/refreshtoken/MemoryRefreshTokenRepository";
+import RefreshToken from "../../domain/refreshtoken/entity/RefreshToken";
 
 let repo: IUserRepository;
 let userService: UserService;
@@ -19,7 +21,7 @@ let newUserInfo = {
 
 beforeEach(async (done) => {
   repo = new MemoryUserRepository();
-  userService = new UserService(repo);
+  userService = new UserService(repo, new MemoryRefreshTokenRepository());
 
   oldUser = User.create({
     email: "test1@test.com",
@@ -74,35 +76,33 @@ describe("UserService", () => {
     });
   });
 
-  // describe("refresh", () => {
-  //   it("성공", async (done) => {
-  //     const tokens = await userService.login("google", "128");
-  //     expect(tokens).toBeTruthy();
-  //     const accessTokenData = jwt.decode(tokens!.accessToken) as any;
-  //     const refreshTokenData = jwt.decode(tokens!.refreshToken) as any;
+  describe("refresh", () => {
+    it("성공", async (done) => {
+      const tokens = await userService.login("google", "128");
+      expect(tokens).toBeTruthy();
 
-  //     await new Promise((res) => setTimeout(res, 2000));
+      await new Promise((res) => setTimeout(res, 1000));
+      const newTokens = await userService.refresh(tokens!.refreshToken);
+      expect(newTokens).toBeTruthy();
+      expect(newTokens!.refreshToken).toBe(tokens!.refreshToken);
+      expect(newTokens!.accessToken).not.toBe(tokens!.accessToken);
+      done();
+    });
 
-  //     const newTokens = await userService.refresh(
-  //       refreshTokenData.id,
-  //       accessTokenData.id
-  //     );
-  //     expect(newTokens).toBeTruthy();
-  //     expect(newTokens!.refreshToken).toBe(tokens!.refreshToken);
-  //     expect(newTokens!.accessToken).not.toBe(tokens!.accessToken);
-  //     done();
-  //   });
+    it("실패", async (done) => {
+      const tokens = await userService.login("google", "128");
+      expect(tokens).toBeTruthy();
+      const refreshTokenJWT = RefreshToken.create(
+        1,
+        7098,
+        new Date()
+      ).generateJWT();
 
-  //   it("실패", async (done) => {
-  //     const tokens = await userService.login("google", "128");
-  //     expect(tokens).toBeTruthy();
-  //     const accessTokenData = jwt.decode(tokens!.accessToken) as any;
-
-  //     const newTokens = await userService.refresh(7098, accessTokenData.id);
-  //     expect(newTokens).toBeNull();
-  //     done();
-  //   });
-  // });
+      const newTokens = await userService.refresh(refreshTokenJWT.getRight());
+      expect(newTokens).toBeNull();
+      done();
+    });
+  });
 
   // describe("logout", () => {
   //   it("성공", async (done) => {

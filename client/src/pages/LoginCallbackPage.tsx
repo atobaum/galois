@@ -21,6 +21,9 @@ export default function LoginCallbackPage() {
   const params = decodeQueryString(hash);
   if (params.access_token) {
     window.localStorage.setItem("access_token", params["access_token"]);
+    if (params.refresh_token) {
+      window.localStorage.setItem("refresh_token", params["refresh_token"]);
+    }
     //TODO 그 전의 url로 가기
     window.location.href = params.next ? params.next : "/";
   } else {

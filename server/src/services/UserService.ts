@@ -1,4 +1,7 @@
-import RefreshToken from "../domain/user/entity/RefreshToken";
+import IRefreshTokenRepository from "src/domain/refreshtoken/IRefreshTokenRepository";
+import Either from "../lib/Either";
+import { decodeToken } from "../lib/token";
+import RefreshToken from "../domain/refreshtoken/entity/RefreshToken";
 import SocialAccount, {
   SocialProvider,
 } from "../domain/user/entity/SocialAccount";
@@ -7,8 +10,13 @@ import IUserRepository from "../domain/user/IUserRepository";
 
 export default class UserService {
   private userRepo: IUserRepository;
-  constructor(userRepository: IUserRepository) {
+  private refreshTokenRepo: IRefreshTokenRepository;
+  constructor(
+    userRepository: IUserRepository,
+    refreshTokenRepo?: IRefreshTokenRepository
+  ) {
     this.userRepo = userRepository;
+    this.refreshTokenRepo = refreshTokenRepo as IRefreshTokenRepository;
   }
 
   async join(args: {
@@ -22,19 +30,16 @@ export default class UserService {
       args.socialAccount.socialId
     );
 
-    const refreshToken = RefreshToken.generate();
-
     const user = User.create({
       email: args.email,
       username: args.username,
       thumbnail: args.thumbnail || null,
       socialAccounts: [socialAccount],
-      refreshTokens: [refreshToken],
     });
     if (user.isLeft) throw new Error("Fail to create user");
 
     const id = await this.userRepo.save(user.getRight());
-    if (!id) throw new Error("Fail to save user");
+    if (id.isLeft) throw new Error("Fail to save user");
 
     return await this.login(
       args.socialAccount.provider,
@@ -46,73 +51,58 @@ export default class UserService {
     provider: SocialProvider,
     socialId: string
   ): Promise<AuthToken | null> {
-    let user = await this.userRepo.findBySocialAccount(provider, socialId);
-    const refreshToken = RefreshToken.generate();
-    user = user.map((u) => {
-      u.addRefreshToken(refreshToken);
-      return u;
-    });
-    if (user.isLeft) return null;
+    let userOrFail = await this.userRepo.findBySocialAccount(
+      provider,
+      socialId
+    );
+    if (userOrFail.isLeft) return null;
 
-    // const id = await this.userRepo.save(user.getRight());
-    // if (id.isLeft) throw new Error("Fail to save user");
+    const user = userOrFail.getRight();
+    const refreshToken = RefreshToken.generate(user.id!);
+    const refreshTokenIdOrFail = await this.refreshTokenRepo.save(refreshToken);
 
-    // const refreshJWT = await refreshToken.generateJWT();
-    const accessJWT = user.flatMap((user) => user.generateAccessToken());
+    if (refreshTokenIdOrFail.isLeft) return null;
+    const refreshTokenOrFail = await this.refreshTokenRepo.findById(
+      refreshTokenIdOrFail.getRight()
+    );
 
-    if (accessJWT.isLeft) return null;
+    const refreshJWT = refreshTokenOrFail.flatMap((token) =>
+      token.generateJWT()
+    );
+    const accessJWT = userOrFail.flatMap((user) => user.generateAccessToken());
+
+    if (accessJWT.isLeft || refreshJWT.isLeft) return null;
     return {
-      // refreshToken: refreshJWT,
-      refreshToken: "123",
+      refreshToken: refreshJWT.getRight(),
       accessToken: accessJWT.getRight(),
     };
   }
 
   async logout(refreshTokenId: number, userId: number): Promise<void> {
-    const user = await this.userRepo.findById(userId, {
-      join: ["refreshToken"],
-    });
-
-    if (user.isLeft) return; //log
-    const refreshToken = user
-      .getRight()
-      .refreshTokens!.find((t) => t.id === refreshTokenId);
-    if (!refreshToken) return;
-    refreshToken.revoke();
-
-    await this.userRepo.save(user.getRight());
+    throw new Error("Not implemented");
   }
 
-  async refresh(
-    refreshTokenId: number,
-    userId: number
-  ): Promise<AuthToken | null> {
-    let user = await this.userRepo.findById(userId, {
-      join: ["refreshToken"],
-    });
+  async refresh(refreshTokenJWT: string): Promise<AuthToken | null> {
+    const refreshTokenData = decodeToken<{ id: number; userId: number }>(
+      refreshTokenJWT,
+      { subject: "refresh_token" }
+    );
+    if (refreshTokenData.isLeft) return null;
 
-    if (user.isLeft) return null;
-    let refreshToken = user
-      .getRight()
-      .refreshTokens!.find((t) => t.id === refreshTokenId);
-    if (!refreshToken) return null;
-    if (refreshToken.getRemaining() < 1 * 60 * 60) {
-      //1h
-      refreshToken.revoke();
-      refreshToken = RefreshToken.generate();
-      user.getRight().addRefreshToken(refreshToken);
-      const id = await this.userRepo.save(user.getRight());
-      if (!id) throw new Error("Fail to save user");
-    }
+    const { id, userId } = refreshTokenData.getRight();
+    const refreshToken = await this.refreshTokenRepo.findById(id);
 
-    const refreshJWT = await refreshToken.generateJWT();
-    const accessJWT = user
-      .flatMap((user) => user.generateAccessToken())
-      .getRight();
+    const user = await this.userRepo.findById(userId);
 
+    const refreshJWT = refreshToken
+      .flatMap((token) => token.validateUser(userId))
+      .flatMap((token) => token.generateJWT());
+    const accessJWT = user.flatMap((user) => user.generateAccessToken());
+
+    if (accessJWT.isLeft || refreshJWT.isLeft) return null;
     return {
-      refreshToken: refreshJWT,
-      accessToken: accessJWT,
+      refreshToken: refreshJWT.getRight(),
+      accessToken: accessJWT.getRight(),
     };
   }
 }

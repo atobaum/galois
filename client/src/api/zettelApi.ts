@@ -1,26 +1,6 @@
 import { gql } from "@apollo/client";
 import apolloClient from "../lib/apolloClient";
-import {
-  createZettelMutation,
-  getZettelsQuery,
-  updateZettelQuery,
-} from "./zettelQuery";
-
-export const getZettels = async (): Promise<Zettel[]> => {
-  const data = await apolloClient
-    .query({
-      query: getZettelsQuery,
-    })
-    .catch((e) => console.log(e));
-  // TODO error handling
-  if (!data) return [];
-  const collection = data.data.zettels;
-  const zettels = collection.data || [];
-  return zettels.map((z: any) => ({
-    ...z,
-    createdAt: new Date(z.createdAt),
-  }));
-};
+import { createZettelMutation, updateZettelQuery } from "./zettelQuery";
 
 export const createZettel = async (
   createZettelDTO: NewZettel

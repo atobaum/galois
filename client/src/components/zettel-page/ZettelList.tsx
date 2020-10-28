@@ -4,9 +4,8 @@ import React, { useEffect, useState } from "react";
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
 import ZettelListItem from "./ZettelListItem";
-import { getZettels } from "../../api/zettelApi";
-import useCurrentUser from "../../hooks/useCurrentUser";
 import { Link } from "react-router-dom";
+import useZettels from "../../hooks/useZettels";
 
 const ZettelListCss = css`
   display: flex;
@@ -22,15 +21,12 @@ const ZettelListCss = css`
 type ZettelListProps = {};
 
 function ZettelList(props: ZettelListProps) {
-  const user = useCurrentUser();
   const [zettels, setZettels] = useState<Zettel[]>([]);
+  const { done, fetchMore, zettels: data } = useZettels();
 
   useEffect(() => {
-    if (user)
-      getZettels().then((data) => {
-        setZettels(data);
-      });
-  }, [user]);
+    if (data) setZettels(data);
+  }, [setZettels, data]);
 
   return (
     <div css={ZettelListCss} className="zettel-list">
@@ -41,13 +37,14 @@ function ZettelList(props: ZettelListProps) {
           onDragStart={(e) => {
             e.dataTransfer.setData(
               "text/plain",
-              `[[${zettel.id}${zettel.title ? "|" + zettel.title : ""}]]`
+              `[[${zettel.number}${zettel.title ? "|" + zettel.title : ""}]]`
             );
           }}
         >
           <ZettelListItem {...zettel} />
         </Link>
       ))}
+      {!done && <button onClick={fetchMore}>fetch more</button>}
     </div>
   );
 }

@@ -131,4 +131,52 @@ describe("Either monad", () => {
     const promise = Either.left(1).toPromise();
     return expect(promise).rejects.toBe(1);
   });
+
+  it("run callback function in Either.ifRight if right", () => {
+    // given
+    const e = Either.right(1);
+    const cb = jest.fn();
+
+    // when
+    e.ifRight(cb);
+
+    // then
+    expect(cb).toBeCalled();
+  });
+
+  it("doesn't run callback function in Either.ifRight if left", () => {
+    // given
+    const e = Either.left(1);
+    const cb = jest.fn();
+
+    // when
+    e.ifRight(cb);
+
+    // then
+    expect(cb).not.toBeCalled();
+  });
+
+  it("doesn't run callback function in Either.ifLeft if right", () => {
+    // given
+    const e = Either.right(1);
+    const cb = jest.fn();
+
+    // when
+    e.ifLeft(cb);
+
+    // then
+    expect(cb).not.toBeCalled();
+  });
+
+  it("run callback function in Either.ifLeft if left", () => {
+    // given
+    const e = Either.left(1);
+    const cb = jest.fn();
+
+    // when
+    e.ifLeft(cb);
+
+    // then
+    expect(cb).toBeCalled();
+  });
 });
