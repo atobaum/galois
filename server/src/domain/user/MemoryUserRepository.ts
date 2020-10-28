@@ -35,7 +35,10 @@ export default class MemoryUserRepository implements IUserRepository {
     this.nextId = 3;
   }
 
-  async findBySocialAccount(provider: string, socialId: string) {
+  async findBySocialAccount(
+    provider: string,
+    socialId: string
+  ): Promise<Either<any, User>> {
     let user = null;
     for (let id in this.db) {
       if (
@@ -45,12 +48,12 @@ export default class MemoryUserRepository implements IUserRepository {
       )
         user = this.db[id];
     }
-    return Either.fromNullable(user);
+    return Either.fromNullable(user) as any;
   }
 
   async findById(id: number, option?: any) {
     const user = this.db[id] || null;
-    return Either.right(user);
+    return Either.fromNullable(user);
   }
   async save(entity: User) {
     if (!entity.id) {

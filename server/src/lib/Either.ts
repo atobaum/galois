@@ -54,7 +54,7 @@ export default class Either<L = any, R = any> {
     return this;
   }
 
-  static fromNullable<R>(v: R | null | undefined | ""): Either<any, R> {
+  static fromNullable<R>(v: R | undefined | null | ""): Either<any, R> {
     if (v) return Either.right(v);
     else return Either.left(v);
   }

@@ -80,13 +80,9 @@ describe("UserService", () => {
     it("성공", async (done) => {
       const tokens = await userService.login("google", "128");
       expect(tokens).toBeTruthy();
-      const accessTokenData = jwt.decode(tokens!.accessToken) as any;
 
       await new Promise((res) => setTimeout(res, 1000));
-      const newTokens = await userService.refresh(
-        tokens!.refreshToken,
-        accessTokenData.id
-      );
+      const newTokens = await userService.refresh(tokens!.refreshToken);
       expect(newTokens).toBeTruthy();
       expect(newTokens!.refreshToken).toBe(tokens!.refreshToken);
       expect(newTokens!.accessToken).not.toBe(tokens!.accessToken);
@@ -96,17 +92,13 @@ describe("UserService", () => {
     it("실패", async (done) => {
       const tokens = await userService.login("google", "128");
       expect(tokens).toBeTruthy();
-      const accessTokenData = jwt.decode(tokens!.accessToken) as any;
       const refreshTokenJWT = RefreshToken.create(
         1,
         7098,
         new Date()
       ).generateJWT();
 
-      const newTokens = await userService.refresh(
-        refreshTokenJWT.getRight(),
-        accessTokenData.id
-      );
+      const newTokens = await userService.refresh(refreshTokenJWT.getRight());
       expect(newTokens).toBeNull();
       done();
     });
