@@ -82,23 +82,15 @@ export default class UserService {
     throw new Error("Not implemented");
   }
 
-  async refresh(
-    refreshTokenJWT: string,
-    userId: number
-  ): Promise<AuthToken | null> {
+  async refresh(refreshTokenJWT: string): Promise<AuthToken | null> {
     const refreshTokenData = decodeToken<{ id: number; userId: number }>(
       refreshTokenJWT,
       { subject: "refresh_token" }
-    ).flatMap((data) =>
-      data.userId === userId
-        ? Either.right(data)
-        : Either.left(new Error("INVALID_USER"))
     );
     if (refreshTokenData.isLeft) return null;
 
-    const refreshToken = await this.refreshTokenRepo.findById(
-      refreshTokenData.getRight().id
-    );
+    const { id, userId } = refreshTokenData.getRight();
+    const refreshToken = await this.refreshTokenRepo.findById(id);
 
     const user = await this.userRepo.findById(userId);
 

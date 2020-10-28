@@ -43,7 +43,7 @@ export const userResolvers = {
       { refreshToken }: { refreshToken: string },
       ctx: any
     ) => {
-      return await services.user.refresh(refreshToken, ctx.user.id);
+      return await services.user.refresh(refreshToken);
     },
   },
 };
