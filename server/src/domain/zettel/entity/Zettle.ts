@@ -6,6 +6,7 @@ import Tag from "./Tag";
 export enum ContentType {
   MARKDOWN = "md",
   PLAIN = "plain",
+  BOOKMARK = "bookmark",
 }
 
 export type ZettelChange =

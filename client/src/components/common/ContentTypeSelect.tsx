@@ -1,7 +1,7 @@
 import React from "react";
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
-import { MenuItem as option, Select } from "@material-ui/core";
+import { Select } from "@material-ui/core";
 import ContentType from "../../types/content-type";
 
 const ContentTypeSelectCss = css``;
@@ -17,9 +17,9 @@ const ContentTypeSelect: React.FC<{
       onChange={(e) => onChange(e.target.value as ContentType)}
       value={contentType}
     >
-      <option value="MARKDOWN">markdown</option>
-      <option value="PLAIN">plain</option>
-      {/* <MenuItem value={"BOOKMAKR"}>bookmark</MenuItem> */}
+      <option value={ContentType.MARKDOWN}>markdown</option>
+      <option value={ContentType.PLAIN}>plain</option>
+      <option value={ContentType.BOOKMARK}>bookmark</option>
     </Select>
   );
 };

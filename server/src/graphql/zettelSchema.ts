@@ -33,6 +33,7 @@ export const zettelTypeDefs = gql`
   enum ContentType {
     PLAIN
     MARKDOWN
+    BOOKMARK
   }
 
   type ZettelCollection {
