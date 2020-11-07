@@ -14,6 +14,7 @@ export type ZettelDTO = {
   content: string;
   contentType: ContentType;
   tags: string[];
+  meta: JSON;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -28,6 +29,7 @@ export const zettelTypeDefs = gql`
     tags: [String]!
     createdAt: Date!
     updatedAt: Date!
+    meta: JSON
   }
 
   enum ContentType {
@@ -52,6 +54,7 @@ export const zettelTypeDefs = gql`
       content: String!
       contentType: ContentType!
       tags: [String]!
+      meta: JSON
     ): Zettel
 
     updateZettel(
@@ -60,6 +63,7 @@ export const zettelTypeDefs = gql`
       content: String
       contentType: ContentType
       tags: [String]
+      meta: JSON
     ): Zettel
     deleteZettel(id: Int!): Boolean
   }
@@ -107,11 +111,13 @@ export const zettelResolvers = {
         content,
         contentType,
         tags,
+        meta,
       }: {
         title?: string;
         content: string;
         contentType: ContentType;
         tags: string[];
+        meta: any;
       },
       ctx: any
     ): Promise<ZettelDTO | null> => {
@@ -123,6 +129,7 @@ export const zettelResolvers = {
           content,
           contentType,
           tags,
+          meta,
         },
         ctx.user.id
       );

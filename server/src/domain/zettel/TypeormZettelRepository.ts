@@ -38,6 +38,7 @@ export default class TypeormZettelRepository implements IZettelRepository {
         tags: zettelORM.tags.map((t) => t.name),
         createdAt: zettelORM.createdAt,
         updatedAt: zettelORM.updatedAt,
+        meta: zettelORM.meta,
       });
       return zettel;
     });
@@ -77,6 +78,7 @@ export default class TypeormZettelRepository implements IZettelRepository {
         content: orm.content,
         contentType: orm.contentType,
         tags: orm.tags.map((t) => t.name),
+        meta: orm.meta,
       });
     });
   }
@@ -106,6 +108,7 @@ export default class TypeormZettelRepository implements IZettelRepository {
         content: orm.content,
         contentType: orm.contentType,
         tags: orm.tags.map((t) => t.name),
+        meta: orm.meta,
       });
     });
   }
@@ -141,6 +144,7 @@ export default class TypeormZettelRepository implements IZettelRepository {
     zettelORM.contentType = dto.contentType;
     zettelORM.createdAt = dto.createdAt;
     zettelORM.title = dto.title;
+    zettelORM.meta = dto.meta;
 
     //tags
     const tagsORM = await Promise.all(dto.tags.map(TagORM.findOrCreate));
@@ -180,6 +184,8 @@ export default class TypeormZettelRepository implements IZettelRepository {
           orm.content = dto.content;
           orm.contentType = dto.contentType;
           break;
+        case "UPDATE_META":
+          orm.meta = dto.meta;
         default:
           Either.left("Unsupported change type: " + change[0]);
       }

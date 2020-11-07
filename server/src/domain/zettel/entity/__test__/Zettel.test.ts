@@ -9,6 +9,7 @@ describe("Zettel", () => {
     content: "content1",
     contentType: ContentType.MARKDOWN,
     tags: ["t1"] as string[],
+    meta: { draft: true },
   };
   const invalidUpdatedAt = new Date("2020-02-01");
   const validUpdatedAt = new Date("2020-02-03");
@@ -135,6 +136,36 @@ describe("Zettel", () => {
       content: newZettelData.content,
       contentType: newZettelData.contentType,
       tags: ["t1", "t2"],
+      meta: newZettelData.meta,
     });
+  });
+
+  it("meta data 얻기", () => {
+    const zettelOrFail = Zettel.create(newZettelData);
+    expect(zettelOrFail.isRight).toBe(true);
+
+    const zettel = zettelOrFail.getRight();
+    expect(zettel.getMeta("draft")).toBe(true);
+    expect(zettel.getMeta("qwe")).toBe(undefined);
+  });
+
+  it("meta data 추가", () => {
+    const zettelOrFail = Zettel.create(newZettelData);
+    expect(zettelOrFail.isRight).toBe(true);
+
+    const zettel = zettelOrFail.getRight();
+    zettel.setMeta("newMeta", 123);
+    expect(zettel.getMeta("newMeta")).toBe(123);
+  });
+
+  it("meta data 삭제", () => {
+    const zettelOrFail = Zettel.create(newZettelData);
+    expect(zettelOrFail.isRight).toBe(true);
+    const zettel = zettelOrFail.getRight();
+    expect(zettel.getMeta("draft")).toBe(true);
+
+    zettel.setMeta("draft", null);
+
+    expect(zettel.getMeta("draft")).toBe(undefined);
   });
 });

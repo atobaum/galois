@@ -44,6 +44,13 @@ export default class ZettelORM {
   @Column("text")
   content!: string;
 
+  @Column({
+    type: "jsonb",
+    name: "meta",
+    nullable: true,
+  })
+  meta!: any;
+
   @ManyToMany((type) => TagORM)
   @JoinTable({ name: "note_tags_tag" })
   tags!: TagORM[];

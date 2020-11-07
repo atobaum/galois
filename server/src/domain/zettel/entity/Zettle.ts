@@ -13,13 +13,15 @@ export type ZettelChange =
   | ["ADD_TAG", Tag]
   | ["REMOVE_TAG", Tag]
   | ["UPDATE_TITLE", string | null]
-  | ["UPDATE_CONTENT", { content: string; contentType: ContentType }];
+  | ["UPDATE_CONTENT", { content: string; contentType: ContentType }]
+  | ["UPDATE_META"];
 
 export default class Zettel extends AggregateRoot<ZettelChange, string> {
   private number?: number;
   private title: string | null;
   private content: string;
   private contentType: ContentType;
+  private meta?: any;
   private tags: Tag[];
   private userId: number;
   private createdAt: Date;
@@ -35,6 +37,7 @@ export default class Zettel extends AggregateRoot<ZettelChange, string> {
     tags: Tag[];
     createdAt: Date;
     updatedAt: Date;
+    meta?: any;
   }) {
     super(args.id);
     this.number = args.number;
@@ -45,6 +48,7 @@ export default class Zettel extends AggregateRoot<ZettelChange, string> {
     this.tags = args.tags;
     this.createdAt = args.createdAt;
     this.updatedAt = args.updatedAt;
+    this.meta = args.meta;
   }
 
   // call after saved
@@ -112,6 +116,29 @@ export default class Zettel extends AggregateRoot<ZettelChange, string> {
     return Either.right(this);
   }
 
+  public setMeta(
+    key: string,
+    value: number | string | boolean | JSON | undefined | null
+  ) {
+    if (value === undefined || value === null) {
+      if (this.meta) {
+        delete this.meta[key];
+        this.addChange(["UPDATE_META"]);
+      }
+    } else {
+      if (!this.meta) this.meta = {};
+      this.meta[key] = value;
+      this.addChange(["UPDATE_META"]);
+    }
+  }
+
+  public getMeta(key: string): number | string | boolean | JSON | undefined {
+    if (!this.meta) return undefined;
+
+    if (key in this.meta) return this.meta[key];
+    return undefined;
+  }
+
   public toDTO(): ZettelDTO {
     return {
       id: this._id,
@@ -122,6 +149,7 @@ export default class Zettel extends AggregateRoot<ZettelChange, string> {
       tags: this.tags.map((t) => t.name),
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
+      meta: this.meta || {},
     };
   }
 
@@ -133,6 +161,7 @@ export default class Zettel extends AggregateRoot<ZettelChange, string> {
     contentType,
     tags,
     userId,
+    meta,
     createdAt,
     updatedAt,
   }: CreateZettelDTO): Either<any, Zettel> {
@@ -158,6 +187,7 @@ export default class Zettel extends AggregateRoot<ZettelChange, string> {
       content,
       contentType,
       tags: tagEntities,
+      meta,
       createdAt,
       updatedAt,
     });
@@ -175,4 +205,5 @@ type CreateZettelDTO = {
   content: string;
   contentType: ContentType;
   tags: string[];
+  meta: any;
 };

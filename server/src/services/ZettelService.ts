@@ -12,6 +12,7 @@ type CreateZettelRequestDTO = {
   content: string;
   contentType: ContentType;
   tags: string[];
+  meta: any;
 };
 
 type UpdateZettelRequestDTO = Partial<CreateZettelRequestDTO> & {
@@ -76,6 +77,7 @@ export default class ZettelService {
       tags: args.tags,
       title: args.title,
       userId,
+      meta: args.meta,
     });
 
     if (newZettel.isLeft) return newZettel;
