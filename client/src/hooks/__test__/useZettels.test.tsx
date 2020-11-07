@@ -13,6 +13,7 @@ describe("useZettels", () => {
     contentType: "MARKDOWN",
     tags: [],
     updatedAt: "2020-08-08",
+    meta: {},
   };
   const mockedZettels = Object.keys(new Array(20).fill(0)).map((id) => ({
     ...testZettel,

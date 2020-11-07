@@ -40,6 +40,7 @@ const BigZettelEditor: React.FC<{
             tags,
             title,
             contentType: type,
+            meta: {},
           });
         }}
       >

@@ -37,6 +37,7 @@ const SmallEditor: React.FC<SmallEditorProps> = () => {
         content,
         contentType: type,
         tags,
+        meta: {},
       })
     );
     setContent("");

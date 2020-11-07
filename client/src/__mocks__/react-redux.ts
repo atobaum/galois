@@ -8,6 +8,7 @@ export const initZettels = [
     number: 5,
     version: 3,
     title: "제목",
+    meta: { a: 1 },
     content: `
 ## 소제목
 - list1
@@ -22,6 +23,7 @@ export const initZettels = [
     number: 6,
     version: 2,
     title: "두번째 제텔",
+    meta: { a: 1 },
     content: `
 ## 두번째
 **bold**

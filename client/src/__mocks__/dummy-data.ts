@@ -11,6 +11,7 @@ export const mockedZettel: Zettel = {
   tags: ["tag1", "tag2"],
   title: "title",
   contentType: ContentType.MARKDOWN,
+  meta: { a: 1 },
 };
 
 export const mockedZettels: Zettel[] = [
@@ -23,6 +24,7 @@ export const mockedZettels: Zettel[] = [
     tags: [],
     title: null,
     contentType: ContentType.MARKDOWN,
+    meta: { a: 1 },
   },
   {
     id: "e74620c6-1b30-4ba7-88a3-b0e80a9accc8",
@@ -33,6 +35,7 @@ export const mockedZettels: Zettel[] = [
     tags: ["tag1", "tag2"],
     title: "title",
     contentType: ContentType.MARKDOWN,
+    meta: { a: 1 },
   },
   {
     id: "740e20a0-35f5-47a1-b8f9-89620cbd6187",
@@ -43,6 +46,7 @@ export const mockedZettels: Zettel[] = [
     tags: ["tag1", "tag2"],
     title: "title",
     contentType: ContentType.MARKDOWN,
+    meta: { a: 1 },
   },
   {
     id: "7a477568-19c5-419f-921d-c5cbd3faae0a",
@@ -53,6 +57,7 @@ export const mockedZettels: Zettel[] = [
     tags: ["tag1", "tag2"],
     title: "title",
     contentType: ContentType.MARKDOWN,
+    meta: { a: 1 },
   },
   {
     id: "70b02434-53be-4bf7-a25f-a44952362688",
@@ -63,6 +68,7 @@ export const mockedZettels: Zettel[] = [
     tags: ["tag1", "tag2"],
     title: "title",
     contentType: ContentType.MARKDOWN,
+    meta: { a: 1 },
   },
 ];
 
@@ -72,11 +78,13 @@ export const mockedNewZettels: NewZettel[] = [
     tags: ["tag1", "가나다"],
     title: "title",
     contentType: ContentType.MARKDOWN,
+    meta: { a: 1 },
   },
   {
     content: "new zettel11",
     tags: ["tag2"],
     title: null,
     contentType: ContentType.MARKDOWN,
+    meta: { a: 1 },
   },
 ];

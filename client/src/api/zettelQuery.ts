@@ -13,6 +13,7 @@ export const getZettelsQuery = gql`
         tags
         createdAt
         updatedAt
+        meta
       }
     }
   }
@@ -28,6 +29,7 @@ export const getZettelQuery = gql`
       contentType
       tags
       createdAt
+      meta
     }
   }
 `;
@@ -52,6 +54,7 @@ export const createZettelMutation = gql`
       contentType
       tags
       createdAt
+      meta
     }
   }
 `;
@@ -79,6 +82,7 @@ export const updateZettelQuery = gql`
       tags
       createdAt
       updatedAt
+      meta
     }
   }
 `;

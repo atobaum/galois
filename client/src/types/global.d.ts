@@ -12,6 +12,7 @@ declare global {
     tags: string[];
     createdAt: Date;
     updatedAt: Date;
+    meta: any;
   };
 
   type NewZettel = Omit<Zettel, "id" | "number" | "createdAt" | "updatedAt"> &
