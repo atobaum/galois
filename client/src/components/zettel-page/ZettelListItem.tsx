@@ -30,11 +30,11 @@ type ZettelListItemProps = Zettel & {};
 function ZettelListItem({
   number,
   id,
-  contentType,
   content,
   title,
   tags,
   createdAt,
+  meta,
 }: ZettelListItemProps) {
   return (
     <div css={ZettelListItemCss}>
@@ -43,7 +43,7 @@ function ZettelListItem({
         <h3>{title}</h3>
       </div>
       <div className="zettel-content">
-        <ContentRenderer content={content} contentType={contentType} />
+        <ContentRenderer content={content} contentType={meta.renderer} />
       </div>
       <div>
         날짜 {createdAt.getMonth() + 1}월 {createdAt.getDate()}일

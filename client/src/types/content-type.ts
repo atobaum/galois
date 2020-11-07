@@ -1,7 +1,7 @@
 enum ContentType {
   MARKDOWN = "MARKDOWN",
   PLAIN = "PLAIN",
-  BOOKMARK = "BOOKMARK",
+  // BOOKMARK = "BOOKMARK",
 }
 
 export default ContentType;

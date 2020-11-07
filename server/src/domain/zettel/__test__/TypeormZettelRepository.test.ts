@@ -2,7 +2,7 @@ import postgrasqlLoader from "../../../loaders/postgresqlLoader";
 import initState from "../../../test/initState";
 import TypeormZettelRepository from "../TypeormZettelRepository";
 import "@src/test/custom-matcher";
-import Zettel, { ContentType } from "../entity/Zettle";
+import Zettel, { ZettelType } from "../entity/Zettle";
 
 const existedZettel = initState.zettel;
 const existedUser = initState.user;
@@ -21,7 +21,6 @@ describe("TypeormZettelRepository", () => {
     expect(zettel.getRight().id).toBe(existedZettel.id);
     expect(zettel.getRight().toDTO()).toMatchObject({
       content: existedZettel.content,
-      contentType: existedZettel.contentType,
     });
   });
 
@@ -40,7 +39,7 @@ describe("TypeormZettelRepository", () => {
       userId: existedUser.id,
       createdAt: created,
       content: "enw zettel content",
-      contentType: ContentType.PLAIN,
+      type: ZettelType.NOTE,
       tags: [],
       meta: { draft: true },
     });
@@ -60,12 +59,15 @@ describe("TypeormZettelRepository", () => {
   });
 
   it("update content", async (done) => {
+    // given
     const zettel = (await repo.findById(existedZettel.id)).getRight();
     const updatedAt = zettel.toDTO().updatedAt;
 
-    zettel.updateContent("new content content", ContentType.PLAIN);
+    // when
+    zettel.updateContent("new content content");
     let result: any = await repo.save(zettel);
 
+    // then
     expect(result).toBeRight();
     expect(zettel.toDTO().updatedAt).not.toEqual(updatedAt);
 
@@ -76,7 +78,6 @@ describe("TypeormZettelRepository", () => {
     const newDto = updatedZettel.toDTO();
     expect(updatedZettel.equals(zettel)).toBe(true);
     expect(newDto.content).toBe("new content content");
-    expect(newDto.contentType).toBe("plain");
 
     done();
   });

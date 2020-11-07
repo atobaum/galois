@@ -7,6 +7,8 @@ import TagInput from "../common/TagInput";
 import { Button, Container, TextField } from "@material-ui/core";
 import ContentType from "../../types/content-type";
 import ContentTypeSelect from "../common/ContentTypeSelect";
+import ZettelTypeSelect from "../common/ZettelTypeSelect";
+import ZettelType from "../../types/zettel-type";
 
 const SmallEditorCss = css`
   width: 100%;
@@ -25,6 +27,7 @@ const SmallEditor: React.FC<SmallEditorProps> = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [type, setType] = useState<ContentType>(ContentType.MARKDOWN);
+  const [zettelType, setZettelType] = useState<ZettelType>(ZettelType.NOTE);
   const [tags, setTags] = useState<string[]>([]);
   const dispatch = useDispatch();
 
@@ -35,9 +38,9 @@ const SmallEditor: React.FC<SmallEditorProps> = () => {
       createZettelAction({
         title,
         content,
-        contentType: type,
+        type: zettelType,
         tags,
-        meta: {},
+        meta: { renderer: type },
       })
     );
     setContent("");
@@ -61,6 +64,7 @@ const SmallEditor: React.FC<SmallEditorProps> = () => {
         <div>
           <TagInput tags={tags} onChange={setTags} />
           <ContentTypeSelect onChange={setType} contentType={type} />
+          <ZettelTypeSelect onChange={setZettelType} zettelType={zettelType} />
           <Button variant="contained" color="primary" onClick={submitHandler}>
             Submit
           </Button>

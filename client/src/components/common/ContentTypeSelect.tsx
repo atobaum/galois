@@ -19,7 +19,6 @@ const ContentTypeSelect: React.FC<{
     >
       <option value={ContentType.MARKDOWN}>markdown</option>
       <option value={ContentType.PLAIN}>plain</option>
-      <option value={ContentType.BOOKMARK}>bookmark</option>
     </Select>
   );
 };

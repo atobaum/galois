@@ -37,7 +37,7 @@ type ZettelCardProps = {
 };
 
 function ZettelCard({
-  zettel: { number, content, title, tags, contentType },
+  zettel: { number, content, title, tags, type, meta },
   onClick,
   loading,
 }: ZettelCardProps) {
@@ -66,7 +66,7 @@ function ZettelCard({
         <h3>{title}</h3>
       </CardContent>
       <CardContent ref={dom} className="zettel-content">
-        <ContentRenderer content={content} contentType={contentType} />
+        <ContentRenderer content={content} contentType={meta.renderer} />
       </CardContent>
       <CardContent>
         {tags.map((tag) => (

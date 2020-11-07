@@ -1,4 +1,4 @@
-import Zettel, { ContentType } from "../Zettle";
+import Zettel, { ZettelType } from "../Zettle";
 import "@src/test/custom-matcher";
 
 describe("Zettel", () => {
@@ -7,7 +7,7 @@ describe("Zettel", () => {
     userId: 2,
     createdAt: new Date("2020-02-02"),
     content: "content1",
-    contentType: ContentType.MARKDOWN,
+    type: ZettelType.NOTE,
     tags: ["t1"] as string[],
     meta: { draft: true },
   };
@@ -42,19 +42,17 @@ describe("Zettel", () => {
 
   it("edit contents", () => {
     const z1 = Zettel.create(newZettelData).getRight();
-    let result = z1.updateContent("new content1", ContentType.PLAIN);
-    result = z1.updateContent("new content2", ContentType.PLAIN);
+    let result = z1.updateContent("new content1");
+    result = z1.updateContent("new content2");
 
     expect(result).toBeRight();
 
     const dto = z1.toDTO();
     expect(dto.content).toBe("new content2");
-    expect(dto.contentType).toBe("plain");
     expect(z1.getChanges()).toContainEqual([
       "UPDATE_CONTENT",
       {
         content: newZettelData.content,
-        contentType: "md",
       },
     ]);
   });
@@ -134,7 +132,7 @@ describe("Zettel", () => {
       createdAt: newZettelData.createdAt,
       title: newZettelData.title,
       content: newZettelData.content,
-      contentType: newZettelData.contentType,
+      type: newZettelData.type,
       tags: ["t1", "t2"],
       meta: newZettelData.meta,
     });

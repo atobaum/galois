@@ -4,6 +4,8 @@ import { jsx, css } from "@emotion/core";
 import TagInput from "../common/TagInput";
 import ContentTypeSelect from "../common/ContentTypeSelect";
 import ContentType from "../../types/content-type";
+import ZettelTypeSelect from "../common/ZettelTypeSelect";
+import ZettelType from "../../types/zettel-type";
 
 const BigZettelEditorCss = css`
   display: flex;
@@ -14,13 +16,16 @@ const BigZettelEditorCss = css`
 `;
 
 const BigZettelEditor: React.FC<{
-  zettel: Pick<Zettel, "content" | "contentType" | "tags" | "title">;
-  onEdit: (data: NewZettel) => void;
+  zettel: Pick<Zettel, "content" | "type" | "tags" | "title" | "meta">;
+  onEdit: (data: Partial<Omit<Zettel, "type">>) => void;
 }> = ({ zettel, onEdit }) => {
   const [title, setTitle] = useState(zettel.title || "");
   const [tags, setTags] = useState(zettel.tags);
   const [content, setContent] = useState(zettel.content);
-  const [type, setType] = useState<ContentType>(zettel.contentType);
+  const [type, setType] = useState<ContentType>(
+    zettel.meta.renderer || ContentType.PLAIN
+  );
+  // const [zettelType, setZettelType] = useState<ZettelType>(ZettelType.NOTE);
 
   return (
     <div css={BigZettelEditorCss}>
@@ -33,14 +38,14 @@ const BigZettelEditor: React.FC<{
         value={content}
       ></textarea>
       <ContentTypeSelect onChange={setType} contentType={type} />
+      {/* <ZettelTypeSelect onChange={setZettelType} zettelType={zettelType} /> */}
       <button
         onClick={() => {
           onEdit({
             content,
             tags,
             title,
-            contentType: type,
-            meta: {},
+            meta: { renderer: type },
           });
         }}
       >

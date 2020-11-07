@@ -14,7 +14,7 @@ import {
   Generated,
 } from "typeorm";
 import TagORM from "./TagORM";
-import { ContentType } from "../domain/zettel/entity/Zettle";
+import { ZettelType } from "../domain/zettel/entity/Zettle";
 
 @Entity({ name: "zettel" })
 @Index(["fk_user_id", "number"], { unique: true })
@@ -37,9 +37,9 @@ export default class ZettelORM {
     name: "content_type",
     type: "varchar",
     length: 16,
-    default: ContentType.MARKDOWN,
+    default: ZettelType.NOTE,
   })
-  contentType!: ContentType;
+  type!: ZettelType;
 
   @Column("text")
   content!: string;

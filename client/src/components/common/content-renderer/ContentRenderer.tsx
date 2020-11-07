@@ -13,8 +13,6 @@ const ContentRenderer: React.FC<{
       return <MarkdownRenderer content={content} />;
     case ContentType.PLAIN:
       return <PlainRenderer content={content} />;
-    case ContentType.BOOKMARK:
-      return <BookmarkRenderer content={content} />;
     default:
       return <div>{contentType} is not supported</div>;
   }
