@@ -17,7 +17,7 @@ const rootTypeDef = gql`
 
 const rootResolver = {
   Query: {
-    version: () => "0.0.1",
+    version: () => process.env.npm_package_version,
   },
 };
 
