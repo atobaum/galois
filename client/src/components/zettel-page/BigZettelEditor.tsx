@@ -4,8 +4,7 @@ import { jsx, css } from "@emotion/core";
 import TagInput from "../common/TagInput";
 import ContentTypeSelect from "../common/ContentTypeSelect";
 import ContentType from "../../types/content-type";
-import ZettelTypeSelect from "../common/ZettelTypeSelect";
-import ZettelType from "../../types/zettel-type";
+import { TextField } from "@material-ui/core";
 
 const BigZettelEditorCss = css`
   display: flex;
@@ -31,12 +30,13 @@ const BigZettelEditor: React.FC<{
     <div css={BigZettelEditorCss}>
       <input onChange={(e) => setTitle(e.target.value)} value={title}></input>
       <TagInput tags={tags} onChange={setTags} />
-      <textarea
+      <TextField
+        multiline
         name=""
         rows={4}
         onChange={(e) => setContent(e.target.value)}
         value={content}
-      ></textarea>
+      ></TextField>
       <ContentTypeSelect onChange={setType} contentType={type} />
       {/* <ZettelTypeSelect onChange={setZettelType} zettelType={zettelType} /> */}
       <button
