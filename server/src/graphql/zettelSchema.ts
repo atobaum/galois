@@ -1,4 +1,4 @@
-import { ContentType } from "../domain/zettel/entity/Zettle";
+import { ZettelType } from "../domain/zettel/entity/Zettle";
 import { AuthenticationError, gql } from "apollo-server-koa";
 import { services } from "../services";
 
@@ -12,8 +12,9 @@ export type ZettelDTO = {
   number?: number;
   title: string | null;
   content: string;
-  contentType: ContentType;
+  type: ZettelType;
   tags: string[];
+  meta: JSON;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -24,15 +25,17 @@ export const zettelTypeDefs = gql`
     number: Int!
     title: String
     content: String!
-    contentType: ContentType!
+    type: ZettelType!
     tags: [String]!
     createdAt: Date!
     updatedAt: Date!
+    meta: JSON
   }
 
-  enum ContentType {
-    PLAIN
-    MARKDOWN
+  enum ZettelType {
+    NOTE
+    BOOKMARK
+    COLLECTION
   }
 
   type ZettelCollection {
@@ -49,23 +52,24 @@ export const zettelTypeDefs = gql`
     createZettel(
       title: String
       content: String!
-      contentType: ContentType!
+      type: ZettelType!
       tags: [String]!
+      meta: JSON
     ): Zettel
 
     updateZettel(
       id: ID!
       title: String
       content: String
-      contentType: ContentType
       tags: [String]
+      meta: JSON
     ): Zettel
     deleteZettel(id: Int!): Boolean
   }
 `;
 
 export const zettelResolvers = {
-  ContentType,
+  ZettelType: ZettelType,
   Query: {
     zettels: async (
       parent: any,
@@ -104,13 +108,15 @@ export const zettelResolvers = {
       {
         title,
         content,
-        contentType,
+        type,
         tags,
+        meta,
       }: {
         title?: string;
         content: string;
-        contentType: ContentType;
+        type: ZettelType;
         tags: string[];
+        meta: any;
       },
       ctx: any
     ): Promise<ZettelDTO | null> => {
@@ -120,8 +126,9 @@ export const zettelResolvers = {
         {
           title: title || null,
           content,
-          contentType,
+          type,
           tags,
+          meta,
         },
         ctx.user.id
       );

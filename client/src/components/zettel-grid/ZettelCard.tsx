@@ -3,7 +3,7 @@ import { jsx, css } from "@emotion/core";
 import Tag from "../common/Tag";
 import { useEffect, useMemo, useRef } from "react";
 import { Card, CardContent } from "@material-ui/core";
-import ContentRenderer from "../common/content-renderer/ContentRenderer";
+import ArticleRenderer from "../common/Renderer/ArticleRenderer";
 
 const generateCss = (loading: boolean | undefined) => css`
   position: relative;
@@ -37,7 +37,7 @@ type ZettelCardProps = {
 };
 
 function ZettelCard({
-  zettel: { number, content, title, tags, contentType },
+  zettel: { number, content, title, tags, type, meta },
   onClick,
   loading,
 }: ZettelCardProps) {
@@ -66,7 +66,7 @@ function ZettelCard({
         <h3>{title}</h3>
       </CardContent>
       <CardContent ref={dom} className="zettel-content">
-        <ContentRenderer content={content} contentType={contentType} />
+        <ArticleRenderer type={type} content={content} meta={meta} />
       </CardContent>
       <CardContent>
         {tags.map((tag) => (
