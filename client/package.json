@@ -1,6 +1,6 @@
 {
   "name": "galois-client",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "private": true,
   "dependencies": {
     "@apollo/client": "^3.2.0",
@@ -20,6 +20,7 @@
     "axios": "^0.20.0",
     "date-fns": "^2.15.0",
     "graphql": "^15.3.0",
+    "preval.macro": "^5.0.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-helmet": "^6.1.0",
@@ -52,14 +53,16 @@
     "cra-bundle-analyzer": "^0.1.0",
     "history": "^5.0.0",
     "http-proxy-middleware": "^1.0.5",
+    "jest-fetch-mock": "^3.0.3",
+    "jest-localstorage-mock": "^2.4.3",
     "react-is": "^16.13.1",
     "react-test-renderer": "^16.13.1",
     "rxjs-marbles": "^6.0.1",
     "webpack-bundle-analyzer": "^3.9.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "REACT_APP_VERSION=$npm_package_version react-scripts start",
+    "build": "REACT_APP_VERSION=$npm_package_version react-scripts build",
     "test": "react-scripts test",
     "test:ci": "react-scripts test --watchAll=false --collect-coverage --collectCoverageFrom=src/**/*.{ts,tsx}",
     "eject": "react-scripts eject",

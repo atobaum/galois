@@ -2,13 +2,13 @@ import React, { useState } from "react";
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
 import { useDispatch } from "react-redux";
-import { createZettelAction } from "../../redux/modules/zettel-grid";
-import TagInput from "../common/TagInput";
+import { createZettelAction } from "../../../redux/modules/zettel-grid";
+import TagInput from "../TagInput";
 import { Button, Container, TextField } from "@material-ui/core";
-import ContentType from "../../types/content-type";
-import ContentTypeSelect from "../common/ContentTypeSelect";
-import ZettelTypeSelect from "../common/ZettelTypeSelect";
-import ZettelType from "../../types/zettel-type";
+import ZettelTypeSelect from "../ZettelTypeSelect";
+import ZettelType from "../../../types/zettel-type";
+import BookmarkEditor from "./ArticleEditor/BookmarkEditor";
+import ContentEditor from "./ArticleEditor/ContentEditor";
 
 const SmallEditorCss = css`
   width: 100%;
@@ -26,7 +26,7 @@ type SmallEditorProps = {};
 const SmallEditor: React.FC<SmallEditorProps> = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [type, setType] = useState<ContentType>(ContentType.MARKDOWN);
+  const [meta, setMeta] = useState({});
   const [zettelType, setZettelType] = useState<ZettelType>(ZettelType.NOTE);
   const [tags, setTags] = useState<string[]>([]);
   const dispatch = useDispatch();
@@ -40,11 +40,20 @@ const SmallEditor: React.FC<SmallEditorProps> = () => {
         content,
         type: zettelType,
         tags,
-        meta: { renderer: type },
+        meta,
       })
     );
     setContent("");
   };
+
+  let TypeEditor;
+  switch (zettelType) {
+    case ZettelType.BOOKMARK:
+      TypeEditor = BookmarkEditor;
+      break;
+    default:
+      TypeEditor = ContentEditor;
+  }
 
   return (
     <Container css={SmallEditorCss}>
@@ -54,16 +63,14 @@ const SmallEditor: React.FC<SmallEditorProps> = () => {
           onChange={(e) => setTitle(e.target.value)}
           value={title}
         />
-        <TextField
-          label="Content"
-          multiline
-          rowsMax={5}
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
+        <TypeEditor
+          content={content}
+          setContent={setContent}
+          meta={meta}
+          setMeta={setMeta}
         />
         <div>
           <TagInput tags={tags} onChange={setTags} />
-          <ContentTypeSelect onChange={setType} contentType={type} />
           <ZettelTypeSelect onChange={setZettelType} zettelType={zettelType} />
           <Button variant="contained" color="primary" onClick={submitHandler}>
             Submit

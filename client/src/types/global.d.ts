@@ -1,4 +1,5 @@
 import ContentType from "./content-type";
+import ZettelType from "./zettel-type";
 
 export {};
 
@@ -8,10 +9,11 @@ declare global {
     number: number;
     title: string | null;
     content: string;
-    contentType: ContentType;
+    type: ZettelType;
     tags: string[];
     createdAt: Date;
     updatedAt: Date;
+    meta: any;
   };
 
   type NewZettel = Omit<Zettel, "id" | "number" | "createdAt" | "updatedAt"> &

@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
+import ArticleRenderer from "../common/Renderer/ArticleRenderer";
 import Tag from "../common/Tag";
-import ContentRenderer from "../common/content-renderer/ContentRenderer";
 
 const ZettelListItemCss = css`
   height: 200px;
@@ -30,11 +30,12 @@ type ZettelListItemProps = Zettel & {};
 function ZettelListItem({
   number,
   id,
-  contentType,
   content,
   title,
   tags,
   createdAt,
+  meta,
+  type,
 }: ZettelListItemProps) {
   return (
     <div css={ZettelListItemCss}>
@@ -43,7 +44,7 @@ function ZettelListItem({
         <h3>{title}</h3>
       </div>
       <div className="zettel-content">
-        <ContentRenderer content={content} contentType={contentType} />
+        <ArticleRenderer type={type} content={content} meta={meta} />
       </div>
       <div>
         날짜 {createdAt.getMonth() + 1}월 {createdAt.getDate()}일
