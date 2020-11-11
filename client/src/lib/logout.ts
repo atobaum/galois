@@ -4,5 +4,5 @@ export default function logout() {
   localStorage.removeItem("refresh_token");
   localStorage.removeItem("user");
 
-  if (loggedIn) location.reload();
+  if (loggedIn) window.location.reload();
 }
