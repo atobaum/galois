@@ -3,7 +3,6 @@ import { MockedProvider } from "@apollo/client/testing";
 import { getZettelsQuery } from "../../api/zettelQuery";
 import { renderHook } from "@testing-library/react-hooks";
 import useZettels from "../useZettels";
-import ZettelType from "../../types/zettel-type";
 describe("useZettels", () => {
   const testZettel = {
     id: "123",
@@ -11,10 +10,9 @@ describe("useZettels", () => {
     createdAt: "2020-08-08",
     title: "asdf",
     content: "Zxcv",
-    type: ZettelType.NOTE,
+    contentType: "MARKDOWN",
     tags: [],
     updatedAt: "2020-08-08",
-    meta: {},
   };
   const mockedZettels = Object.keys(new Array(20).fill(0)).map((id) => ({
     ...testZettel,

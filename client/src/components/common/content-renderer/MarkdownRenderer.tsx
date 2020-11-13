@@ -1,7 +1,7 @@
 import React from "react";
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
-import parseMarkdown from "../../../../../lib/markdownParser";
+import parseMarkdown from "../../../lib/markdownParser";
 
 const MarkdownRendererCss = css`
   h1,

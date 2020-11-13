@@ -1,6 +1,6 @@
 import Either from "../lib/Either";
 import IZettelRepository from "../domain/zettel/IZettelRepository";
-import Zettel, { ZettelType } from "../domain/zettel/entity/Zettle";
+import Zettel, { ContentType } from "../domain/zettel/entity/Zettle";
 import { Collection, ZettelDTO } from "../graphql/zettelSchema";
 
 type FindZettelOption = {
@@ -10,12 +10,11 @@ type FindZettelOption = {
 type CreateZettelRequestDTO = {
   title: string | null;
   content: string;
-  type: ZettelType;
+  contentType: ContentType;
   tags: string[];
-  meta: any;
 };
 
-type UpdateZettelRequestDTO = Partial<Omit<CreateZettelRequestDTO, "type">> & {
+type UpdateZettelRequestDTO = Partial<CreateZettelRequestDTO> & {
   id: string;
 };
 
@@ -73,11 +72,10 @@ export default class ZettelService {
     const newZettel = await Zettel.create({
       createdAt: new Date(),
       content: args.content,
-      type: args.type,
+      contentType: args.contentType,
       tags: args.tags,
       title: args.title,
       userId,
-      meta: args.meta,
     });
 
     if (newZettel.isLeft) return newZettel;
@@ -101,13 +99,10 @@ export default class ZettelService {
     }
 
     if (args.content) {
-      zettel.updateContent(args.content);
-    }
-
-    if (args.meta) {
-      for (let k in args.meta) {
-        if (zettel.getMeta(k) !== args.meta[k]) zettel.setMeta(k, args.meta[k]);
+      if (args.contentType) {
+        zettel.updateContent(args.content, args.contentType);
       }
+      zettel.updateContent(args.content);
     }
 
     if (args.tags) {

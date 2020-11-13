@@ -3,31 +3,23 @@ import Either from "../../../lib/Either";
 import AggregateRoot from "../../shared/AggregateRoot";
 import Tag from "./Tag";
 
-export enum Renderer {
+export enum ContentType {
   MARKDOWN = "md",
   PLAIN = "plain",
-}
-
-export enum ZettelType {
-  NOTE = "NOTE",
-  BOOKMARK = "BOOKMARK",
-  COLLECTION = "COLLECTION",
 }
 
 export type ZettelChange =
   | ["ADD_TAG", Tag]
   | ["REMOVE_TAG", Tag]
   | ["UPDATE_TITLE", string | null]
-  | ["UPDATE_CONTENT", { content: string }]
-  | ["UPDATE_META"];
+  | ["UPDATE_CONTENT", { content: string; contentType: ContentType }];
 
 export default class Zettel extends AggregateRoot<ZettelChange, string> {
   private number?: number;
   private title: string | null;
   private content: string;
-  private meta?: any;
+  private contentType: ContentType;
   private tags: Tag[];
-  private type: ZettelType;
   private userId: number;
   private createdAt: Date;
   private updatedAt: Date;
@@ -37,23 +29,21 @@ export default class Zettel extends AggregateRoot<ZettelChange, string> {
     number?: number;
     title: string | null;
     content: string;
-    type: ZettelType;
+    contentType: ContentType;
     userId: number;
     tags: Tag[];
     createdAt: Date;
     updatedAt: Date;
-    meta?: any;
   }) {
     super(args.id);
     this.number = args.number;
     this.title = args.title;
     this.content = args.content;
+    this.contentType = args.contentType;
     this.userId = args.userId;
     this.tags = args.tags;
     this.createdAt = args.createdAt;
     this.updatedAt = args.updatedAt;
-    this.meta = args.meta;
-    this.type = args.type;
   }
 
   // call after saved
@@ -107,38 +97,18 @@ export default class Zettel extends AggregateRoot<ZettelChange, string> {
 
   public updateContent(
     content: string,
-    contentType?: ZettelType
+    contentType?: ContentType
   ): Either<any, Zettel> {
     if (!this.changes.find((change) => change[0] === "UPDATE_CONTENT"))
-      this.addChange(["UPDATE_CONTENT", { content: this.content }]);
+      this.addChange([
+        "UPDATE_CONTENT",
+        { content: this.content, contentType: this.contentType },
+      ]);
 
     this.content = content;
-    if (contentType) this.setMeta("renderer", contentType);
+    if (contentType) this.contentType = contentType;
 
     return Either.right(this);
-  }
-
-  public setMeta(
-    key: string,
-    value: number | string | boolean | JSON | undefined | null
-  ) {
-    if (value === undefined || value === null) {
-      if (this.meta) {
-        delete this.meta[key];
-        this.addChange(["UPDATE_META"]);
-      }
-    } else {
-      if (!this.meta) this.meta = {};
-      this.meta[key] = value;
-      this.addChange(["UPDATE_META"]);
-    }
-  }
-
-  public getMeta(key: string): number | string | boolean | JSON | undefined {
-    if (!this.meta) return undefined;
-
-    if (key in this.meta) return this.meta[key];
-    return undefined;
   }
 
   public toDTO(): ZettelDTO {
@@ -147,11 +117,10 @@ export default class Zettel extends AggregateRoot<ZettelChange, string> {
       number: this.number,
       title: this.title,
       content: this.content,
-      type: this.type,
+      contentType: this.contentType,
       tags: this.tags.map((t) => t.name),
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
-      meta: this.meta || {},
     };
   }
 
@@ -160,10 +129,9 @@ export default class Zettel extends AggregateRoot<ZettelChange, string> {
     number,
     title,
     content,
-    type,
+    contentType,
     tags,
     userId,
-    meta,
     createdAt,
     updatedAt,
   }: CreateZettelDTO): Either<any, Zettel> {
@@ -187,9 +155,8 @@ export default class Zettel extends AggregateRoot<ZettelChange, string> {
       title,
       userId,
       content,
-      type,
+      contentType,
       tags: tagEntities,
-      meta,
       createdAt,
       updatedAt,
     });
@@ -205,7 +172,6 @@ type CreateZettelDTO = {
   createdAt: Date;
   updatedAt?: Date;
   content: string;
-  type: ZettelType;
+  contentType: ContentType;
   tags: string[];
-  meta: any;
 };

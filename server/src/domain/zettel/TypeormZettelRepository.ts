@@ -34,11 +34,10 @@ export default class TypeormZettelRepository implements IZettelRepository {
         title: zettelORM.title,
         userId: zettelORM.fk_user_id,
         content: zettelORM.content,
-        type: zettelORM.type,
+        contentType: zettelORM.contentType,
         tags: zettelORM.tags.map((t) => t.name),
         createdAt: zettelORM.createdAt,
         updatedAt: zettelORM.updatedAt,
-        meta: zettelORM.meta,
       });
       return zettel;
     });
@@ -76,9 +75,8 @@ export default class TypeormZettelRepository implements IZettelRepository {
         createdAt: orm.createdAt,
         updatedAt: orm.updatedAt,
         content: orm.content,
-        type: orm.type,
+        contentType: orm.contentType,
         tags: orm.tags.map((t) => t.name),
-        meta: orm.meta,
       });
     });
   }
@@ -106,9 +104,8 @@ export default class TypeormZettelRepository implements IZettelRepository {
         createdAt: orm.createdAt,
         updatedAt: orm.updatedAt,
         content: orm.content,
-        type: orm.type,
+        contentType: orm.contentType,
         tags: orm.tags.map((t) => t.name),
-        meta: orm.meta,
       });
     });
   }
@@ -141,10 +138,9 @@ export default class TypeormZettelRepository implements IZettelRepository {
     zettelORM.number = newNumber;
     zettelORM.fk_user_id = zettel.getUserId();
     zettelORM.content = dto.content;
-    zettelORM.type = dto.type;
+    zettelORM.contentType = dto.contentType;
     zettelORM.createdAt = dto.createdAt;
     zettelORM.title = dto.title;
-    zettelORM.meta = dto.meta;
 
     //tags
     const tagsORM = await Promise.all(dto.tags.map(TagORM.findOrCreate));
@@ -182,10 +178,8 @@ export default class TypeormZettelRepository implements IZettelRepository {
           break;
         case "UPDATE_CONTENT":
           orm.content = dto.content;
-          orm.type = dto.type;
+          orm.contentType = dto.contentType;
           break;
-        case "UPDATE_META":
-          orm.meta = dto.meta;
         default:
           Either.left("Unsupported change type: " + change[0]);
       }

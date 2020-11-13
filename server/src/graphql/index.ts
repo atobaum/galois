@@ -4,7 +4,6 @@ import { zettelResolvers, zettelTypeDefs } from "./zettelSchema";
 
 const rootTypeDef = gql`
   scalar Date
-  scalar JSON
 
   type Query {
     version: String
@@ -17,7 +16,7 @@ const rootTypeDef = gql`
 
 const rootResolver = {
   Query: {
-    version: () => process.env.npm_package_version,
+    version: () => "0.0.1",
   },
 };
 

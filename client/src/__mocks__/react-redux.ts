@@ -1,7 +1,6 @@
 import { RootState } from "../redux";
 import { rootReducer } from "../redux/modules/root";
 import ContentType from "../types/content-type";
-import ZettelType from "../types/zettel-type";
 
 export const initZettels = [
   {
@@ -9,8 +8,6 @@ export const initZettels = [
     number: 5,
     version: 3,
     title: "제목",
-    meta: { a: 1 },
-    type: ZettelType.NOTE,
     content: `
 ## 소제목
 - list1
@@ -25,8 +22,6 @@ export const initZettels = [
     number: 6,
     version: 2,
     title: "두번째 제텔",
-    meta: { a: 1 },
-    type: ZettelType.NOTE,
     content: `
 ## 두번째
 **bold**

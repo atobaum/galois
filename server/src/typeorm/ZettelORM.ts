@@ -14,7 +14,7 @@ import {
   Generated,
 } from "typeorm";
 import TagORM from "./TagORM";
-import { ZettelType } from "../domain/zettel/entity/Zettle";
+import { ContentType } from "../domain/zettel/entity/Zettle";
 
 @Entity({ name: "zettel" })
 @Index(["fk_user_id", "number"], { unique: true })
@@ -37,19 +37,12 @@ export default class ZettelORM {
     name: "content_type",
     type: "varchar",
     length: 16,
-    default: ZettelType.NOTE,
+    default: ContentType.MARKDOWN,
   })
-  type!: ZettelType;
+  contentType!: ContentType;
 
   @Column("text")
   content!: string;
-
-  @Column({
-    type: "jsonb",
-    name: "meta",
-    nullable: true,
-  })
-  meta!: any;
 
   @ManyToMany((type) => TagORM)
   @JoinTable({ name: "note_tags_tag" })

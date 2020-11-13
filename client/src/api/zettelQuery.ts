@@ -9,11 +9,10 @@ export const getZettelsQuery = gql`
         number
         title
         content
-        type
+        contentType
         tags
         createdAt
         updatedAt
-        meta
       }
     }
   }
@@ -26,10 +25,9 @@ export const getZettelQuery = gql`
       number
       title
       content
-      type
+      contentType
       tags
       createdAt
-      meta
     }
   }
 `;
@@ -39,24 +37,21 @@ export const createZettelMutation = gql`
     $title: String
     $content: String!
     $tags: [String]!
-    $type: ZettelType!
-    $meta: JSON
+    $contentType: ContentType!
   ) {
     createZettel(
       title: $title
       content: $content
       tags: $tags
-      type: $type
-      meta: $meta
+      contentType: $contentType
     ) {
       id
       number
       title
       content
-      type
+      contentType
       tags
       createdAt
-      meta
     }
   }
 `;
@@ -67,23 +62,23 @@ export const updateZettelQuery = gql`
     $title: String
     $tags: [String]
     $content: String
-    $meta: JSON
+    $contentType: ContentType!
   ) {
     updateZettel(
       id: $id
       title: $title
       tags: $tags
       content: $content
-      meta: $meta
+      contentType: $contentType
     ) {
       id
       number
       title
       content
+      contentType
       tags
       createdAt
       updatedAt
-      meta
     }
   }
 `;

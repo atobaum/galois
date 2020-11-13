@@ -4,7 +4,6 @@ import { jsx, css } from "@emotion/core";
 import TagInput from "../common/TagInput";
 import ContentTypeSelect from "../common/ContentTypeSelect";
 import ContentType from "../../types/content-type";
-import { TextField } from "@material-ui/core";
 
 const BigZettelEditorCss = css`
   display: flex;
@@ -15,37 +14,32 @@ const BigZettelEditorCss = css`
 `;
 
 const BigZettelEditor: React.FC<{
-  zettel: Pick<Zettel, "content" | "type" | "tags" | "title" | "meta">;
-  onEdit: (data: Partial<Omit<Zettel, "type">>) => void;
+  zettel: Pick<Zettel, "content" | "contentType" | "tags" | "title">;
+  onEdit: (data: NewZettel) => void;
 }> = ({ zettel, onEdit }) => {
   const [title, setTitle] = useState(zettel.title || "");
   const [tags, setTags] = useState(zettel.tags);
   const [content, setContent] = useState(zettel.content);
-  const [type, setType] = useState<ContentType>(
-    zettel.meta.renderer || ContentType.PLAIN
-  );
-  // const [zettelType, setZettelType] = useState<ZettelType>(ZettelType.NOTE);
+  const [type, setType] = useState<ContentType>(zettel.contentType);
 
   return (
     <div css={BigZettelEditorCss}>
       <input onChange={(e) => setTitle(e.target.value)} value={title}></input>
       <TagInput tags={tags} onChange={setTags} />
-      <TextField
-        multiline
+      <textarea
         name=""
         rows={4}
         onChange={(e) => setContent(e.target.value)}
         value={content}
-      ></TextField>
+      ></textarea>
       <ContentTypeSelect onChange={setType} contentType={type} />
-      {/* <ZettelTypeSelect onChange={setZettelType} zettelType={zettelType} /> */}
       <button
         onClick={() => {
           onEdit({
             content,
             tags,
             title,
-            meta: { renderer: type },
+            contentType: type,
           });
         }}
       >

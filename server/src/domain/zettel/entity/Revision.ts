@@ -1,12 +1,12 @@
 import Either from "../../../lib/Either";
 import { isUUID } from "../../../lib/utils";
 import Entity from "../../shared/Entity";
-import { Renderer } from "./Zettle";
+import { ContentType } from "./Zettle";
 
 type RevisionDTO = {
   uuid?: string;
   version: number;
-  type: Renderer;
+  type: ContentType;
   content: string;
   createdAt: Date;
 };
@@ -15,14 +15,14 @@ type RevisionDTO = {
 export default class Revision extends Entity<string> {
   // zettelId
   private version: number;
-  private type: Renderer;
+  private type: ContentType;
   private content: string;
   private createdAt: Date;
 
   constructor(args: {
     uuid?: string;
     version: number;
-    type: Renderer;
+    type: ContentType;
     content: string;
     createdAt: Date;
   }) {
@@ -49,7 +49,7 @@ export default class Revision extends Entity<string> {
     uuid?: string;
     createdAt: Date;
     content: string;
-    type: Renderer;
+    type: ContentType;
   }): Either<any, Revision> {
     args.type;
     return Either.right(new Revision(args));

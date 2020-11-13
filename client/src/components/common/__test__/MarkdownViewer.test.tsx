@@ -1,6 +1,6 @@
 import React from "react";
 import { render } from "@testing-library/react";
-import MarkdownRenderer from "../Renderer/ArticleRenderer/ContentRenderer/MarkdownRenderer";
+import MarkdownRenderer from "../content-renderer/MarkdownRenderer";
 
 describe("MarkdownViewer", () => {
   const testMarkdown =

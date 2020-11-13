@@ -1,4 +1,4 @@
-import Zettel, { ZettelType } from "../Zettle";
+import Zettel, { ContentType } from "../Zettle";
 import "@src/test/custom-matcher";
 
 describe("Zettel", () => {
@@ -7,9 +7,8 @@ describe("Zettel", () => {
     userId: 2,
     createdAt: new Date("2020-02-02"),
     content: "content1",
-    type: ZettelType.NOTE,
+    contentType: ContentType.MARKDOWN,
     tags: ["t1"] as string[],
-    meta: { draft: true },
   };
   const invalidUpdatedAt = new Date("2020-02-01");
   const validUpdatedAt = new Date("2020-02-03");
@@ -42,17 +41,19 @@ describe("Zettel", () => {
 
   it("edit contents", () => {
     const z1 = Zettel.create(newZettelData).getRight();
-    let result = z1.updateContent("new content1");
-    result = z1.updateContent("new content2");
+    let result = z1.updateContent("new content1", ContentType.PLAIN);
+    result = z1.updateContent("new content2", ContentType.PLAIN);
 
     expect(result).toBeRight();
 
     const dto = z1.toDTO();
     expect(dto.content).toBe("new content2");
+    expect(dto.contentType).toBe("plain");
     expect(z1.getChanges()).toContainEqual([
       "UPDATE_CONTENT",
       {
         content: newZettelData.content,
+        contentType: "md",
       },
     ]);
   });
@@ -132,38 +133,8 @@ describe("Zettel", () => {
       createdAt: newZettelData.createdAt,
       title: newZettelData.title,
       content: newZettelData.content,
-      type: newZettelData.type,
+      contentType: newZettelData.contentType,
       tags: ["t1", "t2"],
-      meta: newZettelData.meta,
     });
-  });
-
-  it("meta data 얻기", () => {
-    const zettelOrFail = Zettel.create(newZettelData);
-    expect(zettelOrFail.isRight).toBe(true);
-
-    const zettel = zettelOrFail.getRight();
-    expect(zettel.getMeta("draft")).toBe(true);
-    expect(zettel.getMeta("qwe")).toBe(undefined);
-  });
-
-  it("meta data 추가", () => {
-    const zettelOrFail = Zettel.create(newZettelData);
-    expect(zettelOrFail.isRight).toBe(true);
-
-    const zettel = zettelOrFail.getRight();
-    zettel.setMeta("newMeta", 123);
-    expect(zettel.getMeta("newMeta")).toBe(123);
-  });
-
-  it("meta data 삭제", () => {
-    const zettelOrFail = Zettel.create(newZettelData);
-    expect(zettelOrFail.isRight).toBe(true);
-    const zettel = zettelOrFail.getRight();
-    expect(zettel.getMeta("draft")).toBe(true);
-
-    zettel.setMeta("draft", null);
-
-    expect(zettel.getMeta("draft")).toBe(undefined);
   });
 });

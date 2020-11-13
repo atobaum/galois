@@ -9,7 +9,6 @@ import ProjectPage from "./pages/ProjectPage";
 import ZettelPage from "./pages/ZettelPage";
 import LoginCallbackPage from "./pages/LoginCallbackPage";
 import LoginPage from "./pages/LoginPage";
-import AboutPage from "./pages/AboutPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -40,7 +39,6 @@ function App() {
         <Route path="/zettel/:id" component={ZettelPage} />
         <Route path="/login" component={LoginPage} />
         <Route path="/login_callback" component={LoginCallbackPage} />
-        <Route path="/about" component={AboutPage} />
         <Route path="/" component={MainPage} />
       </Switch>
       <Toast />
