@@ -6,8 +6,6 @@ import { ApolloServer } from "apollo-server-koa";
 import { resolvers, typeDefs } from "../graphql";
 import logger from "../lib/logger";
 import koaLogger from "../middleware/loggerMiddleware";
-import cors from "src/middleware/cors";
-import config from "../config";
 
 export default async ({ app }: { app: Koa }): Promise<Koa> => {
   const apollo = new ApolloServer({
@@ -23,7 +21,6 @@ export default async ({ app }: { app: Koa }): Promise<Koa> => {
   app.use(koaLogger(logger));
   app.use(bodyParser());
   app.use(jwtMiddleware);
-  app.use(cors(config.serverHost));
   app.use(router.routes()).use(router.allowedMethods());
   apollo.applyMiddleware({ app });
 
