@@ -1,12 +1,11 @@
 import React from "react";
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
+import { EditorCompoenentInput } from "../@types";
 
 const UrlInputCss = css``;
 
-const UrlInput: React.FC<{
-  register: any;
-}> = ({ register }) => {
+const UrlInput: EditorCompoenentInput<"register"> = ({ register }) => {
   return (
     <div css={UrlInputCss}>
       <input
