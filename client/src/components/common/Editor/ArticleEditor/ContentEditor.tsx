@@ -1,8 +1,8 @@
 import React from "react";
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
-import ContentTypeSelect from "../../../ContentTypeSelect";
-import ContentType from "../../../../../types/content-type";
+import ContentTypeSelect from "../../ContentTypeSelect";
+import ContentType from "../../../../types/content-type";
 import { TextField } from "@material-ui/core";
 
 const ContentEditorCss = css`
@@ -10,6 +10,7 @@ const ContentEditorCss = css`
   flex-direction: column;
 `;
 
+// deprecate
 const ContentEditor: React.FC<{
   content: string;
   setContent: (v: string) => void;
