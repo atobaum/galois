@@ -4,7 +4,7 @@ import { act, fireEvent, render, waitFor } from "@testing-library/react";
 import "mutationobserver-shim";
 
 import { useForm } from "react-hook-form";
-import ContentEditor from "./ContentEditor2";
+import ContentEditor from "../ContentInput";
 
 describe("<ContentEditor />", () => {
   function renderComponent(onSubmit: any, defaultValue?: string) {

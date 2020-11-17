@@ -25,6 +25,10 @@ const BookmarkEditor: React.FC<EditorProps> = ({
     // eslint-disable-next-line
   }, []);
 
+  useEffect(() => {
+    console.warn("BookmarkEdotor is deprecated");
+  }, []);
+
   return (
     <div css={BookmarkEditorCss}>
       <TextField

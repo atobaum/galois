@@ -1,9 +1,9 @@
-import React, { useEffect } from "react";
+import React from "react";
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
 import ContentType from "../../../../types/content-type";
 import { Select, TextField } from "@material-ui/core";
-import { EditorCompoenentInput } from "../@types";
+import { EditorCompoenentInput } from "./@types";
 
 const ContentEditorCss = css`
   display: flex;
@@ -13,7 +13,7 @@ const ContentEditorCss = css`
 const ContentEditor: EditorCompoenentInput<
   "register",
   { defaultValue?: string }
-> = ({ register, defaultValue }) => {
+> = ({ register, defaultValue = "" }) => {
   return (
     <div css={ContentEditorCss}>
       <Select native inputRef={register} name="meta.renderer" role="input">

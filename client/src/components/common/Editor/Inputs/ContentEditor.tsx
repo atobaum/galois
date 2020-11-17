@@ -17,6 +17,10 @@ const ContentEditor: React.FC<{
   meta: { renderer?: ContentType };
   setMeta: (meta: any) => void;
 }> = ({ content, setContent, meta, setMeta }) => {
+  React.useEffect(() => {
+    console.warn("BookmarkEdotor is deprecated");
+  }, []);
+
   return (
     <div css={ContentEditorCss}>
       <ContentTypeSelect

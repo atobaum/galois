@@ -4,7 +4,7 @@ import { fireEvent, render, waitFor } from "@testing-library/react";
 import "mutationobserver-shim";
 
 import { useForm } from "react-hook-form";
-import UrlInput from "./UrlInput";
+import UrlInput from "../UrlInput";
 
 describe("<UrlInput />", () => {
   function renderComponent(onSubmit: any) {

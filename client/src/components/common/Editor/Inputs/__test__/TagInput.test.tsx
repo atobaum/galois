@@ -4,7 +4,7 @@ import { act, fireEvent, render, waitFor } from "@testing-library/react";
 import "mutationobserver-shim";
 
 import { useForm } from "react-hook-form";
-import TagInput from "./TagInput";
+import TagInput from "../TagInput";
 describe("<TagInput />", () => {
   function renderComponent(onSubmit: any, tags?: string[]) {
     const Component = () => {

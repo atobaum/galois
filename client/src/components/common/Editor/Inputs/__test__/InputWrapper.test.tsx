@@ -1,6 +1,6 @@
 import React from "react";
 import { render } from "@testing-library/react";
-import InputWrapper from "./InputWrapper";
+import InputWrapper from "../InputWrapper";
 
 describe("<InpurWrapper />", () => {
   it("renders its name and children", () => {

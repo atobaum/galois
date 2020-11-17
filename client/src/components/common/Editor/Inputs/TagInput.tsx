@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
 import { Input } from "@material-ui/core";
+import TagList from "../../TagList";
 import { EditorCompoenentInput } from "./@types";
-import TagList from "../TagList";
 
 const TagInputCss = css``;
 

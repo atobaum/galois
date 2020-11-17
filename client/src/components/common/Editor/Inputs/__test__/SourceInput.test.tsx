@@ -4,8 +4,8 @@ import { fireEvent, render } from "@testing-library/react";
 import "mutationobserver-shim";
 
 import { useForm } from "react-hook-form";
-import SourceType from "../../../../types/source-type";
-import SourceInput from "./SourceInput";
+import SourceType from "../../../../../types/source-type";
+import SourceInput from "../SourceInput";
 
 describe("<SourceInput />", () => {
   function renderComponent(Component: React.FC<ReturnType<typeof useForm>>) {

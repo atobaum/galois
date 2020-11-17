@@ -1,7 +1,7 @@
 import React from "react";
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
-import { EditorCompoenentInput } from "../@types";
+import { EditorCompoenentInput } from "./@types";
 
 const UrlInputCss = css``;
 

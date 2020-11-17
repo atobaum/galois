@@ -1,6 +1,6 @@
 import { Meta, Story } from "@storybook/react/types-6-0";
 import React, { useState } from "react";
-import BookmarkEditor from "../components/common/Editor/ArticleEditor/BookmarkEditor";
+import BookmarkEditor from "../components/common/editor/inputs/BookmarkEditor";
 
 export default {
   title: "Components|Editor/ContentEditor/BookmarkEditor",
