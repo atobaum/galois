@@ -3,8 +3,8 @@ import React, { useEffect, useState } from "react";
 import { jsx, css } from "@emotion/core";
 import ZettelCard from "../zettel-grid/ZettelCard";
 import { useHistory } from "react-router-dom";
-import BigZettelEditor from "./BigZettelEditor";
 import { updateZettel } from "../../api/zettelApi";
+import SmallEditor from "../common/editor/SmallEditor";
 
 const ZettelViewerCss = css`
   height: 100%;
@@ -31,9 +31,9 @@ const ZettelViewer: React.FC<{ zettel: Zettel | undefined }> = ({ zettel }) => {
 
       {zettel &&
         (editing ? (
-          <BigZettelEditor
-            zettel={zettel}
-            onEdit={(data) => {
+          <SmallEditor
+            defaultZettel={zettel}
+            onSubmit={(data) => {
               setEditing(false);
               updateZettel({ ...zettel, ...data });
             }}
