@@ -24,7 +24,7 @@ const ZettelViewer: React.FC<{ zettel: Zettel | undefined }> = ({ zettel }) => {
             setEditing(!editing);
           }}
         >
-          Edit
+          {editing ? "취소" : "수정"}
         </button>
         <button onClick={() => {}}>More</button>
       </div>
