@@ -45,6 +45,7 @@ const SmallEditor: React.FC<SmallEditorProps> = ({
 
   return (
     <Container css={SmallEditorCss}>
+      {defaultZettel ? defaultZettel.number : "New"}
       <form onSubmit={handleSubmit(submitHandler)}>
         <TextField label="Title" name="title" inputRef={register} />
         {/* {type === ZettelType.BOOKMARK ? <UrlInput register={register} /> : null} */}
@@ -55,10 +56,15 @@ const SmallEditor: React.FC<SmallEditorProps> = ({
         ) : null}
         <ContentInput register={register} />
         <div>
-          <TagInput register={register} setValue={setValue} watch={watch} />
+          <TagInput
+            register={register}
+            setValue={setValue}
+            watch={watch}
+            defaultValue={defaultZettel?.tags}
+          />
           <ZettelTypeSelect register={register} />
           <Button variant="contained" color="primary" type="submit">
-            Submit
+            {defaultZettel ? "수정" : "만들기"}
           </Button>
         </div>
       </form>
