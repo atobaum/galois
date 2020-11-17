@@ -12,7 +12,7 @@ const TagInput: EditorCompoenentInput<
   { defaultValue?: string[] }
 > = ({ register, setValue, watch, defaultValue = [] }) => {
   const [input, setInput] = useState("");
-  const tags: string[] = watch("tags", [] as string[]);
+  const tags: string[] = watch("tags", defaultValue);
   const handleTagOnKeypress: React.KeyboardEventHandler<HTMLInputElement> = (
     evt
   ) => {
@@ -28,7 +28,8 @@ const TagInput: EditorCompoenentInput<
   useEffect(() => {
     register("tags");
     setValue("tags", defaultValue);
-  }, [register, setValue, defaultValue]);
+    // eslint-disable-next-line
+  }, []);
 
   const onTagClick = (tag: string) => {
     setValue(
