@@ -34,6 +34,9 @@ const ZettelViewer: React.FC<{ zettel: Zettel | undefined }> = ({ zettel }) => {
           <SmallEditor
             defaultZettel={zettel}
             onSubmit={(data) => {
+              // todo remove
+              if (zettel.meta.url) data.meta.url = null;
+
               setEditing(false);
               updateZettel({ ...zettel, ...data });
             }}
