@@ -62,11 +62,14 @@ function ZettelCard({
     >
       <div className="zettel-foreground"></div>
       <CardContent className="flex">
-        <div>{number ? number : loading ? "기달" : "실패"}</div>
+        <div>
+          <span>{type}</span>
+          {number ? number : loading ? "기달" : "실패"}
+        </div>
         <h3>{title}</h3>
       </CardContent>
       <CardContent ref={dom} className="zettel-content">
-        <ArticleRenderer type={type} content={content} meta={meta} />
+        <ArticleRenderer content={content} meta={meta} />
       </CardContent>
       <CardContent>
         {tags.map((tag) => (

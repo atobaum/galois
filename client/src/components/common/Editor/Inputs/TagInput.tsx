@@ -28,7 +28,7 @@ const TagInput: EditorCompoenentInput<
   useEffect(() => {
     register("tags");
     setValue("tags", defaultValue);
-  }, []);
+  }, [register, setValue, defaultValue]);
 
   const onTagClick = (tag: string) => {
     setValue(

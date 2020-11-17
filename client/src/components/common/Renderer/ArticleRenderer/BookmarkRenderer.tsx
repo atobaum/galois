@@ -3,18 +3,23 @@ import React from "react";
 import { jsx, css } from "@emotion/core";
 import ContentRenderer from "./ContentRenderer";
 import ContentType from "../../../../types/content-type";
+import SourceRenderer from "./SourceRenderer";
 
 const BookmarkRendererCss = css``;
 
 const BookmarkRenderer: React.FC<{
-  meta: { renderer: ContentType; url: string };
+  meta: { renderer: ContentType; url?: string; source?: Source };
   content: string;
 }> = ({ content, meta }) => {
   return (
     <div css={BookmarkRendererCss}>
-      <a href={meta.url} target="_blank" rel="noopener noreferrer">
-        {meta.url}
-      </a>
+      {meta.url ? (
+        <div>deprecated: {meta.url}</div>
+      ) : meta.source ? (
+        <SourceRenderer source={meta.source} />
+      ) : (
+        <div>no source</div>
+      )}
       <ContentRenderer content={content} meta={meta} />
     </div>
   );

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
 import TagInput from "../common/TagInput";
-import ContentTypeSelect from "../common/ContentTypeSelect";
+import ContentTypeInput from "../common/editor/inputs/ContentTypeInput";
 import ContentType from "../../types/content-type";
 import { TextField } from "@material-ui/core";
 
@@ -37,7 +37,7 @@ const BigZettelEditor: React.FC<{
         onChange={(e) => setContent(e.target.value)}
         value={content}
       ></TextField>
-      <ContentTypeSelect onChange={setType} contentType={type} />
+      <ContentTypeInput onChange={setType} contentType={type} />
       {/* <ZettelTypeSelect onChange={setZettelType} zettelType={zettelType} /> */}
       <button
         onClick={() => {

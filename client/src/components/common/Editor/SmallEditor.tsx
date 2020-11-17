@@ -1,14 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
-import { useDispatch } from "react-redux";
-import { createZettelAction } from "../../../redux/modules/zettel-grid";
-import TagInput from "../TagInput";
-import { Button, Container, TextField } from "@material-ui/core";
-import ZettelTypeSelect from "../ZettelTypeSelect";
 import ZettelType from "../../../types/zettel-type";
-import BookmarkEditor from "./ArticleEditor/BookmarkEditor";
-import ContentEditor from "./ArticleEditor/ContentEditor";
+
+import { useForm } from "react-hook-form";
+import { ContentInput, InputWrapper, SourceInput, TagInput } from "./inputs";
+import ZettelTypeSelect from "../ZettelTypeSelect";
+import { Button, Container, TextField } from "@material-ui/core";
 
 const SmallEditorCss = css`
   width: 100%;
@@ -21,58 +19,45 @@ const SmallEditorCss = css`
   }
 `;
 
-type SmallEditorProps = {};
+type SmallEditorProps = {
+  defaultZettel?: Zettel;
+  onSubmit: (data: any) => void;
+};
 
-const SmallEditor: React.FC<SmallEditorProps> = () => {
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [meta, setMeta] = useState({});
-  const [zettelType, setZettelType] = useState<ZettelType>(ZettelType.NOTE);
-  const [tags, setTags] = useState<string[]>([]);
-  const dispatch = useDispatch();
+const SmallEditor: React.FC<SmallEditorProps> = ({
+  defaultZettel,
+  onSubmit,
+}) => {
+  const { handleSubmit, register, setValue, reset, watch, errors } = useForm<
+    any
+  >({
+    defaultValues: defaultZettel || {
+      type: ZettelType.NOTE,
+    },
+  });
 
-  const submitHandler = (evt: any) => {
-    evt.preventDefault();
-    if (content.trim().length === 0) return;
-    dispatch(
-      createZettelAction({
-        title,
-        content,
-        type: zettelType,
-        tags,
-        meta,
-      })
-    );
-    setContent("");
+  const submitHandler = (data: any) => {
+    onSubmit(data);
+    reset();
   };
 
-  let TypeEditor;
-  switch (zettelType) {
-    case ZettelType.BOOKMARK:
-      TypeEditor = BookmarkEditor;
-      break;
-    default:
-      TypeEditor = ContentEditor;
-  }
+  const type = watch("type");
 
   return (
     <Container css={SmallEditorCss}>
-      <form>
-        <TextField
-          label="Title"
-          onChange={(e) => setTitle(e.target.value)}
-          value={title}
-        />
-        <TypeEditor
-          content={content}
-          setContent={setContent}
-          meta={meta}
-          setMeta={setMeta}
-        />
+      <form onSubmit={handleSubmit(submitHandler)}>
+        <TextField label="Title" name="title" inputRef={register} />
+        {/* {type === ZettelType.BOOKMARK ? <UrlInput register={register} /> : null} */}
+        {type === ZettelType.BOOKMARK ? (
+          <InputWrapper name="Source">
+            <SourceInput register={register} watch={watch} />
+          </InputWrapper>
+        ) : null}
+        <ContentInput register={register} />
         <div>
-          <TagInput tags={tags} onChange={setTags} />
-          <ZettelTypeSelect onChange={setZettelType} zettelType={zettelType} />
-          <Button variant="contained" color="primary" onClick={submitHandler}>
+          <TagInput register={register} setValue={setValue} watch={watch} />
+          <ZettelTypeSelect register={register} />
+          <Button variant="contained" color="primary" type="submit">
             Submit
           </Button>
         </div>

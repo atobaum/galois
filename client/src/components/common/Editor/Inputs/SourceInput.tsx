@@ -13,8 +13,8 @@ const SourceInputCss = css``;
 
 const SourceInput: EditorCompoenentInput<
   "register" | "watch",
-  { defaultSource?: Source }
-> = ({ register, watch, defaultSource }) => {
+  { defaultValue?: Source }
+> = ({ register, watch, defaultValue: defaultSource }) => {
   const type: SourceType = watch(
     "meta.source.type",
     defaultSource?.type || SourceType.URL

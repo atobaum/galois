@@ -34,7 +34,7 @@ describe("<SourceInput />", () => {
       <SourceInput
         register={register}
         watch={watch}
-        defaultSource={{ type: SourceType.URL, data: "https://example.com" }}
+        defaultValue={{ type: SourceType.URL, data: "https://example.com" }}
       />
     ));
 

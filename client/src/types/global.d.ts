@@ -5,6 +5,16 @@ import SourceType from "./source-type";
 export {};
 
 declare global {
+  type Source = {
+    type: SourceType;
+    data: string;
+  };
+
+  type ZettelMeta = {
+    source?: Source;
+    renderer?: ContentType;
+  };
+
   type Zettel = {
     id: string;
     number: number;
@@ -15,11 +25,6 @@ declare global {
     createdAt: Date;
     updatedAt: Date;
     meta: any;
-  };
-
-  type Source = {
-    type: SourceType;
-    data: string;
   };
 
   type NewZettel = Omit<Zettel, "id" | "number" | "createdAt" | "updatedAt"> &

@@ -1,28 +1,24 @@
 import React from "react";
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
-import ZettelType from "../../../../types/zettel-type";
-import BookmarkRenderer from "./BookmarkRenderer";
 import ContentRenderer from "./ContentRenderer";
+import SourceRenderer from "./SourceRenderer";
 
 const RendererCss = css``;
 
 const ArticleRenderer: React.FC<{
   content: string;
   meta: any;
-  type: ZettelType;
-}> = ({ meta, content, type }) => {
-  let TypeRenderer;
-  switch (type) {
-    case ZettelType.BOOKMARK:
-      TypeRenderer = BookmarkRenderer;
-      break;
-    default:
-      TypeRenderer = ContentRenderer;
-  }
+}> = ({ meta, content }) => {
   return (
     <div css={RendererCss}>
-      <TypeRenderer content={content} meta={meta} />
+      {meta.url ? (
+        <div>deprecated: {meta.url}</div>
+      ) : meta.source ? (
+        <SourceRenderer source={meta.source} />
+      ) : null}
+
+      <ContentRenderer content={content} meta={meta} />
     </div>
   );
 };
