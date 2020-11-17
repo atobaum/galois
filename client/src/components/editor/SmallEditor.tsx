@@ -1,11 +1,11 @@
 import React from "react";
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
-import ZettelType from "../../../types/zettel-type";
+import ZettelType from "../../types/zettel-type";
 
 import { useForm } from "react-hook-form";
 import { ContentInput, InputWrapper, SourceInput, TagInput } from "./inputs";
-import ZettelTypeSelect from "../ZettelTypeSelect";
+import ZettelTypeSelect from "./inputs/ZettelTypeInput";
 import { Button, Container, TextField } from "@material-ui/core";
 
 const SmallEditorCss = css`

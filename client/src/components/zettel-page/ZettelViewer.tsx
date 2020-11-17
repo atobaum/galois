@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
-import ZettelCard from "../zettel-grid/ZettelCard";
+import ZettelCard from "../renderer/ZettelCard";
 import { useHistory } from "react-router-dom";
 import { updateZettel } from "../../api/zettelApi";
-import SmallEditor from "../common/editor/SmallEditor";
+import SmallEditor from "../editor/SmallEditor";
 
 const ZettelViewerCss = css`
   height: 100%;

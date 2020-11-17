@@ -3,7 +3,7 @@ import React, { useCallback, useEffect } from "react";
 import { jsx, css } from "@emotion/core";
 import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
-import ZettelCard from "./ZettelCard";
+import ZettelCard from "../renderer/ZettelCard";
 import { RootState } from "../../redux";
 import { setZettelsToGrid } from "../../redux/modules/zettel-grid";
 import useZettels from "../../hooks/useZettels";

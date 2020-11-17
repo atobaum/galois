@@ -2,7 +2,7 @@ import React from "react";
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
 import { Select } from "@material-ui/core";
-import ZettelType from "../../types/zettel-type";
+import ZettelType from "../../../types/zettel-type";
 
 const ContentTypeSelectCss = css``;
 

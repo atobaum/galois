@@ -1,6 +1,6 @@
 import { Meta, Story } from "@storybook/react/types-6-0";
 import React from "react";
-import ContentRenderer from "../components/common/Renderer/ArticleRenderer/ContentRenderer";
+import ContentRenderer from "../components/renderer/renderer-component/ContentRenderer";
 import ContentType from "../types/content-type";
 
 export default {

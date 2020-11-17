@@ -2,7 +2,7 @@ import React from "react";
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
 import { Select } from "@material-ui/core";
-import ContentType from "../../../../types/content-type";
+import ContentType from "../../../types/content-type";
 
 const ContentTypeSelectCss = css``;
 

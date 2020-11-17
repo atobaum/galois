@@ -1,7 +1,7 @@
 import React from "react";
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
-import ContentType from "../../../../types/content-type";
+import ContentType from "../../../types/content-type";
 import { Select, TextField } from "@material-ui/core";
 import { EditorCompoenentInput } from "./@types";
 

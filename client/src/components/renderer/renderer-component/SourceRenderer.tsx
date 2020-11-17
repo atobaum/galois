@@ -1,7 +1,7 @@
 import React from "react";
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
-import SourceType from "../../../../types/source-type";
+import SourceType from "../../../types/source-type";
 
 const SourceRendererCss = css``;
 

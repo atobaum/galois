@@ -1,8 +1,8 @@
 import React from "react";
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
-import ContentRenderer from "./ContentRenderer";
-import SourceRenderer from "./SourceRenderer";
+import ContentRenderer from "./renderer-component/ContentRenderer";
+import SourceRenderer from "./renderer-component/SourceRenderer";
 
 const RendererCss = css``;
 

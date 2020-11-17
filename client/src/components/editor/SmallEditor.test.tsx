@@ -4,9 +4,9 @@ import "mutationobserver-shim";
 import userEvent from "@testing-library/user-event";
 
 import SmallEditor from "./SmallEditor";
-import SourceType from "../../../types/source-type";
-import ZettelType from "../../../types/zettel-type";
-import ContentType from "../../../types/content-type";
+import SourceType from "../../types/source-type";
+import ZettelType from "../../types/zettel-type";
+import ContentType from "../../types/content-type";
 
 const bookmarkZettle: Zettel = {
   id: "80c52c84-95d0-420a-b557-8445d8938481",

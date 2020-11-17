@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
-import ArticleRenderer from "../common/Renderer/ArticleRenderer";
+import ArticleRenderer from "../renderer/BasicRenderer";
 import Tag from "../common/Tag";
 
 const ZettelListItemCss = css`

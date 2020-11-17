@@ -1,7 +1,7 @@
 import { render } from "@testing-library/react";
 import React from "react";
 import ContentType from "../../../types/content-type";
-import ContentTypeInput from "../editor/inputs/ContentTypeInput";
+import ContentTypeInput from "./ContentTypeInput";
 
 describe("ContentTypeSelect", () => {
   it("renders option", () => {

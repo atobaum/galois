@@ -2,7 +2,7 @@
 import React from "react";
 import StatusBar from "../components/core/StatusBar";
 import ZettelGrid from "../components/zettel-grid/ZettelGrid";
-import SmallEditor from "../components/common/editor/SmallEditor";
+import SmallEditor from "../components/editor/SmallEditor";
 import { Container } from "@material-ui/core";
 import useSetTitle from "../hooks/useSetTitle";
 import Helmet from "react-helmet";

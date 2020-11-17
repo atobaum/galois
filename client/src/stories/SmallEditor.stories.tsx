@@ -3,7 +3,7 @@ import { Story } from "@storybook/react/types-6-0";
 import { action } from "@storybook/addon-actions";
 import { Meta } from "@storybook/react/types-6-0";
 import React from "react";
-import SmallEditor from "../components/common/editor/SmallEditor";
+import SmallEditor from "../components/editor/SmallEditor";
 import ZettelType from "../types/zettel-type";
 import SourceType from "../types/source-type";
 import ContentType from "../types/content-type";

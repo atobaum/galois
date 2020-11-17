@@ -3,7 +3,7 @@ import { jsx, css } from "@emotion/core";
 import Tag from "../common/Tag";
 import { useEffect, useMemo, useRef } from "react";
 import { Card, CardContent } from "@material-ui/core";
-import ArticleRenderer from "../common/Renderer/ArticleRenderer";
+import ArticleRenderer from "./BasicRenderer";
 
 const generateCss = (loading: boolean | undefined) => css`
   position: relative;
