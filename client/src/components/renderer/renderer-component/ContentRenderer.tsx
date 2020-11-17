@@ -1,5 +1,5 @@
 import React from "react";
-import ContentType from "../../../../../types/content-type";
+import ContentType from "../../../types/content-type";
 import MarkdownRenderer from "./MarkdownRenderer";
 import PlainRenderer from "./PlainRenderer";
 

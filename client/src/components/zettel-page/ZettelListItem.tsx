@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
-import ArticleRenderer from "../common/Renderer/ArticleRenderer";
+import ArticleRenderer from "../renderer/BasicRenderer";
 import Tag from "../common/Tag";
 
 const ZettelListItemCss = css`
@@ -40,11 +40,12 @@ function ZettelListItem({
   return (
     <div css={ZettelListItemCss}>
       <div className="flex">
+        <span>{type}</span>
         <div className="zettel-number">{number}</div>
-        <h3>{title}</h3>
       </div>
+      <h3>{title}</h3>
       <div className="zettel-content">
-        <ArticleRenderer type={type} content={content} meta={meta} />
+        <ArticleRenderer content={content} meta={meta} />
       </div>
       <div>
         날짜 {createdAt.getMonth() + 1}월 {createdAt.getDate()}일

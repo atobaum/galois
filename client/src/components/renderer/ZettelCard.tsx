@@ -3,7 +3,7 @@ import { jsx, css } from "@emotion/core";
 import Tag from "../common/Tag";
 import { useEffect, useMemo, useRef } from "react";
 import { Card, CardContent } from "@material-ui/core";
-import ArticleRenderer from "../common/Renderer/ArticleRenderer";
+import ArticleRenderer from "./BasicRenderer";
 
 const generateCss = (loading: boolean | undefined) => css`
   position: relative;
@@ -62,11 +62,14 @@ function ZettelCard({
     >
       <div className="zettel-foreground"></div>
       <CardContent className="flex">
-        <div>{number ? number : loading ? "기달" : "실패"}</div>
+        <div>
+          <span>{type}</span>
+          {number ? number : loading ? "기달" : "실패"}
+        </div>
         <h3>{title}</h3>
       </CardContent>
       <CardContent ref={dom} className="zettel-content">
-        <ArticleRenderer type={type} content={content} meta={meta} />
+        <ArticleRenderer content={content} meta={meta} />
       </CardContent>
       <CardContent>
         {tags.map((tag) => (

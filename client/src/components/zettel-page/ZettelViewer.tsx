@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
-import ZettelCard from "../zettel-grid/ZettelCard";
+import ZettelCard from "../renderer/ZettelCard";
 import { useHistory } from "react-router-dom";
-import BigZettelEditor from "./BigZettelEditor";
 import { updateZettel } from "../../api/zettelApi";
+import SmallEditor from "../editor/SmallEditor";
 
 const ZettelViewerCss = css`
   height: 100%;
@@ -24,16 +24,19 @@ const ZettelViewer: React.FC<{ zettel: Zettel | undefined }> = ({ zettel }) => {
             setEditing(!editing);
           }}
         >
-          Edit
+          {editing ? "취소" : "수정"}
         </button>
         <button onClick={() => {}}>More</button>
       </div>
 
       {zettel &&
         (editing ? (
-          <BigZettelEditor
-            zettel={zettel}
-            onEdit={(data) => {
+          <SmallEditor
+            defaultZettel={zettel}
+            onSubmit={(data) => {
+              // todo remove
+              if (zettel.meta.url) data.meta.url = null;
+
               setEditing(false);
               updateZettel({ ...zettel, ...data });
             }}

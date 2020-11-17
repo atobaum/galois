@@ -1,9 +1,20 @@
 import ContentType from "./content-type";
 import ZettelType from "./zettel-type";
+import SourceType from "./source-type";
 
 export {};
 
 declare global {
+  type Source = {
+    type: SourceType;
+    data: string;
+  };
+
+  type ZettelMeta = {
+    source?: Source;
+    renderer?: ContentType;
+  };
+
   type Zettel = {
     id: string;
     number: number;

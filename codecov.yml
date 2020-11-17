@@ -1,3 +1,7 @@
+ignore:
+  - "**/*.stories.jsx"
+  - "**/*.stories.tsx"
+  - "client/src/serviceWorker.ts"
 coverage:
   status:
     project:

@@ -1,7 +1,7 @@
 import React from "react";
 import { render } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import ZettelCard from "../zettel-grid/ZettelCard";
+import ZettelCard from "../renderer/ZettelCard";
 import { mockedZettel } from "../../__mocks__/dummy-data";
 
 describe("<ZettelCard />", () => {
