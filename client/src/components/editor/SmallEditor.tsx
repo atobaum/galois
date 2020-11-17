@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
 import ZettelType from "../../types/zettel-type";
@@ -28,6 +28,7 @@ const SmallEditor: React.FC<SmallEditorProps> = ({
   defaultZettel,
   onSubmit,
 }) => {
+  const [hasSource, setHasSource] = useState(defaultZettel?.meta.source);
   const { handleSubmit, register, setValue, reset, watch, errors } = useForm<
     any
   >({
@@ -45,11 +46,22 @@ const SmallEditor: React.FC<SmallEditorProps> = ({
 
   return (
     <Container css={SmallEditorCss}>
-      {defaultZettel ? defaultZettel.number : "New"}
+      <div>
+        <span>{defaultZettel ? defaultZettel.number : "New"}</span>
+        <label>
+          <input
+            type="checkbox"
+            onChange={(e) => {
+              setHasSource(e.target.checked);
+            }}
+            defaultChecked={hasSource}
+          />
+          source
+        </label>
+      </div>
       <form onSubmit={handleSubmit(submitHandler)}>
         <TextField label="Title" name="title" inputRef={register} />
-        {/* {type === ZettelType.BOOKMARK ? <UrlInput register={register} /> : null} */}
-        {type === ZettelType.BOOKMARK ? (
+        {type === ZettelType.BOOKMARK || hasSource ? (
           <InputWrapper name="Source">
             <SourceInput register={register} watch={watch} />
           </InputWrapper>

@@ -50,9 +50,7 @@ describe("<SmallEditor />", () => {
 
   it("should call onSubmit with correct data when user submit a note", () => {
     const onSumbit = jest.fn();
-    const { getByRole, getByAltText } = render(
-      <SmallEditor onSubmit={onSumbit} />
-    );
+    const { getByRole } = render(<SmallEditor onSubmit={onSumbit} />);
 
     userEvent.type($("input[name='title']"), "new title");
     fireEvent.change($("textarea[name='content']"), {
@@ -75,5 +73,13 @@ describe("<SmallEditor />", () => {
     );
   });
 
+  it("can add source to note", () => {
+    const onSumbit = jest.fn();
+    const { getByLabelText } = render(<SmallEditor onSubmit={onSumbit} />);
+    expect($("select[name='meta.source.type']")).toBeFalsy(); // source type
+
+    userEvent.click(getByLabelText("source"));
+    expect($("select[name='meta.source.type']")).toBeTruthy(); // source type
+  });
   //   it("should render error");
 });
