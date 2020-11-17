@@ -12,4 +12,12 @@ describe("<SourceRenderer />", () => {
 
     expect(document.querySelector("a")?.href).toBe("https://www.example.com/");
   });
+
+  it("renders book info", () => {
+    const { getByText } = render(
+      <SourceRenderer source={{ type: "book" as any, data: "책 제목" }} />
+    );
+
+    getByText("책 제목");
+  });
 });
