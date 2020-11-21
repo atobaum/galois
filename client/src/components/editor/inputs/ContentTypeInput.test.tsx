@@ -1,13 +1,13 @@
 import { render } from "@testing-library/react";
 import React from "react";
 import ContentType from "../../../types/content-type";
-import ContentTypeSelect from "../ContentTypeSelect";
+import ContentTypeInput from "./ContentTypeInput";
 
 describe("ContentTypeSelect", () => {
   it("renders option", () => {
     const onChange = jest.fn();
     const { getByText } = render(
-      <ContentTypeSelect
+      <ContentTypeInput
         onChange={onChange}
         contentType={ContentType.MARKDOWN}
       />
